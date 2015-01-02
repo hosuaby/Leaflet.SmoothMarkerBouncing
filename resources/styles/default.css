@@ -3,3 +3,12 @@ html, body, #map {
 	padding: 0;
 	height: 100%;
 }
+
+/* Quick fix for leaflet google maps plugin */
+.leaflet-map-pane {
+    z-index: 2 !important;
+}
+
+.leaflet-google-layer {
+    z-index: 1 !important;
+}
