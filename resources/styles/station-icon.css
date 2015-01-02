@@ -1,0 +1,57 @@
+/* All labels */
+.leaflet-marker-icon.charging-station .label {
+	position: absolute;		/* absolute position for all labels */
+	font-family: sans-serif;
+	text-align: center;
+	/*background-color: magenta;
+	opacity: 0.5;*/
+}
+
+/* Primary label */
+.leaflet-marker-icon.charging-station .label.primary {
+	font-size: 15px;
+	width: 23px;
+}
+
+/* Small secondary label */
+.leaflet-marker-icon.charging-station.full .label.secondary {
+	font-size: 10px;
+	width: 15px;
+}
+
+/* Position of primary label */
+.leaflet-marker-icon.charging-station.full .label.primary {
+	left: 20px;
+	top: 21px;
+}
+
+.leaflet-marker-icon.charging-station.simple .label.primary {
+	left: 5px;
+	top: 5px;
+}
+
+/* Positions of secondary labels */
+.leaflet-marker-icon.charging-station.full .label.secondary.left {
+	left: 3px;
+	top: 31px;
+}
+
+.leaflet-marker-icon.charging-station.full .label.secondary.top {
+	left: 29px;
+	top: 3px;
+}
+
+.leaflet-marker-icon.charging-station.full .label.secondary.right {
+	left: 40px;
+	top: 40px;
+}
+
+/* Secondary labels are invisible on simple icon */
+.leaflet-marker-icon.charging-station.simple .label.secondary {
+	display: none;
+}
+
+/* Primary label in invisible when station is simple and inoperational */
+.leaflet-marker-icon.charging-station.simple.inoperational .label.primary {
+	display: none;
+}
