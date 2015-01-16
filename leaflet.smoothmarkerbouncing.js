@@ -34,7 +34,6 @@
 
 	"use strict";
 
-	// TODO: check why it's not working in firefox
 	// TODO: check for regexp optimization
 	var regStyle		= /(\w+): ([^;]+);/g;
 	var regTranslate3d	= /(-?\d+)px, (-?\d+)px, (-?\d+)px/;
@@ -259,14 +258,15 @@
 	 * @param x - numeric value of x coordinate of original position of marker;
 	 * @param y - numeric value of y coordinate of original position of marker;
 	 * @param z - numeric value of z coordinate of original position of marker;
-	 * @param bounceHeight - height of bouncing (px).
+	 * @param bounceHeight - height of bouncing (px);
+	 * @param angle - shadow inclination angle (radians).
 	 *
 	 * @return array of transformation definitions.
 	 */
-	function createShadowMoveTransforms(x, y, z, bounceHeight) {
+	function createShadowMoveTransforms(x, y, z, bounceHeight, angle) {
 		var t = [];		// array of transformation definitions
 
-		var p = calculateLine(x, y, Math.PI / 4, bounceHeight);
+		var p = calculateLine(x, y, angle, bounceHeight);
 
 		/* For each step of the animation calculate translation */
 		for (var dY = 0; dY <= bounceHeight; dY++) {
@@ -282,6 +282,7 @@
 		contractHeight	 : 15,	// how much marker can contract (px)
 		bounceSpeed		 : 52,	// bouncing speed coefficient
 		contractSpeed	 : 52,	// contracting speed coefficient
+		shadowAngle		 : Math.PI / 4,	// shadow inclination angle (radians)
 		bouncingElastic	 : true,	// activate contract animation
 		bouncingExclusif : false,	// many markers can bounce in the same time
 	});
@@ -415,12 +416,12 @@
 		);
 
 		/* Shadow transformations */
-		// TODO: remake shadow transforms
 		this._bouncingMotion.shadowMoveTransforms = createShadowMoveTransforms(
 			pos.x,
 			pos.y,
 			0,
-			this.options.bounceHeight
+			this.options.bounceHeight,
+			this.options.shadowAngle
 		);
 
 		this._bouncingMotion.shadowResizeTransforms = createResizeTransforms(
