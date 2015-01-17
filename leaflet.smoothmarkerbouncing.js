@@ -143,14 +143,36 @@
 	 * @return array of transformation definitions.
 	 */
 	function createMoveTransforms(x, y, z, bounceHeight) {
-		var t = [];		// array of transformation definitions
 
 		/* For each step of the animation calculate translation */
-		for (var dY = 0; dY <= bounceHeight; dY++) {
+		for (var t = [], dY = 0; dY <= bounceHeight; dY++) {
 			t[dY] = renderMatrix(1, 0, 0, 1, x, y - dY);
 		}
 
 		return t;
+	}
+
+	/**
+	 * This function do the same thing that createMoveTransforms() but
+	 * constructs an array of points instead of transformation definitions. Used
+	 * to animate marker on the browsers that doesn't support 'transform'
+	 * attribute.
+	 *
+	 * @param x - numeric value of x coordinate of original position of marker;
+	 * @param y - numeric value of y coordinate of original position of marker;
+	 * @param z - numeric value of z coordinate of original position of marker;
+	 * @param bounceHeight - height of bouncing (px).
+	 *
+	 * @return array of points [x, y].
+	 */
+	function createMovePoints(x, y, z, bounceHeight) {
+
+		/* For each step of animation calculate the point */
+		for (var p = [], dY = 0; dY <= bounceHeight; dY++) {
+			p[dY] = [x, y - dY];
+		}
+
+		return p;
 	}
 
 	/**
@@ -264,16 +286,33 @@
 	 * @return array of transformation definitions.
 	 */
 	function createShadowMoveTransforms(x, y, z, bounceHeight, angle) {
-		var t = [];		// array of transformation definitions
-
-		var p = calculateLine(x, y, angle, bounceHeight);
+		var t = [],		// array of transformation definitions
+			p = calculateLine(x, y, angle, bounceHeight),
+			dY = 0;
 
 		/* For each step of the animation calculate translation */
-		for (var dY = 0; dY <= bounceHeight; dY++) {
+		for (; dY <= bounceHeight; dY++) {
 			t[dY] = renderMatrix(1, 0, 0, 1, p[dY][0], p[dY][1]);
 		}
 
 		return t;
+	}
+
+	/**
+	 * This function do the same thing thn function createShadowMoveTransforms()
+	 * but instead of transformation definition calculates the points for the
+	 * animation of the movement.
+	 *
+	 * @param x - numeric value of x coordinate of original position of marker;
+	 * @param y - numeric value of y coordinate of original position of marker;
+	 * @param z - numeric value of z coordinate of original position of marker;
+	 * @param bounceHeight - height of bouncing (px);
+	 * @param angle - shadow inclination angle (radians).
+	 *
+	 * @return array of the points [x, y].
+	 */
+	function createShadowMovePoints(x, y, z, bounceHeight, angle) {
+		return calculateLine(x, y, angle, bounceHeight);
 	}
 
 	/**
@@ -306,6 +345,7 @@
 	}
 
 	/* Set default animation properties */
+	// TODO: create options.animations.bouncing
 	L.Marker.mergeOptions({
 		bounceHeight 	 : 15,	// how high marker can bounce (px)
 		contractHeight	 : 15,	// how much marker can contract (px)
@@ -423,43 +463,77 @@
 	 * Redeclaration of _setPos() function.
 	 */
 	L.Marker.prototype._setPos = function(pos) {
+		// if (!disable3D && L.Browser.any3d) {
+		// 	el.style[L.DomUtil.TRANSFORM] =  L.DomUtil.getTranslateString(point);
+		// } else {
+		// 	el.style.left = point.x + 'px';
+		// 	el.style.top = point.y + 'px';
+		// }
+		
 		oldSetPos.call(this, pos);
 
-		/* Recalculate move transforms */
-		// TODO: debug Z coordinate
-		this._bouncingMotion.moveTransforms = createMoveTransforms(
-			pos.x,
-			pos.y,
-			0,
-			this.options.bounceHeight
-		);
+		if (L.Browser.any3d) {
 
-		/* Recalculate resize transforms */
-		// TODO: debug Z coordinate
-		this._bouncingMotion.resizeTrasforms = createResizeTransforms(
-			pos.x,
-			pos.y,
-			0,
-			this.options.icon.options.iconSize[1],
-			this.options.contractHeight
-		);
+			/* Calculate transforms for 3D browsers */
 
-		/* Shadow transformations */
-		this._bouncingMotion.shadowMoveTransforms = createShadowMoveTransforms(
-			pos.x,
-			pos.y,
-			0,
-			this.options.bounceHeight,
-			this.options.shadowAngle
-		);
+			/* Recalculate move transforms */
+			// TODO: debug Z coordinate
+			this._bouncingMotion.moveTransforms = createMoveTransforms(
+				pos.x,
+				pos.y,
+				0,
+				this.options.bounceHeight
+			);
 
-		this._bouncingMotion.shadowResizeTransforms = createResizeTransforms(
-			pos.x,
-			pos.y,
-			0,
-			this.options.icon.options.iconSize[1],
-			this.options.contractHeight
-		);
+			/* Recalculate resize transforms */
+			// TODO: debug Z coordinate
+			this._bouncingMotion.resizeTrasforms = createResizeTransforms(
+				pos.x,
+				pos.y,
+				0,
+				this.options.icon.options.iconSize[1],
+				this.options.contractHeight
+			);
+
+			/* Shadow transformations */
+			this._bouncingMotion.shadowMoveTransforms = createShadowMoveTransforms(
+				pos.x,
+				pos.y,
+				0,
+				this.options.bounceHeight,
+				this.options.shadowAngle
+			);
+
+			this._bouncingMotion.shadowResizeTransforms = createResizeTransforms(
+				pos.x,
+				pos.y,
+				0,
+				this.options.icon.options.iconSize[1],
+				this.options.contractHeight
+			);
+
+		} else {
+
+			/* Calculate move points */
+
+			/* For the marker */
+			this._bouncingMotion.movePoints = createMovePoints(
+				pos.x,
+				pos.y,
+				0,
+				this.options.bounceHeight
+			);
+
+			/* And for the shadow */
+			this._bouncingMotion.shadowMovePoints = createShadowMovePoints(
+				pos.x,
+				pos.y,
+				0,
+				this.options.bounceHeight,
+				this.options.shadowAngle
+			);
+
+		}
 
 	};
 
@@ -471,21 +545,24 @@
 		// TODO: acception options in parameters
 		// TODO: check what is faster: closure or function params
 		bounce: function() {
-			var self = this;
+			var self = this,
 			
-			var icon = this._icon;
-			var shadow = this._shadow;
+				icon = this._icon,
+				shadow = this._shadow,
 
-			var motion = self._bouncingMotion;
+				motion = self._bouncingMotion,
 
-			var bounceHeight = self.options.bounceHeight;
-			var contractHeight = self.options.contractHeight;
-			var bouncingElastic = self.options.bouncingElastic;
+				bounceHeight = self.options.bounceHeight,
+				contractHeight = self.options.contractHeight,
+				bouncingElastic = self.options.bouncingElastic,
 
-			var dY = 0;
-			var dH = 0;
+				dY = 0,
+				dH = 0,
 
-			var up = true;
+				up = true,
+
+				is3d = L.Browser.any3d,
+				transform = L.DomUtil.TRANSFORM;
 
 			/**
 			 * Moves the marker up & down.
@@ -497,14 +574,19 @@
 					dY--;
 				}
 
-				/* Reset icon's cssText */
-				icon.style.cssText = motion.baseCssText + 'transform: '
-					+ motion.moveTransforms[dY];
+				if (is3d) {
 
-				/* Reset shadow's cssText */
-				shadow.style.cssText = motion.baseShadowCssText + 'transform: '
-					+ motion.shadowMoveTransforms[dY];
+					/* Reset icon's cssText */
+					icon.style.cssText = motion.baseCssText +  transform +': '
+						+ motion.moveTransforms[dY];
 
+					/* Reset shadow's cssText */
+					shadow.style.cssText = motion.baseShadowCssText + transform
+						+ ': ' + motion.shadowMoveTransforms[dY];
+				} else {
+					icon.style.left = motion.shadowMovePoints[dY][0];
+					icon.style.top = motion.shadowMovePoints[dY][1];
+				}
 
 				if (dY == bounceHeight) {
 					up = false;	// go down
@@ -513,7 +595,9 @@
 				if (dY > 0) {
 					setTimeout(move, motion.moveDeltaTime[dY]);
 				} else if (motion.isBouncing && dY == 0) {
-					if (bouncingElastic) {
+					if (bouncingElastic && is3d) {
+
+						/* Resize possible only in 3d browser */
 						setTimeout(resize, motion.moveDeltaTime[dY]);
 					} else {
 						up = true;
