@@ -313,7 +313,6 @@
 	}
 
 	/* Set default animation properties */
-	// TODO: create options.animations.bouncing
 	L.Marker.mergeOptions({
 		bounceHeight 	 : 15,	// how high marker can bounce (px)
 		contractHeight	 : 15,	// how much marker can contract (px)
