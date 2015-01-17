@@ -46,9 +46,10 @@
 	 * @return object with style definitions as the keys.
 	 */
 	function parseCssText(cssText) {
-		var styleDefinitions = {};
+		var styleDefinitions = {},
 
-		var match = regStyle.exec(cssText);
+			match = regStyle.exec(cssText);
+
 		while (match) {
 			styleDefinitions[match[1]] = match[2];
 			match = regStyle.exec(cssText);
@@ -66,39 +67,14 @@
 	 * @return cssText string.
 	 */
 	function renderCssText(styleDefinitions) {
-		var cssText = '';
+		var cssText = '',
+			key;
 
-		for (var key in styleDefinitions) {
+		for (key in styleDefinitions) {
 			cssText += key + ': ' + styleDefinitions[key] + '; '
 		}
 
 		return cssText;
-	}
-
-	/**
-	 * Renders translate3d from z, y & z. Returns string of translate3d
-	 * definition.
-	 *
-	 * @param x - numeric value of x coordinate;
-	 * @param y - numeric value of y coordinate;
-	 * @param z - numeric value of z coordinate.
-	 *
-	 * @return translate3d definition.
-	 */
-	function renderTranslate3d(x, y, z) {
-		return ' translate3d(' + x + 'px, ' + y + 'px, ' + z + 'px) ';
-	}
-
-	/**
-	 * Renders scale from horizontal & vertical scale.
-	 *
-	 * @param sH - horizontal scale as relative value;
-	 * @param sV - vertical scale as relative value.
-	 *
-	 * @return scale definition.
-	 */
-	function renderScale(sH, sV) {
-		return ' scale(' + sH + ', ' + sV + ') ';
 	}
 
 	/**
@@ -175,10 +151,9 @@
 	 * @return array of transformation definitions.
 	 */
 	function createResizeTransforms(x, y, z, height, contractHeight) {
-		var t = [];		// array of transformation definitions
 
 		/* For each step of the animation calculate translation */
-		for (var dH = 0; dH <= contractHeight; dH++) {
+		for (var t = [], dH = 0; dH <= contractHeight; dH++) {
 			t[dH] = renderMatrix(1, 0, 0, (height - dH) / height, x, y + dH);
 		}
 
@@ -318,13 +293,20 @@
 	 */
 	function createShadowResizeTransforms(x, y, z, width, height,
 			contractHeight, angle) {
-		var t = [];		// array of transformation definitions
-
-		var p = calculateLine(width, height, angle + Math.PI, contractHeight);
+		var t = [],		// array of transformation definitions
+			p = calculateLine(width, height, angle + Math.PI, contractHeight),
+			dH = 0;
 
 		/* For each step of the animation calculate translation */
-		for (var dH = 0; dH <= contractHeight; dH++) {
-			t[dH] = renderMatrix(width / p[dH][0], 0, 0, p[dH][1] / height, x, y + height - p[dH][1]);
+		for (; dH <= contractHeight; dH++) {
+			t[dH] = renderMatrix(
+				width / p[dH][0],
+				0,
+				0,
+				p[dH][1] / height,
+				x,
+				y + height - p[dH][1]
+			);
 		}
 
 		return t;
@@ -392,40 +374,35 @@
 		 */
 
 		var motion = {
-			moveDeltaTime: [],
-			resizeDeltaTime: [],
-			baseCssText: ''
-		};
+				moveDeltaTime: [],
+				resizeDeltaTime: [],
+				baseCssText: ''
+			},
+
+			bounceHeight = this.options.bounceHeight,
+			bounceSpeed = this.options.bounceSpeed,
+
+			contractHeight = this.options.contractHeight,
+			contractSpeed = this.options.contractSpeed,
+
+			dY = 0,
+			dH = 0;
 
 		this._bouncingMotion = motion;
 
 		/* Calculate delta time for bouncing animation */
-		var bounceHeight = this.options.bounceHeight;
-		var bounceSpeed = this.options.bounceSpeed;
-		for (var dY = 0; dY <= bounceHeight; dY++) {
-			switch (dY) {
-				case bounceHeight:
-					motion.moveDeltaTime[dY] = bounceSpeed;
-					break;
-				default:
-					motion.moveDeltaTime[dY] = Math.round(
-						bounceSpeed / (bounceHeight - dY));
-			}
+		for (; dY < bounceHeight; dY++) {
+			motion.moveDeltaTime[dY] = Math.round(
+					bounceSpeed / (bounceHeight - dY));
 		}
+		motion.moveDeltaTime[bounceHeight] = bounceSpeed;
 
-		/* Calculate delta time for contracting animation. */
-		var contractHeight = this.options.contractHeight;
-		var contractSpeed = this.options.contractSpeed;
-		for (var dH = 0; dH <= contractHeight; dH++) {
-			switch (dH) {
-				case contractHeight:
-					motion.resizeDeltaTime[dH] = contractSpeed;
-					break;
-				default:
-					motion.resizeDeltaTime[dH] = Math.round(
-						contractSpeed / (contractHeight - dH))
-			}
+		/* Calculate delta time for contracting animation */
+		for (; dH < contractHeight; dH++) {
+			motion.resizeDeltaTime[dH] = Math.round(
+						contractSpeed / (contractHeight - dH));
 		}
+		motion.resizeDeltaTime[contractHeight] = contractSpeed;
 	};
 
 	/**
@@ -449,13 +426,6 @@
 	 * Redeclaration of _setPos() function.
 	 */
 	L.Marker.prototype._setPos = function(pos) {
-		// if (!disable3D && L.Browser.any3d) {
-		// 	el.style[L.DomUtil.TRANSFORM] =  L.DomUtil.getTranslateString(point);
-		// } else {
-		// 	el.style.left = point.x + 'px';
-		// 	el.style.top = point.y + 'px';
-		// }
-		
 		oldSetPos.call(this, pos);
 
 		if (L.Browser.any3d) {
