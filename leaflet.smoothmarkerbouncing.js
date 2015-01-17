@@ -35,8 +35,7 @@
 	"use strict";
 
 	// TODO: check for regexp optimization
-	var regStyle		= /(\w+): ([^;]+);/g;
-	var regTranslate3d	= /(-?\d+)px, (-?\d+)px, (-?\d+)px/;
+	var regStyle = /(\w+): ([^;]+);/g;
 
 	/**
 	 * Parse cssText attribute and transform it into Javascript object with
@@ -74,19 +73,6 @@
 		}
 
 		return cssText;
-	}
-
-	/**
-	 * Parse translate3d transformation definition in x, y & z values. Returns
-	 * the array with those coordinates in the order.
-	 *
-	 * @param translate3d - translate3d transformation definition.
-	 *
-	 * @return array with x, y & z numeric values.
-	 */
-	function parseTranslate3d(translate3d) {
-		var match = regTranslate3d.exec(translate3d);
-		return [parseInt(match[1]), parseInt(match[2]), parseInt(match[3])];
 	}
 
 	/**
