@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<title>Icon test</title>
+	<title>Leaflet.SmoothMarkerBouncing plugin demo</title>
 
 	<!-- CSS -->
 
@@ -10,7 +10,6 @@
 
 	<!-- Resources -->
 	<link rel="stylesheet" type="text/css" href="resources/styles/default.css" />
-	<link rel="stylesheet" type="text/css" href="resources/styles/station-icon.css" />
 </head>
 <body>
 	<div id="map" />
@@ -18,45 +17,48 @@
 	<!-- Scripts -->
 
 	<!-- Vendors -->
-	<script src="http://maps.google.com/maps/api/js?sensor=false"></script>
 	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/2.4.1/lodash.js"></script>
 	<script type="text/javascript" src="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.js"></script>
-	<script type="text/javascript" src="http://matchingnotes.com/javascripts/leaflet-google.js"></script>
-
-	<!-- Resources -->
-	<script type="text/javascript" src="resources/scripts/station-icon.js"></script>
 
 	<!-- Raw source from Github -->
 	<script type="text/javascript" src="https://rawgit.com/hosuaby/Leaflet.SmoothMarkerBouncing/master/leaflet.smoothmarkerbouncing.js"></script>
 
 	<script type="text/javascript">
 		var map = L.map('map').setView([48.847547, 2.351074], 14);
-		var googleLayer = new L.Google('ROADMAP');
-		map.addLayer(googleLayer);
 
+		/* Tiles layer from OpenStreetMap */
+		L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
+			attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
+		}).addTo(map);
+
+		/* Limit to Paris area */
 		var bounds = [[48.824384, 2.284298], [48.872054, 2.409782]];
-		//var rect = L.rectangle(bounds, {color: 'blue', weight: 1}).addTo(map);
 
 		_(20).times(function() {
 			var lat = _.random(bounds[0][0], bounds[1][0]);
 			var lng = _.random(bounds[0][1], bounds[1][1]);
 
 			var marker = L.marker([lat, lng], {
-				icon: new L.icons.energy.ChargingStation({
-					full: _.random(1),
-					operational: _.random(1),
-					states: {
-						nbFree: _.random(0, 150),
-						nbOccupied: _.random(0, 150),
-						nbReserved: _.random(0, 150),
-						nbUnavailable: _.random(0, 150)
-					},
-					primary: _.sample(['free', 'occupied', 'reserved', 'unavailable'])
-				})
+				// icon: new L.icons.energy.ChargingStation({
+				// 	full: _.random(1),
+				// 	operational: _.random(1),
+				// 	states: {
+				// 		nbFree: _.random(0, 150),
+				// 		nbOccupied: _.random(0, 150),
+				// 		nbReserved: _.random(0, 150),
+				// 		nbUnavailable: _.random(0, 150)
+				// 	},
+				// 	primary: _.sample(['free', 'occupied', 'reserved', 'unavailable'])
+				// })
+
+				// TODO: set default contractHeight to 12px
+				contractHeight: 12,
+				// TODO: fix the bug with shadowAngle
+				shadowAngle: Math.PI / 4
+
 			}).on('click', function() {
 				this.toogleBouncing();
 			}).addTo(map);
-			// setTimeout(function() { marker.bounce() }, _.random(500));
 		});
 	</script>
 </body>
