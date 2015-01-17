@@ -7,11 +7,21 @@
 
 	<!-- Vendors -->
 	<link rel="stylesheet" type="text/css" href="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.css" />
+	<link rel="stylesheet" type="text/css" href="https://rawgit.com/Turbo87/leaflet-sidebar/master/src/L.Control.Sidebar.css" />
 
 	<!-- Resources -->
 	<link rel="stylesheet" type="text/css" href="resources/styles/default.css" />
 </head>
 <body>
+	<div id="sidebar">
+		<h1>Leaflet.SmoothMarkerBouncing Plugin Demo</h1>
+		<p>See how bouncing works.</p>
+		<ul>
+			<li>Click any marker to make it bounce</li>
+			<li>Click to bouncing marker to stop the bouncing</li>
+		</ul>
+	</div>
+
 	<div id="map" />
 
 	<!-- Scripts -->
@@ -19,6 +29,7 @@
 	<!-- Vendors -->
 	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/2.4.1/lodash.js"></script>
 	<script type="text/javascript" src="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.js"></script>
+	<script type="text/javascript" src="https://rawgit.com/Turbo87/leaflet-sidebar/master/src/L.Control.Sidebar.js"></script>
 
 	<!-- Raw source from Github -->
 	<script type="text/javascript" src="https://rawgit.com/hosuaby/Leaflet.SmoothMarkerBouncing/master/leaflet.smoothmarkerbouncing.js"></script>
@@ -30,6 +41,18 @@
 		L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
 			attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
 		}).addTo(map);
+
+		/* Create sidebar */
+		var sidebar = L.control.sidebar('sidebar', {
+			position: 'left'
+		});
+
+		map.addControl(sidebar);
+
+		/* Show sidebar on startup */
+		setTimeout(function() {
+			sidebar.show();
+		}, 500);
 
 		/* Limit to Paris area */
 		var bounds = [[48.824384, 2.284298], [48.872054, 2.409782]];
