@@ -276,6 +276,35 @@
 		return t;
 	}
 
+	/**
+	 * Helper function to create an array of transformation definitions of the
+	 * animation of contraction of the shadow. Function defines one transform
+	 * for every pixel of resizing of shadow.
+	 *
+	 * @param x - numeric value of x coordinate of original position of marker;
+	 * @param y - numeric value of y coordinate of original position of marker;
+	 * @param z - numeric value of z coordinate of original position of marker;
+ 	 * @param width - original shadow's width;
+	 * @param height - original shadow's height;
+	 * @param contractHeight - height of contraction (px);
+	 * @param angle - shadow inclination angle (radians).
+	 *
+	 * @return array of transformation definitions.
+	 */
+	function createShadowResizeTransforms(x, y, z, width, height,
+			contractHeight, angle) {
+		var t = [];		// array of transformation definitions
+
+		var p = calculateLine(width, height, angle + Math.PI, contractHeight);
+
+		/* For each step of the animation calculate translation */
+		for (var dH = 0; dH <= contractHeight; dH++) {
+			t[dH] = renderMatrix(width / p[dH][0], 0, 0, p[dH][1] / height, x, y + height - p[dH][1]);
+		}
+
+		return t;
+	}
+
 	/* Set default animation properties */
 	L.Marker.mergeOptions({
 		bounceHeight 	 : 15,	// how high marker can bounce (px)
