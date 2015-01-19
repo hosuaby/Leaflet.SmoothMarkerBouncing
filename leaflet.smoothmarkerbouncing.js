@@ -88,6 +88,7 @@
 	 * @param tY - translation by y.
 	 */
 	function renderMatrix(a, b, c, d, tX, tY) {
+		// TODO: replace matrix by matrix3d to use hardware acceleration
 		return ' matrix(' + a + ', ' + b + ', ' + c + ', ' + d + ', ' + tX
 			+ ', ' + tY + ') ';
 	}
@@ -105,10 +106,13 @@
 	 * @return array of transformation definitions.
 	 */
 	function createMoveTransforms(x, y, z, bounceHeight) {
+		var t = [],						// array of transformations
+			dY = bounceHeight + 1;		// delta Y
 
-		/* For each step of the animation calculate translation */
-		for (var t = [], dY = 0; dY <= bounceHeight; dY++) {
-			t[dY] = renderMatrix(1, 0, 0, 1, x, y - dY);
+		/* Use fast inverse while loop to fill the array */
+		while (dY--) {
+			// TODO: replace matrix by matrix3d to use hardware acceleration
+			t[dY] = ' matrix(1,0,0,1,' + x + ',' + (y - dY) + ') ';
 		}
 
 		return t;
@@ -128,9 +132,11 @@
 	 * @return array of points [x, y].
 	 */
 	function createMovePoints(x, y, z, bounceHeight) {
+		var p = [],						// array of points
+			dY = bounceHeight + 1;		// delta of height
 
-		/* For each step of animation calculate the point */
-		for (var p = [], dY = 0; dY <= bounceHeight; dY++) {
+		/* Use fast inverse while loop to fill the array */
+		while (dH--) {
 			p[dY] = [x, y - dY];
 		}
 
@@ -151,10 +157,14 @@
 	 * @return array of transformation definitions.
 	 */
 	function createResizeTransforms(x, y, z, height, contractHeight) {
+		var t = [],						// array of transformations
+			dH = contractHeight + 1;	// delta of height
 
-		/* For each step of the animation calculate translation */
-		for (var t = [], dH = 0; dH <= contractHeight; dH++) {
-			t[dH] = renderMatrix(1, 0, 0, (height - dH) / height, x, y + dH);
+		/* Use fast inverse while loop to fill the array */
+		while (dH--) {
+			// TODO: replace matrix by matrix3d to use hardware acceleration
+			t[dH] = ' matrix(1,0,0,' + ((height - dH) / height) + ',' + x + ','
+				+ (y + dH) + ') ';
 		}
 
 		return t;
@@ -174,9 +184,9 @@
 	function calculateLine(xO, yO, angle, length) {
 		// TODO: find better way to calculate those values
 		var xD = xO + Math.abs(Math.cos(angle) * 100),
-			yD = yO + Math.abs(Math.sin(angle) * 100);
+			yD = yO + Math.abs(Math.sin(angle) * 100),
 
-		var w = xD - xO,	// width
+			w = xD - xO,	// width
 			h = yD - yO,	// height
 
 			dxO = 0,
@@ -247,13 +257,14 @@
 	 * @return array of transformation definitions.
 	 */
 	function createShadowMoveTransforms(x, y, z, bounceHeight, angle) {
-		var t = [],		// array of transformation definitions
+		var t = [],					// array of transformation definitions
 			p = calculateLine(x, y, angle, bounceHeight),
-			dY = 0;
+			dY = bounceHeight + 1;	// delta Y
 
-		/* For each step of the animation calculate translation */
-		for (; dY <= bounceHeight; dY++) {
-			t[dY] = renderMatrix(1, 0, 0, 1, p[dY][0], p[dY][1]);
+		/* Use fast inverse while loop to fill the array */
+		while (dY--) {
+			// TODO: replace matrix by matrix3d to use hardware acceleration
+			t[dY] = ' matrix(1,0,0,1,' + p[dY][0] + ',' + p[dY][1] + ') ';
 		}
 
 		return t;
@@ -293,20 +304,16 @@
 	 */
 	function createShadowResizeTransforms(x, y, z, width, height,
 			contractHeight, angle) {
-		var t = [],		// array of transformation definitions
+		var t = [],						// array of transformation definitions
 			p = calculateLine(width, height, angle + Math.PI, contractHeight),
-			dH = 0;
+			dH = contractHeight + 1;	// delta height
 
-		/* For each step of the animation calculate translation */
-		for (; dH <= contractHeight; dH++) {
-			t[dH] = renderMatrix(
-				width / p[dH][0],
-				0,
-				0,
-				p[dH][1] / height,
-				x,
-				y + height - p[dH][1]
-			);
+		/* Use fast inverse while loop to fill the array */
+		while (dH--) {
+			// TODO: replace matrix by matrix3d to use hardware acceleration
+			t[dH] = ' matrix(' + (width / p[dH][0]) +  ',0,0,'
+				+ (p[dH][1] / height) + ',' + x + ','
+				+ (y + height - p[dH][1]) + ') ';
 		}
 
 		return t;
@@ -373,8 +380,14 @@
 		 */
 
 		var motion = {
+				moveSteps: [],
 				moveDeltaTime: [],
+				moveDelays: [],
+
+				resizeSteps: [],
 				resizeDeltaTime: [],
+				resizeDelays: [],
+
 				baseCssText: ''
 			},
 
@@ -384,24 +397,92 @@
 			contractHeight = this.options.contractHeight,
 			contractSpeed = this.options.contractSpeed,
 
-			dY = 0,
-			dH = 0;
+			totalDelay,				// cumulated delta time
 
-		this._bouncingMotion = motion;
+			/* Iteration counters */
+			s,						// steps
+			dY = bounceHeight,		// delta Y
+			dH = contractHeight,	// delta height
+			i = 0,
+			l = 0;
+
+		/* Calculate the sequence of step of movement animation:
+		 * steps = [1 .. bounceHeight] || [bounceHeight-1 .. 0]
+		 */
+		// TODO: remove calls to object arrays
+		s = bounceHeight
+		do {
+			motion.moveSteps.unshift(s);
+		} while (--s);
+
+		s = bounceHeight;
+
+		while (s--) {
+			motion.moveSteps.push(s);
+		}
 
 		/* Calculate delta time for bouncing animation */
-		for (; dY < bounceHeight; dY++) {
-			motion.moveDeltaTime[dY] = Math.round(
-					bounceSpeed / (bounceHeight - dY));
-		}
+
+		/* Delta time to movement in one direction */
 		motion.moveDeltaTime[bounceHeight] = bounceSpeed;
+		motion.moveDeltaTime[0] = 0;
+		while (--dY) {
+			motion.moveDeltaTime[dY] = Math.round(
+				bounceSpeed / (bounceHeight - dY));
+		}
+
+		/* Delta time for movement in two directions */
+		dY = bounceHeight;
+		while (dY--) {
+			motion.moveDeltaTime.push(motion.moveDeltaTime[dY]);
+		}
+
+		/* Calculate move delays (cumulated deltas) */
+		totalDelay = 0;
+		for (i = 0, l = motion.moveDeltaTime.length; i < l; i++) {
+			totalDelay += motion.moveDeltaTime[i];
+			motion.moveDelays.push(totalDelay);
+		}
+
+		/* Calculate the sequence of step of contracting animation:
+		 * steps = [1 .. contractHeight] || [contractHeight-1 .. 0]
+		 */
+		// TODO: remove calls to object arrays
+		s = contractHeight;
+		do {
+			motion.resizeSteps.unshift(s);
+		} while (--s);
+
+		s = contractHeight;
+
+		while (s--) {
+			motion.resizeSteps.push(s);
+		}
 
 		/* Calculate delta time for contracting animation */
-		for (; dH < contractHeight; dH++) {
-			motion.resizeDeltaTime[dH] = Math.round(
-						contractSpeed / (contractHeight - dH));
-		}
+
+		/* Delta time to resizing in one direction */
 		motion.resizeDeltaTime[contractHeight] = contractSpeed;
+		motion.resizeDeltaTime[0] = 0;
+		while (--dH) {
+			motion.resizeDeltaTime[dH] = Math.round(
+				contractSpeed / (contractHeight - dH));
+		}
+
+		/* Delta time for resizing in two directions */
+		dH = contractHeight;
+		while (dH--) {
+			motion.resizeDeltaTime.push(motion.resizeDeltaTime[dH]);
+		}
+
+		/* Calculate move delays (cumulated deltas) */
+		totalDelay = 0;
+		for (i = 0, l = motion.resizeDeltaTime.length; i < l; i++) {
+			totalDelay += motion.resizeDeltaTime[i];
+			motion.resizeDelays.push(totalDelay);
+		}
+
+		this._bouncingMotion = motion;
 	};
 
 	/**
@@ -442,7 +523,7 @@
 
 			/* Recalculate resize transforms */
 			// TODO: debug Z coordinate
-			this._bouncingMotion.resizeTrasforms = createResizeTransforms(
+			this._bouncingMotion.resizeTransforms = createResizeTransforms(
 				pos.x,
 				pos.y,
 				0,
@@ -517,78 +598,98 @@
 				up = true,
 
 				is3d = L.Browser.any3d,
-				transform = L.DomUtil.TRANSFORM;
+				transform = L.DomUtil.TRANSFORM,
+
+				moveStepsLength = motion.moveSteps.length,
+				resizeStepsLength = motion.resizeSteps.length;
+
+			/**
+			 * Makes the step of bouncing animation.
+			 *
+			 * @param step - step number.
+			 */
+			function makeMoveStep(step) {
+
+				/* Reset icon's cssText */
+				icon.style.cssText = motion.baseCssText + transform
+					+ ': ' + motion.moveTransforms[step];
+
+				/* Reset shadow's cssText */
+				shadow.style.cssText = motion.baseShadowCssText
+					+ transform + ': '
+					+ motion.shadowMoveTransforms[step];
+			}
+
+			/**
+			 * Makes the step of resizing animation.
+			 *
+			 * @param step - step number.
+			 */
+			function makeResizeStep(step) {
+
+				/* Reset icon's cssText */
+				icon.style.cssText = motion.baseCssText + transform
+					+ ': ' + motion.resizeTransforms[step];
+
+				/* Reset shadow's cssText */
+				shadow.style.cssText = motion.baseShadowCssText
+					+ transform + ': '
+					+ motion.shadowResizeTransforms[step];
+			}
 
 			/**
 			 * Moves the marker up & down.
 			 */
 			function move() {
-				if (up) {
-					dY++;
-				} else {
-					dY--;
+				var i = moveStepsLength;
+
+				/* Lauch timeouts for every step of the movement animation */
+				while (i--) {
+					setTimeout(
+						makeMoveStep,
+						motion.moveDelays[i],
+						motion.moveSteps[i]);
 				}
 
-				if (is3d) {
+				/* At the end of movement animation check if continue the
+				 * bouncing with rezise animation, move animation or stop it.
+				 */
+				setTimeout(function() {
+					if (motion.isBouncing) {
+						if (bouncingElastic && is3d) {
 
-					/* Reset icon's cssText */
-					icon.style.cssText = motion.baseCssText +  transform +': '
-						+ motion.moveTransforms[dY];
-
-					/* Reset shadow's cssText */
-					shadow.style.cssText = motion.baseShadowCssText + transform
-						+ ': ' + motion.shadowMoveTransforms[dY];
-				} else {
-					icon.style.left = motion.shadowMovePoints[dY][0];
-					icon.style.top = motion.shadowMovePoints[dY][1];
-				}
-
-				if (dY == bounceHeight) {
-					up = false;	// go down
-				}
-
-				if (dY > 0) {
-					setTimeout(move, motion.moveDeltaTime[dY]);
-				} else if (motion.isBouncing && dY == 0) {
-					if (bouncingElastic && is3d) {
-
-						/* Resize possible only in 3d browser */
-						setTimeout(resize, motion.moveDeltaTime[dY]);
-					} else {
-						up = true;
-						setTimeout(move, motion.moveDeltaTime[dY]);
+							/* Resize possible only in 3d browser */
+							//up = false;
+							resize();
+						} else {
+							move();
+						}
 					}
-				}
+				}, motion.moveDelays[moveStepsLength - 1]);
 			}
 
 			/**
 			 * Contracts & expands the marker.
 			 */
 			function resize() {
-				if (up) {
-					dH--;
-				} else {
-					dH++;
+				var i = resizeStepsLength;
+
+				/* Lauch timeouts for every step of the contraction animation */
+				while (i--) {
+					setTimeout(
+						makeResizeStep,
+						motion.resizeDelays[i],
+						motion.resizeSteps[i]);
 				}
 
-				/* Reset icon's cssText */
-				icon.style.cssText = motion.baseCssText + 'transform: '
-					+ motion.resizeTrasforms[dH];
-				
-				/* Reset shadow's cssText */
-				shadow.style.cssText = motion.baseShadowCssText + 'transform: '
-					+ motion.shadowResizeTransforms[dH];
-
-				/* Change direction */
-				if (dH == contractHeight) {
-					up = true;	// go up
-				}
-
-				if (dH > 0) {
-					setTimeout(resize, motion.resizeDeltaTime[dH]);
-				} else if (motion.isBouncing && dH == 0) {
-					setTimeout(move, motion.resizeDeltaTime[dH]);
-				}
+				/* At the end of contraction animation check if continue the
+				 * bouncing with move animation or stop it.
+				 */
+				setTimeout(function() {
+					if (motion.isBouncing) {
+						move();
+					}
+				}, motion.resizeDelays[resizeStepsLength - 1]);
 			}
 
 			motion.isBouncing = true;
