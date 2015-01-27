@@ -48,7 +48,7 @@
 	function parseCssText(cssText) {
 		var styleDefinitions = {},
 
-			match = regStyle.exec(cssText);
+		match = regStyle.exec(cssText);
 
 		while (match) {
 			styleDefinitions[match[1]] = match[2];
@@ -78,22 +78,6 @@
 	}
 
 	/**
-	 * Renders matrix transformation.
-	 *
-	 * @param a - element [1, 1] of the matrix;
-	 * @param b - element [1, 2] of the matrix;
-	 * @param c - element [2, 1] of the matrix;
-	 * @param d - element [2, 2] of the matrix;
-	 * @param tX - translation by x;
-	 * @param tY - translation by y.
-	 */
-	function renderMatrix(a, b, c, d, tX, tY) {
-		// TODO: replace matrix by matrix3d to use hardware acceleration
-		return ' matrix(' + a + ', ' + b + ', ' + c + ', ' + d + ', ' + tX
-			+ ', ' + tY + ') ';
-	}
-
-	/**
 	 * Helper function to create an array of transformation definitions of the
 	 * animation of movement. Function defines one transform for every pixel of
 	 * shift of marker from it's original y position.
@@ -111,8 +95,10 @@
 
 		/* Use fast inverse while loop to fill the array */
 		while (dY--) {
-			// TODO: replace matrix by matrix3d to use hardware acceleration
-			t[dY] = ' matrix(1,0,0,1,' + x + ',' + (y - dY) + ') ';
+
+			/* Use matrix3d for hardware acceleration */
+			t[dY] = ' matrix3d(1,0,0,0,0,1,0,0,0,0,1,0,' + x + ',' + (y - dY)
+				+ ',0,1) ';
 		}
 
 		return t;
@@ -162,9 +148,10 @@
 
 		/* Use fast inverse while loop to fill the array */
 		while (dH--) {
-			// TODO: replace matrix by matrix3d to use hardware acceleration
-			t[dH] = ' matrix(1,0,0,' + ((height - dH) / height) + ',' + x + ','
-				+ (y + dH) + ') ';
+
+			/* Use matrix3d for hardware acceleration */
+			t[dH] = ' matrix3d(1,0,0,0,0,' + ((height - dH) / height)
+				+ ',0,0,0,0,1,0,' + x + ',' + (y + dH) + ',0,1) ';
 		}
 
 		return t;
@@ -263,8 +250,10 @@
 
 		/* Use fast inverse while loop to fill the array */
 		while (dY--) {
-			// TODO: replace matrix by matrix3d to use hardware acceleration
-			t[dY] = ' matrix(1,0,0,1,' + p[dY][0] + ',' + p[dY][1] + ') ';
+
+			/* Use matrix3d for hardware acceleration */
+			t[dY] = ' matrix3d(1,0,0,0,0,1,0,0,0,0,1,0,' + p[dY][0] + ','
+				+ p[dY][1] + ',0,1) ';
 		}
 
 		return t;
@@ -310,10 +299,11 @@
 
 		/* Use fast inverse while loop to fill the array */
 		while (dH--) {
-			// TODO: replace matrix by matrix3d to use hardware acceleration
-			t[dH] = ' matrix(' + (width / p[dH][0]) +  ',0,0,'
-				+ (p[dH][1] / height) + ',' + x + ','
-				+ (y + height - p[dH][1]) + ') ';
+
+			/* Use matrix3d for hardware acceleration */
+			t[dH] = ' matrix3d(' + (width / p[dH][0]) +  ',0,0,0,0,'
+				+ (p[dH][1] / height) + ',0,0,0,0,1,0,' + x + ','
+				+ (y + height - p[dH][1]) + ',0,1) ';
 		}
 
 		return t;
