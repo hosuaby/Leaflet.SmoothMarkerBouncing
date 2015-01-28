@@ -34,7 +34,6 @@
 
 	"use strict";
 
-	// TODO: check for regexp optimization
 	var regStyle = /(\w+): ([^;]+);/g;
 
 	/**
@@ -353,6 +352,11 @@
 	var oldSetPos = L.Marker.prototype._setPos;
 
 	/**
+	 * Cache for moveSteps, moveDelays, resizeSteps & resizeDelays. 
+	 */
+	L.Marker.prototype._bouncingMotions = {};
+
+	/**
 	 * Redeclaration of initialize() function.
 	 */
 	L.Marker.prototype.initialize = function(latlng, options) {
@@ -371,11 +375,9 @@
 
 		var motion = {
 				moveSteps: [],
-				moveDeltaTime: [],
 				moveDelays: [],
 
 				resizeSteps: [],
-				resizeDeltaTime: [],
 				resizeDelays: [],
 
 				baseCssText: ''
@@ -387,7 +389,12 @@
 			contractHeight = this.options.contractHeight,
 			contractSpeed = this.options.contractSpeed,
 
+			moveDeltas = [],
+			resizeDeltas = [],
+
 			totalDelay,				// cumulated delta time
+
+			cache = L.Marker.prototype._bouncingMotions,
 
 			/* Iteration counters */
 			s,						// steps
@@ -396,80 +403,118 @@
 			i = 0,
 			l = 0;
 
-		/* Calculate the sequence of step of movement animation:
-		 * steps = [1 .. bounceHeight] || [bounceHeight-1 .. 0]
+		/**
+		 * Check the cache for moveSteps
 		 */
-		// TODO: remove calls to object arrays
-		s = bounceHeight
-		do {
-			motion.moveSteps.unshift(s);
-		} while (--s);
+		if (cache[ 'moveSteps_' + bounceHeight ]) {
+			motion.moveSteps = cache[ 'moveSteps_' + bounceHeight ];
+		} else {
 
-		s = bounceHeight;
+			/* Calculate the sequence of step of movement animation:
+			 * steps = [1 .. bounceHeight] || [bounceHeight-1 .. 0]
+			 */
+			s = 1;
+			while (s <= bounceHeight) {
+				motion.moveSteps.push(s++);
+			}
 
-		while (s--) {
-			motion.moveSteps.push(s);
+			s = bounceHeight;
+			while (s--) {
+				motion.moveSteps.push(s);
+			}
+
+			/* Save move steps to cache */
+			cache[ 'moveSteps_' + bounceHeight ] = motion.moveSteps;
 		}
 
 		/* Calculate delta time for bouncing animation */
 
 		/* Delta time to movement in one direction */
-		motion.moveDeltaTime[bounceHeight] = bounceSpeed;
-		motion.moveDeltaTime[0] = 0;
+		moveDeltas[bounceHeight] = bounceSpeed;
+		moveDeltas[0] = 0;
 		while (--dY) {
-			motion.moveDeltaTime[dY] = Math.round(
+			moveDeltas[dY] = Math.round(
 				bounceSpeed / (bounceHeight - dY));
 		}
 
 		/* Delta time for movement in two directions */
 		dY = bounceHeight;
 		while (dY--) {
-			motion.moveDeltaTime.push(motion.moveDeltaTime[dY]);
+			moveDeltas.push(moveDeltas[dY]);
 		}
 
-		/* Calculate move delays (cumulated deltas) */
-		totalDelay = 0;
-		for (i = 0, l = motion.moveDeltaTime.length; i < l; i++) {
-			totalDelay += motion.moveDeltaTime[i];
-			motion.moveDelays.push(totalDelay);
+		/* Check cache for moveDelays */
+		if (cache[ 'moveDelays_' + bounceHeight + '_' + bounceSpeed ]) {
+			motion.moveDelays = cache[ 'moveDelays_' + bounceHeight + '_'
+				+ bounceSpeed ];
+		} else {
+
+			/* Calculate move delays (cumulated deltas) */
+			totalDelay = 0;
+			for (i = 0, l = moveDeltas.length; i < l; i++) {
+				totalDelay += moveDeltas[i];
+				motion.moveDelays.push(totalDelay);
+			}
+
+			/* Save move delays to cache */
+			cache[ 'moveDelays_' + bounceHeight + '_'
+				+ bounceSpeed ] = motion.moveDelays;
 		}
 
-		/* Calculate the sequence of step of contracting animation:
-		 * steps = [1 .. contractHeight] || [contractHeight-1 .. 0]
-		 */
-		// TODO: remove calls to object arrays
-		s = contractHeight;
-		do {
-			motion.resizeSteps.unshift(s);
-		} while (--s);
+		/* Check cache for resize steps */
+		if (cache[ 'resizeSteps_' + contractHeight ]) {
+			motion.resizeSteps = cache[ 'resizeSteps_' + contractHeight ];
+		} else {
 
-		s = contractHeight;
+			/* Calculate the sequence of step of contracting animation:
+			 * steps = [1 .. contractHeight] || [contractHeight-1 .. 0]
+			 */
+			s = 1;
+			while (s <= contractHeight) {
+				motion.resizeSteps.push(s++);
+			}
 
-		while (s--) {
-			motion.resizeSteps.push(s);
+			s = contractHeight;
+			while (s--) {
+				motion.resizeSteps.push(s);
+			}
+
+			/* Save resize steps to cache */
+			cache[ 'resizeSteps_' + contractHeight ] = motion.resizeSteps;
 		}
 
 		/* Calculate delta time for contracting animation */
 
 		/* Delta time to resizing in one direction */
-		motion.resizeDeltaTime[contractHeight] = contractSpeed;
-		motion.resizeDeltaTime[0] = 0;
+		resizeDeltas[contractHeight] = contractSpeed;
+		resizeDeltas[0] = 0;
 		while (--dH) {
-			motion.resizeDeltaTime[dH] = Math.round(
+			resizeDeltas[dH] = Math.round(
 				contractSpeed / (contractHeight - dH));
 		}
 
 		/* Delta time for resizing in two directions */
 		dH = contractHeight;
 		while (dH--) {
-			motion.resizeDeltaTime.push(motion.resizeDeltaTime[dH]);
+			resizeDeltas.push(resizeDeltas[dH]);
 		}
 
-		/* Calculate move delays (cumulated deltas) */
-		totalDelay = 0;
-		for (i = 0, l = motion.resizeDeltaTime.length; i < l; i++) {
-			totalDelay += motion.resizeDeltaTime[i];
-			motion.resizeDelays.push(totalDelay);
+		/* Check cache for resize delays */
+		if (cache[ 'resizeDelays_' + contractHeight + '_' + contractSpeed ]) {
+			motion.resizeDelays = cache[ 'resizeDelays_' + contractHeight + '_'
+				+ contractSpeed ];
+		} else {
+
+			/* Calculate move delays (cumulated deltas) */
+			totalDelay = 0;
+			for (i = 0, l = resizeDeltas.length; i < l; i++) {
+				totalDelay += resizeDeltas[i];
+				motion.resizeDelays.push(totalDelay);
+			}
+
+			/* Save resize delays to cache */
+			cache[ 'resizeDelays_' + contractHeight + '_' + contractSpeed ] =
+				motion.resizeDelays;
 		}
 
 		this._bouncingMotion = motion;
@@ -569,7 +614,6 @@
 		 * Let's bounce now!
 		 */
 		// TODO: acception options in parameters
-		// TODO: check what is faster: closure or function params
 		bounce: function() {
 			var self = this,
 			
