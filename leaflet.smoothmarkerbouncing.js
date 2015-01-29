@@ -34,7 +34,7 @@
 
 	"use strict";
 
-	var regStyle = /(\w+): ([^;]+);/g;
+	var regStyle = /([\w-]+): ([^;]+);/g;
 
 	/**
 	 * Parse cssText attribute and transform it into Javascript object with
@@ -347,9 +347,10 @@
 		}
 	};
 
+	// TODO: decide to redeclare ether only public or only private methods
 	var oldInitialize = L.Marker.prototype.initialize;
-	var oldInitIcon = L.Marker.prototype._initIcon;
 	var oldSetPos = L.Marker.prototype._setPos;
+	var oldOnAdd = L.Marker.prototype.onAdd;
 
 	/**
 	 * Cache for moveSteps, moveDelays, resizeSteps & resizeDelays. 
@@ -521,14 +522,17 @@
 	};
 
 	/**
-	 * Redeclaration of _initIcon() function.
+	 * Redeclaration of onAdd() function.
+	 *
+	 * @param map - map object.
 	 */
-	L.Marker.prototype._initIcon = function() {
-		oldInitIcon.call(this);
+	L.Marker.prototype.onAdd = function(map) {
+		oldOnAdd.call(this, map);
 
 		/* Create base cssText */
 		var styles = parseCssText(this._icon.style.cssText);
 		delete styles.transform;	// delete old trasform style definition
+		delete styles['z-index'];	// delete old z-index
 		this._bouncingMotion.baseCssText = renderCssText(styles);
 
 		/* Create base cssText for shadow */
@@ -548,7 +552,6 @@
 			/* Calculate transforms for 3D browsers */
 
 			/* Recalculate move transforms */
-			// TODO: debug Z coordinate
 			this._bouncingMotion.moveTransforms = createMoveTransforms(
 				pos.x,
 				pos.y,
@@ -557,7 +560,6 @@
 			);
 
 			/* Recalculate resize transforms */
-			// TODO: debug Z coordinate
 			this._bouncingMotion.resizeTransforms = createResizeTransforms(
 				pos.x,
 				pos.y,
@@ -645,8 +647,9 @@
 			function makeMoveStep(step) {
 
 				/* Reset icon's cssText */
-				icon.style.cssText = motion.baseCssText + transform
-					+ ': ' + motion.moveTransforms[step];
+				icon.style.cssText = motion.baseCssText
+					+ 'z-index: ' + self._zIndex + ';'
+					+ transform + ': ' + motion.moveTransforms[step];
 
 				/* Reset shadow's cssText */
 				shadow.style.cssText = motion.baseShadowCssText
@@ -662,8 +665,9 @@
 			function makeResizeStep(step) {
 
 				/* Reset icon's cssText */
-				icon.style.cssText = motion.baseCssText + transform
-					+ ': ' + motion.resizeTransforms[step];
+				icon.style.cssText = motion.baseCssText
+					+ 'z-index: ' + self._zIndex + ';'
+					+ transform + ': ' + motion.resizeTransforms[step];
 
 				/* Reset shadow's cssText */
 				shadow.style.cssText = motion.baseShadowCssText
