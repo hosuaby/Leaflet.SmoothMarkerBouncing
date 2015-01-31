@@ -166,63 +166,41 @@
 	 * @param length - length of line.
 	 *
 	 * @return array of ordered point coordinates.
+	 *
+	 * @see
+	 *		http://rosettacode.org/wiki/Bitmap/Bresenham's_line_algorithm#JavaScript
 	 */
 	function calculateLine(xO, yO, angle, length) {
-		// TODO: find better way to calculate those values
-		var xD = xO + Math.abs(Math.cos(angle) * 100),
-			yD = yO + Math.abs(Math.sin(angle) * 100),
+		// TODO: use something else than multiply length by 2 to calculate the
+		// line with defined length
+		var xD = Math.round(xO + Math.cos(angle) * (length * 2)),
+			yD = Math.round(yO + Math.sin(angle) * (length * 2)),
 
-			w = xD - xO,	// width
-			h = yD - yO,	// height
+			dx = Math.abs(xD - xO),
+			sx = xO < xD ? 1 : -1,
 
-			dxO = 0,
-			dyO = 0,
-			dxD = 0,
-			dyD = 0,
+			dy = Math.abs(yD - yO),
+			sy = yO < yD ? 1 : -1,
 
-			p = [];			// result points
+			err = (dx > dy ? dx : -dy) / 2,
+			e2,
 
-		if (w < 0) {
-			dxO = -1;
-			dxD = -1;
-		} else if (w > 0) {
-			dxO = 1;
-			dxD = 1;
-		};
+			p = [],
+			i = 0;
 
-		if (h < 0) {
-			dyO = -1;
-		} else if (h > 0) {
-			dyO = 1;
-		}
-
-		var longest = w,
-			shortest = h;
-
-		if (longest <= shortest) {
-			longest = h;
-			shortest = w;
-
-			if (h < 0) {
-				dyD = -1;
-			} else if (h > 0) {
-				dyD = 1;
-			}
-		}
-
-		var numerator = longest >> 1;
-
-		// TODO: ensure that point 0 is trasformation without translation
-		for (var i = 0; i <= length; i++) {
+		while (true) {
 			p.push([xO, yO]);
-			numerator += shortest;
-			if (numerator >= longest) {
-				numerator -= longest;
-				xO += dxO;
-				yO -= dyO;
-			} else {
-				xO += dxD;
-				yO -= dxD;
+			i++;
+			if (i === length)
+				break;
+			e2 = err;
+			if (e2 > -dx) {
+				err -= dy;
+				xO += sx;
+			}
+			if (e2 < dy) {
+				err += dx;
+				yO += sy;
 			}
 		}
 
@@ -243,8 +221,9 @@
 	 * @return array of transformation definitions.
 	 */
 	function createShadowMoveTransforms(x, y, z, bounceHeight, angle) {
+		// TODO: check this method to know if bounceHeight + 1 is normal
 		var t = [],					// array of transformation definitions
-			p = calculateLine(x, y, angle, bounceHeight),
+			p = calculateLine(x, y, angle, bounceHeight + 1),
 			dY = bounceHeight + 1;	// delta Y
 
 		/* Use fast inverse while loop to fill the array */
@@ -314,7 +293,7 @@
 		contractHeight	 : 15,	// how much marker can contract (px)
 		bounceSpeed		 : 52,	// bouncing speed coefficient
 		contractSpeed	 : 52,	// contracting speed coefficient
-		shadowAngle		 : Math.PI / 4,	// shadow inclination angle (radians)
+		shadowAngle		 : - Math.PI / 4, // shadow inclination angle (radians)
 		bouncingElastic	 : true,	// activate contract animation
 		bouncingExclusif : false,	// many markers can bounce in the same time
 	});
