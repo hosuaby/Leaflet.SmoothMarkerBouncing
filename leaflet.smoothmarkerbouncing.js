@@ -290,7 +290,7 @@
 	/* Set default animation properties */
 	L.Marker.mergeOptions({
 		bounceHeight 	 : 15,	// how high marker can bounce (px)
-		contractHeight	 : 15,	// how much marker can contract (px)
+		contractHeight	 : 12,	// how much marker can contract (px)
 		bounceSpeed		 : 52,	// bouncing speed coefficient
 		contractSpeed	 : 52,	// contracting speed coefficient
 		shadowAngle		 : - Math.PI / 4, // shadow inclination angle (radians)
