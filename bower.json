@@ -1,0 +1,25 @@
+{
+  "name": "Leaflet.SmoothMarkerBouncing",
+  "version": "0.0.0",
+  "homepage": "https://github.com/hosuaby/Leaflet.SmoothMarkerBouncing",
+  "authors": [
+    "Alexei KLENIN <alexey_klenin@hotmail.fr>"
+  ],
+  "description": "Smooth animation of marker bouncing for Leaflet.",
+  "main": "leaflet.smoothmarkerbouncing.js",
+  "keywords": [
+    "Leaflet",
+    "marker",
+    "bouncing",
+    "animation",
+    "smooth"
+  ],
+  "license": "BSD",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ]
+}
