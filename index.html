@@ -31,6 +31,10 @@
 	<script type="text/javascript" src="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.js"></script>
 	<script type="text/javascript" src="https://rawgit.com/Turbo87/leaflet-sidebar/master/src/L.Control.Sidebar.js"></script>
 
+	<!-- Resources -->
+	<script type="text/javascript" src="resources/scripts/ball.icon.js"></script>
+	<script type="text/javascript" src="resources/scripts/unique.icon.js"></script>
+
 	<!-- Raw source from Github -->
 	<script type="text/javascript" src="https://rawgit.com/hosuaby/Leaflet.SmoothMarkerBouncing/master/leaflet.smoothmarkerbouncing.js"></script>
 
@@ -57,28 +61,53 @@
 		/* Limit to Paris area */
 		var bounds = [[48.824384, 2.284298], [48.872054, 2.409782]];
 
+		L.Marker.setDefaultBouncingOptions({
+			bounceHeight: 40,
+			bounceSpeed: 60
+		});
+
+		/* 20 normal markers */
 		_(20).times(function() {
 			var lat = _.random(bounds[0][0], bounds[1][0]);
 			var lng = _.random(bounds[0][1], bounds[1][1]);
 
+			var marker = L.marker([lat, lng])
+				.setBouncingOptions({
+					bounceHeight: 20
+				})
+				.on('click', function() {
+					this.toogleBouncing();
+				}).addTo(map);
+		});
+
+		/* 5 unique markers */
+		_(5).times(function() {
+			var lat = _.random(bounds[0][0], bounds[1][0]);
+			var lng = _.random(bounds[0][1], bounds[1][1]);
+
 			var marker = L.marker([lat, lng], {
-				// icon: new L.icons.energy.ChargingStation({
-				// 	full: _.random(1),
-				// 	operational: _.random(1),
-				// 	states: {
-				// 		nbFree: _.random(0, 150),
-				// 		nbOccupied: _.random(0, 150),
-				// 		nbReserved: _.random(0, 150),
-				// 		nbUnavailable: _.random(0, 150)
-				// 	},
-				// 	primary: _.sample(['free', 'occupied', 'reserved', 'unavailable'])
-				// })
+				icon: new UniqueIcon(),
+				bouncingExclusif: true
+			}).setBouncingOptions({
+				exclusif: true,
+				elastic: false
+			}).on('click', function() {
+				this.toogleBouncing();
+			}).addTo(map);
+		});
 
-				// TODO: set default contractHeight to 12px
-				contractHeight: 12,
-				// TODO: fix the bug with shadowAngle
-				shadowAngle: Math.PI / 4
+		/* 7 ball markers */
+		_(7).times(function() {
+			var lat = _.random(bounds[0][0], bounds[1][0]);
+			var lng = _.random(bounds[0][1], bounds[1][1]);
 
+			var marker = L.marker([lat, lng], {
+				icon: new BallIcon()
+			}).setBouncingOptions({
+				bounceHeight: 40,
+				contractHeight: 20,
+				bounceSpeed: 60,
+				contractSpeed: 30
 			}).on('click', function() {
 				this.toogleBouncing();
 			}).addTo(map);
