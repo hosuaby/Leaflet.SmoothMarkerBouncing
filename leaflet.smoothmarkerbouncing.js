@@ -287,18 +287,43 @@
 		return t;
 	}
 
-	/* Set default animation properties */
-	L.Marker.mergeOptions({
+	/* Default bouncing animation properties */
+	L.Marker.prototype._defaultBouncingOptions = {
 		bounceHeight 	 : 15,	// how high marker can bounce (px)
 		contractHeight	 : 12,	// how much marker can contract (px)
 		bounceSpeed		 : 52,	// bouncing speed coefficient
 		contractSpeed	 : 52,	// contracting speed coefficient
 		shadowAngle		 : - Math.PI / 4, // shadow inclination angle (radians)
-		bouncingElastic	 : true,	// activate contract animation
-		bouncingExclusif : false,	// many markers can bounce in the same time
-	});
+		elastic	 		 : true,	// activate contract animation
+		exclusif 		 : false,	// many markers can bounce in the same time 
+	};
+
+	/* Set default animation properties */
+	// L.Marker.mergeOptions({
+	// 	bounceHeight 	 : 15,	// how high marker can bounce (px)
+	// 	contractHeight	 : 12,	// how much marker can contract (px)
+	// 	bounceSpeed		 : 52,	// bouncing speed coefficient
+	// 	contractSpeed	 : 52,	// contracting speed coefficient
+	// 	shadowAngle		 : - Math.PI / 4, // shadow inclination angle (radians)
+	// 	bouncingElastic	 : true,	// activate contract animation
+	// 	bouncingExclusif : false,	// many markers can bounce in the same time
+	// });
 
 	L.Marker._bouncingMarkers = [];	// array of bouncing markers
+
+	/**
+	 * Sets default options of bouncing animation.
+	 *
+	 * @param options - object with options.
+	 */
+	// TODO: find more elegant way to extend the marker class in Leaflet
+	L.Marker.setDefaultBouncingOptions = function(options) {
+		// TODO: find more elegant way to merge the options
+		for (var option in options) {
+			L.Marker.prototype._defaultBouncingOptions[option] =
+				options[option];
+		}
+	};
 
 	/**
 	 * Adds the marker to the list of bouncing markers. If flag 'exclusif' is
@@ -309,8 +334,10 @@
 	 *		bouncing of all other markers.
 	 */
 	L.Marker._addBouncingMarker = function(marker, exclusif) {
-		if (exclusif) {
+		if (exclusif || marker._bouncingOptions.exclusif) {
 			L.Marker._stopAllBouncing();
+		} else {
+			L.Marker._stopEclusifMarkerBouncing();
 		}
 		L.Marker._bouncingMarkers.push(marker);
 	};
@@ -322,7 +349,24 @@
 	L.Marker._stopAllBouncing = function() {
 		var marker;
 		while (marker = L.Marker._bouncingMarkers.shift()) {
-			marker._isBouncing = false;
+			marker._bouncingMotion.isBouncing = false;	// stop bouncing
+		}
+	};
+
+	/**
+	 * Stops the bouncing of exclusif marker.
+	 */
+	L.Marker._stopEclusifMarkerBouncing = function() {
+		var i = L.Marker._bouncingMarkers.length;
+
+		if (i) {
+			while (i--) {
+				if (L.Marker._bouncingMarkers[i]._bouncingOptions.exclusif) {
+					L.Marker._bouncingMarkers[i]._bouncingMotion.isBouncing =
+						false;	// stop bouncing
+					L.Marker._bouncingMarkers.slice(i, 1);
+				}
+			}
 		}
 	};
 
@@ -337,11 +381,11 @@
 	L.Marker.prototype._bouncingMotions = {};
 
 	/**
-	 * Redeclaration of initialize() function.
+	 * Helper function to calculate moveSteps, moveDelays, resizeSteps &
+	 * resizeDelays of marker.
 	 */
-	L.Marker.prototype.initialize = function(latlng, options) {
-		oldInitialize.call(this, latlng, options);
-		
+	L.Marker.prototype._calculateTimeline = function() {
+
 		/*
 		 * Animation is defined by shifts of the marker from it's original
 		 * position. Each step of the animation is a shift of 1px.
@@ -363,11 +407,11 @@
 				baseCssText: ''
 			},
 
-			bounceHeight = this.options.bounceHeight,
-			bounceSpeed = this.options.bounceSpeed,
+			bounceHeight = this._bouncingOptions.bounceHeight,
+			bounceSpeed = this._bouncingOptions.bounceSpeed,
 
-			contractHeight = this.options.contractHeight,
-			contractSpeed = this.options.contractSpeed,
+			contractHeight = this._bouncingOptions.contractHeight,
+			contractSpeed = this._bouncingOptions.contractSpeed,
 
 			moveDeltas = [],
 			resizeDeltas = [],
@@ -498,6 +542,24 @@
 		}
 
 		this._bouncingMotion = motion;
+
+	};
+
+	/**
+	 * Redeclaration of initialize() function.
+	 */
+	L.Marker.prototype.initialize = function(latlng, options) {
+		oldInitialize.call(this, latlng, options);
+
+		/* Copy default bouncing animation options */
+		this._bouncingOptions = {};
+
+		for (var option in L.Marker.prototype._defaultBouncingOptions) {
+			this._bouncingOptions[option] =
+				L.Marker.prototype._defaultBouncingOptions[option];
+		}
+		
+		this._calculateTimeline();
 	};
 
 	/**
@@ -521,47 +583,45 @@
 	};
 
 	/**
-	 * Redeclaration of _setPos() function.
+	 * Helper function to calculate the trasformations of marker.
 	 */
-	L.Marker.prototype._setPos = function(pos) {
-		oldSetPos.call(this, pos);
-
+	L.Marker.prototype._calculateTransforms = function() {
 		if (L.Browser.any3d) {
 
 			/* Calculate transforms for 3D browsers */
 
 			/* Recalculate move transforms */
 			this._bouncingMotion.moveTransforms = createMoveTransforms(
-				pos.x,
-				pos.y,
+				this._bouncingMotion.x,
+				this._bouncingMotion.y,
 				0,
-				this.options.bounceHeight
+				this._bouncingOptions.bounceHeight
 			);
 
 			/* Recalculate resize transforms */
 			this._bouncingMotion.resizeTransforms = createResizeTransforms(
-				pos.x,
-				pos.y,
+				this._bouncingMotion.x,
+				this._bouncingMotion.y,
 				0,
 				this.options.icon.options.iconSize[1],
-				this.options.contractHeight
+				this._bouncingOptions.contractHeight
 			);
 
 			/* Shadow transformations */
 			this._bouncingMotion.shadowMoveTransforms = createShadowMoveTransforms(
-				pos.x,
-				pos.y,
+				this._bouncingMotion.x,
+				this._bouncingMotion.y,
 				0,
-				this.options.bounceHeight,
-				this.options.shadowAngle
+				this._bouncingOptions.bounceHeight,
+				this._bouncingOptions.shadowAngle
 			);
 
 			this._bouncingMotion.shadowResizeTransforms = createResizeTransforms(
-				pos.x,
-				pos.y,
+				this._bouncingMotion.x,
+				this._bouncingMotion.y,
 				0,
 				this.options.icon.options.iconSize[1],
-				this.options.contractHeight
+				this._bouncingOptions.contractHeight
 			);
 
 		} else {
@@ -570,26 +630,53 @@
 
 			/* For the marker */
 			this._bouncingMotion.movePoints = createMovePoints(
-				pos.x,
-				pos.y,
+				this._bouncingMotion.x,
+				this._bouncingMotion.y,
 				0,
-				this.options.bounceHeight
+				this._bouncingOptions.bounceHeight
 			);
 
 			/* And for the shadow */
 			this._bouncingMotion.shadowMovePoints = createShadowMovePoints(
-				pos.x,
-				pos.y,
+				this._bouncingMotion.x,
+				this._bouncingMotion.y,
 				0,
-				this.options.bounceHeight,
-				this.options.shadowAngle
+				this._bouncingOptions.bounceHeight,
+				this._bouncingOptions.shadowAngle
 			);
 
 		}
+	};
 
+	/**
+	 * Redeclaration of _setPos() function.
+	 */
+	L.Marker.prototype._setPos = function(pos) {
+		oldSetPos.call(this, pos);
+		this._bouncingMotion.x = pos.x;
+		this._bouncingMotion.y = pos.y;
+		this._calculateTransforms();
 	};
 
 	L.Marker.include({
+
+		/**
+		 * Sets bouncing options of this marker.
+		 *
+		 * @param options - options of bouncing animation.
+		 */
+		setBouncingOptions: function(options) {
+			// console.log("la vie est belle!")
+			// console.log(options);
+			for (var option in options) {
+				this._bouncingOptions[option] = options[option];
+			}
+
+			this._calculateTimeline();		// reinitialize timeline
+			this._calculateTransforms();	// reinialize trasformations
+
+			return this;
+		},
 
 		/**
 		 * Let's bounce now!
@@ -603,9 +690,9 @@
 
 				motion = self._bouncingMotion,
 
-				bounceHeight = self.options.bounceHeight,
-				contractHeight = self.options.contractHeight,
-				bouncingElastic = self.options.bouncingElastic,
+				bounceHeight = self._bouncingOptions.bounceHeight,
+				contractHeight = self._bouncingOptions.contractHeight,
+				bouncingElastic = self._bouncingOptions.elastic,
 
 				dY = 0,
 				dH = 0,
@@ -710,7 +797,7 @@
 			}
 
 			motion.isBouncing = true;
-			L.Marker._addBouncingMarker(self, self.options.bouncingExclusif);
+			L.Marker._addBouncingMarker(self, self._bouncingOptions.exclusif);
 			move();		// start animation
 		},
 
