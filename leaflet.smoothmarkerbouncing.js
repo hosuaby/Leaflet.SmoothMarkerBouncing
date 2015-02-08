@@ -298,17 +298,6 @@
 		exclusif 		 : false,	// many markers can bounce in the same time 
 	};
 
-	/* Set default animation properties */
-	// L.Marker.mergeOptions({
-	// 	bounceHeight 	 : 15,	// how high marker can bounce (px)
-	// 	contractHeight	 : 12,	// how much marker can contract (px)
-	// 	bounceSpeed		 : 52,	// bouncing speed coefficient
-	// 	contractSpeed	 : 52,	// contracting speed coefficient
-	// 	shadowAngle		 : - Math.PI / 4, // shadow inclination angle (radians)
-	// 	bouncingElastic	 : true,	// activate contract animation
-	// 	bouncingExclusif : false,	// many markers can bounce in the same time
-	// });
-
 	L.Marker._bouncingMarkers = [];	// array of bouncing markers
 
 	/**
@@ -317,7 +306,7 @@
 	 * @param options - object with options.
 	 */
 	// TODO: find more elegant way to extend the marker class in Leaflet
-	L.Marker.setDefaultBouncingOptions = function(options) {
+	L.Marker.setBouncingOptions = function(options) {
 		// TODO: find more elegant way to merge the options
 		for (var option in options) {
 			L.Marker.prototype._defaultBouncingOptions[option] =
@@ -343,6 +332,24 @@
 	};
 
 	/**
+	 * Removes the marker from the list of bouncing markers.
+	 *
+	 * @param marker - L.Marker object;
+	 */
+	L.Marker._removeBouncingMarker = function(marker) {
+		var i = L.Marker._bouncingMarkers.length;
+
+		if (i) {
+			while (i--) {
+				if (L.Marker._bouncingMarkers[i] == marker) {
+					L.Marker._bouncingMarkers.splice(i, 1);
+					break;
+				}
+			}
+		}
+	};
+
+	/**
 	 * Stops the bouncing of all currently bouncing markers. Purge the array of
 	 * bouncing markers.
 	 */
@@ -364,7 +371,7 @@
 				if (L.Marker._bouncingMarkers[i]._bouncingOptions.exclusif) {
 					L.Marker._bouncingMarkers[i]._bouncingMotion.isBouncing =
 						false;	// stop bouncing
-					L.Marker._bouncingMarkers.slice(i, 1);
+					L.Marker._bouncingMarkers.splice(i, 1);
 				}
 			}
 		}
@@ -680,19 +687,20 @@
 
 		/**
 		 * Let's bounce now!
+		 *
+		 * @param options - options of bouncing animation (optional).
 		 */
-		// TODO: acception options in parameters
-		bounce: function() {
+		bounce: function(options) {
 			var self = this,
 			
 				icon = this._icon,
 				shadow = this._shadow,
 
-				motion = self._bouncingMotion,
-
 				bounceHeight = self._bouncingOptions.bounceHeight,
 				contractHeight = self._bouncingOptions.contractHeight,
 				bouncingElastic = self._bouncingOptions.elastic,
+
+				motion = self._bouncingMotion,
 
 				dY = 0,
 				dH = 0,
@@ -703,7 +711,25 @@
 				transform = L.DomUtil.TRANSFORM,
 
 				moveStepsLength = motion.moveSteps.length,
-				resizeStepsLength = motion.resizeSteps.length;
+				resizeStepsLength = motion.resizeSteps.length,
+
+				baseCssText = motion.baseCssText,
+				baseShadowCssText = motion.baseShadowCssText,
+
+				moveSteps = motion.moveSteps,
+				moveDelays = motion.moveDelays,
+				//moveTransforms = motion.moveTransforms,
+				//shadowMoveTransforms = motion.shadowMoveTransforms,
+				//movePoints = motion.movePoints,
+				//shadowMovePoints = motion.shadowMovePoints,
+
+				resizeSteps = motion.resizeSteps,
+				resizeDelays = motion.resizeDelays;
+				//resizeTransforms = motion.resizeTransforms,
+				//shadowResizeTransforms = motion.shadowResizeTransforms;
+
+				// TODO: check, it look like only transformations are enabled,
+				// and not simple coordinate change
 
 			/**
 			 * Makes the step of bouncing animation.
@@ -713,14 +739,31 @@
 			function makeMoveStep(step) {
 
 				/* Reset icon's cssText */
-				icon.style.cssText = motion.baseCssText
+				icon.style.cssText = baseCssText
 					+ 'z-index: ' + self._zIndex + ';'
 					+ transform + ': ' + motion.moveTransforms[step];
 
 				/* Reset shadow's cssText */
-				shadow.style.cssText = motion.baseShadowCssText
+				shadow.style.cssText = baseShadowCssText
 					+ transform + ': '
 					+ motion.shadowMoveTransforms[step];
+			}
+
+			/**
+			 * Makes the step of the boucing animation in no 3D web browser.
+			 *
+			 * @param step - step number.
+			 */
+			function makeMoveStepNo3D(step) {
+
+				/* Reset icon's cssText */
+				icon.style.cssText = baseCssText
+					+ 'z-index: ' + self._zIndex + ';';
+				icon.style.left =  motion.movePoints[step][0] + 'px';
+
+				/* Reset shadow's cssText */
+				shadow.style.cssText = baseShadowCssText;
+				icon.style.top =  motion.movePoints[step][1] + 'px';
 			}
 
 			/**
@@ -731,12 +774,12 @@
 			function makeResizeStep(step) {
 
 				/* Reset icon's cssText */
-				icon.style.cssText = motion.baseCssText
+				icon.style.cssText = baseCssText
 					+ 'z-index: ' + self._zIndex + ';'
 					+ transform + ': ' + motion.resizeTransforms[step];
 
 				/* Reset shadow's cssText */
-				shadow.style.cssText = motion.baseShadowCssText
+				shadow.style.cssText = baseShadowCssText
 					+ transform + ': '
 					+ motion.shadowResizeTransforms[step];
 			}
@@ -748,16 +791,26 @@
 				var i = moveStepsLength;
 
 				/* Lauch timeouts for every step of the movement animation */
-				while (i--) {
-					setTimeout(
-						makeMoveStep,
-						motion.moveDelays[i],
-						motion.moveSteps[i]);
+				if (is3d) {
+					while (i--) {
+						setTimeout(
+							makeMoveStep,
+							moveDelays[i],
+							moveSteps[i]);
+					}
+				} else {
+					while (i--) {
+						setTimeout(
+							makeMoveStepNo3D,
+							moveDelays[i],
+							moveSteps[i]);
+					}
 				}
 
 				/* At the end of movement animation check if continue the
 				 * bouncing with rezise animation, move animation or stop it.
 				 */
+				// TODO: longer timeout if there is not resize part of animation
 				setTimeout(function() {
 					if (motion.isBouncing) {
 						if (bouncingElastic && is3d) {
@@ -769,7 +822,7 @@
 							move();
 						}
 					}
-				}, motion.moveDelays[moveStepsLength - 1]);
+				}, moveDelays[moveStepsLength - 1]);
 			}
 
 			/**
@@ -782,8 +835,8 @@
 				while (i--) {
 					setTimeout(
 						makeResizeStep,
-						motion.resizeDelays[i],
-						motion.resizeSteps[i]);
+						resizeDelays[i],
+						resizeSteps[i]);
 				}
 
 				/* At the end of contraction animation check if continue the
@@ -793,7 +846,7 @@
 					if (motion.isBouncing) {
 						move();
 					}
-				}, motion.resizeDelays[resizeStepsLength - 1]);
+				}, resizeDelays[resizeStepsLength - 1]);
 			}
 
 			motion.isBouncing = true;
@@ -809,6 +862,7 @@
 		 */
 		stopBouncing: function() {
 			this._bouncingMotion.isBouncing = false;
+			L.Marker._removeBouncingMarker(this);
 		},
 
 		/**
@@ -820,6 +874,15 @@
 			} else {
 				this.bounce();
 			}
+		},
+
+		/**
+		 * Returns true if this marker is currently bouncing, false if not.
+		 *
+		 * @return true - marker is bouncing, false - marker not bouncing.
+		 */
+		isBouncing: function() {
+			return this._bouncingMotion.isBouncing;
 		}
 
 	});
