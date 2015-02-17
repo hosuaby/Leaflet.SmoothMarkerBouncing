@@ -423,7 +423,7 @@
 	 * Stops the bouncing of all currently bouncing markers. Purge the array of
 	 * bouncing markers.
 	 */
-	L.Marker.stopBouncingMarkers = function() {
+	L.Marker.stopAllBouncingMarkers = function() {
 		var marker;
 		while (marker = L.Marker._bouncingMarkers.shift()) {
 			marker._bouncingMotion.isBouncing = false;	// stop bouncing
@@ -440,7 +440,7 @@
 	 */
 	L.Marker._addBouncingMarker = function(marker, exclusif) {
 		if (exclusif || marker._bouncingOptions.exclusif) {
-			L.Marker.stopBouncingMarkers();
+			L.Marker.stopAllBouncingMarkers();
 		} else {
 			L.Marker._stopEclusifMarkerBouncing();
 		}
