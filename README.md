@@ -1,6 +1,12 @@
 Description
 ===========
-Smooth animation of bouncing for markers in [Leaflet](http://leafletjs.com/).
+Plugin for [Leaflet](http://leafletjs.com/) that will make you markers bounce!
+
+It provides the smooth, performante and customisable animation of bouncing for
+the markers.  
+Allows the bouncing of multiple markers on the map, without lose of performance.  
+Plugins shows it's best performances on the 3D able modern browsers, using hardware acceleration.  
+On old browsers plugin provide simplified animation, with animation of collapse when the marker touch the floor.
 
 Demo
 ----
@@ -66,3 +72,18 @@ for (var i = 0; i < 10; i++) {
         })
 }
 ```
+
+Options of bouncing
+----------------
+You can easy customize bouncing supplying options in method `setBouncingOptions`. This method available on the marker constructor and on each of marker instances.  
+It's highly recommended to define options of all markers via `L.Marker.setBouncingOptions` instead of define options of each marker individually. The
+performance of animation is highly icrease when all markers have the same animation of bouncing.
+Method `setBouncingOptions` accept an object as it's parameter which properties are options for the animation. Animation can be configured with next
+properties:
+- **bounceHeight** - how high marker will bounce (px), *default: 15*
+- **contractHeight** - how much marker will contract when it touch the ground (px), *default: 12*
+- **bounceSpeed** - bouncing speed coefficient, value used to calculate the speed of bounce animation, more it becomes high, more animation bocomes slow, *default: 52*
+- **contractSpeed** - contracting speed coefficient, *default: 52*
+- **shadowAngle** - shadow inclination angle (radians), *default: - Math.PI / 4*,
+- **elastic** - activate contract animation when markzer touch the ground, *default: true*
+- **exclusif** - when it true, not allows another markers to bounce during the bouncing of this marker, *default: false*
