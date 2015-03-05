@@ -1,0 +1,160 @@
+$threshold-lg: 1200px;
+$threshold-md: 992px;
+$threshold-sm: 768px;
+
+$width-lg: 460px;
+$width-md: 390px;
+$width-sm: 305px;
+$width-xs: 100%;
+
+$sidebar-z-index: 2000 !default;
+$sidebar-transition: 500ms !default;
+
+$tab-size: 40px !default;
+$tab-font-size: 12pt !default;
+$tab-bg: null !default;
+$tab-transition: 80ms !default;
+
+$content-bg: rgba(255, 255, 255, 0.95) !default;
+$content-padding: 10px 20px !default;
+
+$move-map-in-xs: true !default;
+
+.sidebar {
+    position: absolute;
+
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: $width-xs;
+
+    overflow: hidden;
+
+    z-index: $sidebar-z-index;
+
+    &.collapsed {
+        width: $tab-size;
+    }
+
+    @media(min-width:$threshold-sm) {
+        left: $sidebar-margins;
+        top: $sidebar-margins;
+        bottom: $sidebar-margins;
+
+        transition: width $sidebar-transition;
+    }
+
+    @media(min-width:$threshold-sm) and (max-width:$threshold-md - 1px) {
+        width: $width-sm;
+    }
+
+    @media(min-width:$threshold-md) and (max-width:$threshold-lg - 1px) {
+        width: $width-md;
+    }
+
+    @media(min-width:$threshold-lg) {
+        width: $width-lg;
+    }
+}
+
+.sidebar-tabs {
+    position: absolute;
+
+    top: 0;
+    bottom: 0;
+
+    width: $tab-size;
+    height: 100%;
+
+    margin: 0;
+    padding: 0;
+
+    background-color: $tabs-bg;
+
+    & > li {
+        width: 100%;
+        height: $tab-size;
+
+        color: $tab-fg;
+        @if $tab-bg { background: $tab-bg; }
+
+        font-size: $tab-font-size;
+
+        overflow: hidden;
+
+        transition: all $tab-transition;
+
+        &:hover {
+            color: $tab-hover-fg;
+            background-color: $tab-hover-bg;
+        }
+
+        &.active {
+            color: $tab-active-fg;
+            background-color: $tab-active-bg;
+        }
+
+        & > a {
+            display: block;
+
+            width: 100%;
+            height: 100%;
+
+            line-height: $tab-size;
+
+            color: inherit;
+            text-decoration: none;
+            text-align: center;
+        }
+    }
+}
+
+.sidebar-content {
+    position: absolute;
+
+    left: $tab-size;
+    right: 0;
+
+    top: 0;
+    bottom: 0;
+
+    background-color: $content-bg;
+
+    overflow-x: hidden;
+    overflow-y: auto;
+}
+
+.sidebar-pane {
+    display: none;
+
+    right: 0;
+    box-sizing: border-box;
+
+    padding: $content-padding;
+
+    &.active {
+        display: block;
+    }
+
+    @media(min-width:$threshold-sm) and (max-width:$threshold-md - 1px) {
+        width: $width-sm - $tab-size;
+    }
+
+    @media(min-width:$threshold-md) and (max-width:$threshold-lg - 1px) {
+        width: $width-md - $tab-size;
+    }
+
+    @media(min-width:$threshold-lg) {
+        width: $width-lg - $tab-size;
+    }
+}
+
+@if $move-map-in-xs {
+    .sidebar-map {
+        margin-left: $tab-size;
+
+        @media(min-width:$threshold-sm) {
+            margin-left: 0;
+        }
+    }
+}

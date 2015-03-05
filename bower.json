@@ -1,0 +1,28 @@
+{
+  "name": "Leaflet.SmoothMarkerBouncing.Demo",
+  "version": "1.0.0-alpha",
+  "homepage": "https://github.com/hosuaby/Leaflet.SmoothMarkerBouncing",
+  "authors": [
+    "Alexei KLENIN <alexey_klenin@hotmail.fr>"
+  ],
+  "description": "Demo of bouncing marker plugin for Leaflet.",
+  "main": "index.html",
+  "license": "BSD",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "leaflet": "latest",
+    "sidebar-v2": "Turbo87/sidebar-v2#latest",
+    "HTML5-Reset": "latest",
+    "lodash": "latest",
+    "Leaflet.SmoothMarkerBouncing": "hosuaby/Leaflet.SmoothMarkerBouncing#latest",
+    "components-font-awesome": "latest",
+    "github-markdown-css": "latest"
+  }
+}

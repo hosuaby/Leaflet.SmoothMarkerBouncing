@@ -3,115 +3,97 @@
 <head>
 	<title>Leaflet.SmoothMarkerBouncing plugin demo</title>
 
+	<!-- Disable page scaling -->
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+
 	<!-- CSS -->
 
 	<!-- Vendors -->
-	<link rel="stylesheet" type="text/css" href="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.css" />
-	<link rel="stylesheet" type="text/css" href="https://rawgit.com/Turbo87/leaflet-sidebar/master/src/L.Control.Sidebar.css" />
+	<link rel="stylesheet"
+		type="text/css"
+		href="bower_components/HTML5-Reset/assets/css/reset.css" />
+	<link rel="stylesheet"
+		href="bower_components/components-font-awesome/css/font-awesome.min.css" />
+	<link rel="stylesheet"
+		type="text/css"
+		href="bower_components/leaflet/dist/leaflet.css" />
+	<link rel="stylesheet"
+		type="text/css"
+		href="bower_components/sidebar-v2/css/leaflet-sidebar.css" />
+	<link rel="stylesheet"
+		type="text/css"
+		href="bower_components/github-markdown-css/github-markdown.css">
 
 	<!-- Resources -->
-	<link rel="stylesheet" type="text/css" href="resources/styles/default.css" />
+	<link rel="stylesheet"
+		type="text/css"
+		href="resources/styles/default.css" />
 </head>
 <body>
-	<div id="sidebar">
-		<h1>Leaflet.SmoothMarkerBouncing Plugin Demo</h1>
-		<p>See how bouncing works.</p>
-		<ul>
-			<li>Click any marker to make it bounce</li>
-			<li>Click to bouncing marker to stop the bouncing</li>
-		</ul>
-	</div>
 
+	<!-- Sidebar -->
+    <div id="sidebar" class="sidebar collapsed">
+
+        <!-- Nav tabs -->
+        <ul class="sidebar-tabs" role="tablist">
+            <li><a href="#home" role="tab"><i class="fa fa-bars"></i></a></li>
+        </ul>
+
+        <!-- Tab panes -->
+        <div class="sidebar-content active">
+            <div class="sidebar-pane markdown-body" id="home">
+				<h1>Leaflet.SmoothMarkerBouncing plugin demo</h1>
+				<p>Let's see how it looks like!</p>
+				<ol class="task-list">
+					<li>Click any marker to make it bounce</li>
+					<li>Click on the bouncing marker to stop</li>
+					<li>Make bounce some markers together</li>
+					<li>Click anywhere on the map to stop the bouncing of all markers</li>
+				</ol>
+				<p>Different markers have different options of animation:</p>
+				<p>
+					<img src="bower_components/leaflet/dist/images/marker-icon.png" />
+					<span>- normal marker with default options</span>
+				</p>
+				<p>
+					<img src="resources/images/ball.png" />
+					<span>- ball marker with big height of bouncing and strong collapsing</span>
+				<p>
+				<p>
+					<img src="resources/images/unique.png" />
+					<span>- star marker, not collapses when touches the ground and no allows other markers to bounce during it's own bouncing</span>
+				</p>
+				<p>Check this demo on mobile device!</p>
+            </div>
+        </div>
+    </div>
+
+	<!-- The map -->
 	<div id="map" />
 
 	<!-- Scripts -->
 
 	<!-- Vendors -->
-	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/2.4.1/lodash.js"></script>
-	<script type="text/javascript" src="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.js"></script>
-	<script type="text/javascript" src="https://rawgit.com/Turbo87/leaflet-sidebar/master/src/L.Control.Sidebar.js"></script>
+	<script type="text/javascript"
+		src="bower_components/lodash/lodash.js"></script>
+	<script type="text/javascript"
+		src="bower_components/leaflet/dist/leaflet.js"></script>
+	<script type="text/javascript"
+		src="bower_components/sidebar-v2/js/leaflet-sidebar.js"></script>
+
+	<!-- Leaflet.SmoothMarkerBouncing plugin -->
+	<script type="text/javascript"
+		src="bower_components/Leaflet.SmoothMarkerBouncing/leaflet.smoothmarkerbouncing.js">
+	</script>
 
 	<!-- Resources -->
-	<script type="text/javascript" src="resources/scripts/ball.icon.js"></script>
-	<script type="text/javascript" src="resources/scripts/unique.icon.js"></script>
+	<script type="text/javascript"
+		src="resources/scripts/ball.icon.js"></script>
+	<script type="text/javascript"
+		src="resources/scripts/unique.icon.js"></script>
 
-	<!-- Raw source from Github -->
-	<script type="text/javascript" src="https://rawgit.com/hosuaby/Leaflet.SmoothMarkerBouncing/master/leaflet.smoothmarkerbouncing.js"></script>
-
-	<script type="text/javascript">
-		var map = L.map('map').setView([48.847547, 2.351074], 14);
-
-		/* Tiles layer from OpenStreetMap */
-		L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
-			attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
-		}).addTo(map);
-
-		/* Create sidebar */
-		var sidebar = L.control.sidebar('sidebar', {
-			position: 'left'
-		});
-
-		map.addControl(sidebar);
-
-		/* Show sidebar on startup */
-		setTimeout(function() {
-			sidebar.show();
-		}, 500);
-
-		/* Limit to Paris area */
-		var bounds = [[48.824384, 2.284298], [48.872054, 2.409782]];
-
-		L.Marker.setBouncingOptions({
-			bounceHeight: 40,
-			bounceSpeed: 60
-		});
-
-		/* 20 normal markers */
-		_(20).times(function() {
-			var lat = _.random(bounds[0][0], bounds[1][0]);
-			var lng = _.random(bounds[0][1], bounds[1][1]);
-
-			var marker = L.marker([lat, lng])
-				.setBouncingOptions({
-					bounceHeight: 20
-				})
-				.on('click', function() {
-					this.toogleBouncing();
-				}).addTo(map);
-		});
-
-		/* 5 unique markers */
-		_(5).times(function() {
-			var lat = _.random(bounds[0][0], bounds[1][0]);
-			var lng = _.random(bounds[0][1], bounds[1][1]);
-
-			var marker = L.marker([lat, lng], {
-				icon: new UniqueIcon(),
-				bouncingExclusif: true
-			}).setBouncingOptions({
-				exclusif: true,
-				elastic: false
-			}).on('click', function() {
-				this.toogleBouncing();
-			}).addTo(map);
-		});
-
-		/* 7 ball markers */
-		_(7).times(function() {
-			var lat = _.random(bounds[0][0], bounds[1][0]);
-			var lng = _.random(bounds[0][1], bounds[1][1]);
-
-			var marker = L.marker([lat, lng], {
-				icon: new BallIcon()
-			}).setBouncingOptions({
-				bounceHeight: 40,
-				contractHeight: 20,
-				bounceSpeed: 60,
-				contractSpeed: 30
-			}).on('click', function() {
-				this.toogleBouncing();
-			}).addTo(map);
-		});
-	</script>
+	<!-- Main application script -->
+	<script type="text/javascript"
+		src="resources/scripts/app.js"></script>
 </body>
 </html>
