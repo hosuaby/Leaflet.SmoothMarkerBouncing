@@ -32,7 +32,7 @@
  */
 ;(function(L) {
 
-    "use strict";
+    'use strict';
 
     var regStyle = /([\w-]+): ([^;]+);/g,    // regex to parse style definitions
 
@@ -430,15 +430,15 @@
     };
 
     /**
-     * Adds the marker to the list of bouncing markers. If flag 'exclusif' is
+     * Adds the marker to the list of bouncing markers. If flag 'exclusive' is
      * set to true, stops all bouncing markers before.
      *
      * @param marker      marker object
-     * @param exclusif    flag of exclusif bouncing. If set to true, stops the
+     * @param exclusive   flag of exclusive bouncing. If set to true, stops the
      *                    bouncing of all other markers.
      */
-    L.Marker._addBouncingMarker = function(marker, exclusif) {
-        if (exclusif || marker._bouncingOptions.exclusif) {
+    L.Marker._addBouncingMarker = function(marker, exclusive) {
+        if (exclusive || marker._bouncingOptions.exclusive) {
             L.Marker.stopAllBouncingMarkers();
         } else {
             L.Marker._stopEclusifMarkerBouncing();
@@ -465,14 +465,14 @@
     };
 
     /**
-     * Stops the bouncing of exclusif marker.
+     * Stops the bouncing of exclusive marker.
      */
-    L.Marker._stopEclusifMarkerBouncing = function() {
+    L.Marker._stopEclusiveMarkerBouncing = function() {
         var i = L.Marker._bouncingMarkers.length;
 
         if (i) {
             while (i--) {
-                if (L.Marker._bouncingMarkers[i]._bouncingOptions.exclusif) {
+                if (L.Marker._bouncingMarkers[i]._bouncingOptions.exclusive) {
                     L.Marker._bouncingMarkers[i]._bouncingMotion.isBouncing =
                         false;    // stop bouncing
                     L.Marker._bouncingMarkers.splice(i, 1);
@@ -494,7 +494,7 @@
         contractSpeed  : 52,    // contracting speed coefficient
         shadowAngle    : - Math.PI / 4, // shadow inclination angle (radians)
         elastic        : true,  // activate contract animation
-        exclusif       : false, // many markers can bounce in the same time 
+        exclusive      : false, // many markers can bounce in the same time 
     };
 
     /**
@@ -555,32 +555,32 @@
      */
     L.Marker.prototype.bounce = function() {
         var marker = this,
-            icon = this._icon,
+            icon   = this._icon,
             shadow = this._shadow,
 
             bouncingOptions = marker._bouncingOptions,
-            motion = marker._bouncingMotion,
+            motion          = marker._bouncingMotion,
 
-            bounceHeight = bouncingOptions.bounceHeight,
+            bounceHeight   = bouncingOptions.bounceHeight,
             contractHeight = bouncingOptions.contractHeight,
-            bounceSpeed = bouncingOptions.bounceSpeed,
-            contractSpeed = bouncingOptions.contractSpeed,
-            shadowAngle = bouncingOptions.shadowAngle,
-            elastic = bouncingOptions.elastic,
-            exclusif = bouncingOptions.exclusif,
+            bounceSpeed    = bouncingOptions.bounceSpeed,
+            contractSpeed  = bouncingOptions.contractSpeed,
+            shadowAngle    = bouncingOptions.shadowAngle,
+            elastic        = bouncingOptions.elastic,
+            exclusive      = bouncingOptions.exclusive,
 
-            moveSteps = motion.moveSteps,
-            moveDelays = motion.moveDelays,
-            resizeSteps = motion.resizeSteps,
+            moveSteps    = motion.moveSteps,
+            moveDelays   = motion.moveDelays,
+            resizeSteps  = motion.resizeSteps,
             resizeDelays = motion.resizeDelays,
 
-            nbMoveSteps = moveSteps.length,
+            nbMoveSteps   = moveSteps.length,
             nbResizeSteps = resizeSteps.length,
 
-            baseIconCssText = motion.baseIconCssText,
+            baseIconCssText   = motion.baseIconCssText,
             baseShadowCssText = motion.baseShadowCssText,
 
-            is3d = L.Browser.any3d,
+            is3d      = L.Browser.any3d,
             transform = L.DomUtil.TRANSFORM,
 
             times = null;    // null for infinite bouncing
@@ -712,7 +712,7 @@
         }
 
         motion.isBouncing = true;
-        L.Marker._addBouncingMarker(marker, exclusif);
+        L.Marker._addBouncingMarker(marker, exclusive);
         move();        // start animation
 
         return marker;    // fluent API

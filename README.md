@@ -46,7 +46,7 @@ var marker = L.marker([lat, lng])
     .setBouncingOptions({
         bounceHeight : 60,    // height of the bouncing
         bounceSpeed  : 54,    // bouncing speed coefficient
-        exclusif     : true,  // if this marker bouncing all others must stop
+        exclusive    : true,  // if this marker bouncing all others must stop
     }).on('click', function() {
         this.toogleBouncing();
     });
@@ -77,7 +77,7 @@ Method `setBouncingOptions` accepts an object with options as parameter. Animati
 - **contractSpeed** - contracting speed coefficient, *default: 52*
 - **shadowAngle** - shadow inclination angle (radians), *default: - Math.PI / 4*
 - **elastic** - activate contract animation when marker touch the ground, *default: true*
-- **exclusif** - when it's true, stops the bouncing of other markers when this one starts to bounce. If another marker start to bounce after, this marker stops. *default: false*
+- **exclusive** - when it's true, stops the bouncing of other markers when this one starts to bounce. If another marker start to bounce after, this marker stops. *default: false*
 
 Compatibility
 -------------
