@@ -1,89 +1,90 @@
-Description
-===========
+Leaflet.SmoothMarkerBouncing
+============================
 Plugin for [Leaflet](http://leafletjs.com/) that will make you markers bounce!
 
-It provides the smooth, performante and customisable animation of bouncing for
-the markers.  
-Allows the bouncing of multiple markers on the map, without lose of performance.  
-Plugins shows it's best performances on the 3D able modern browsers, using hardware acceleration.  
-On old browsers plugin provide simplified animation, with animation of collapse when the marker touch the floor.
+It provides smooth, lightweight and customisable animation of marker bouncing.
+Allows the bouncing of multiple markers on the map, without lose of performance.
+Plugin shows it's best performances on the 3D-able modern browsers, using hardware acceleration.  
+On old browsers plugin provides simplified animation.
 
 Demo
 ----
-Check the [demo](http://hosuaby.github.io/Leaflet.SmoothMarkerBouncing/).
+Check out the [demo](http://hosuaby.github.io/Leaflet.SmoothMarkerBouncing/).
 
 Usage
 -----
-Add plugin to your page:
+Add Javascript file on your page:
 ```html
-<script type="text/javascript"
-    src="https://rawgit.com/hosuaby/Leaflet.SmoothMarkerBouncing/master/leaflet.smoothmarkerbouncing.js">
-</script>
+<script type="text/javascript" src="js/leaflet.smoothmarkerbouncing.js" />
 ```
-Plugin adds methods to your markers:
+Plugin provides additional methods:
 ```javascript
-/* Methods of L.Marker */
-L.Marker.setBouncingOptions({..}); // to define the options of bouncing for all markers
-L.Marker.getBouncingMarkers();  // get all bouncing markers
-L.Marker.stopAllBouncingMarkers();  // asks all bouncing markers to stop
+/* Methods of L.Marker class */
+L.Marker.setBouncingOptions({..}); // sets options of bouncing of all markers
+L.Marker.getBouncingMarkers();     // gets all bouncing markers
+L.Marker.stopAllBouncingMarkers(); // asks all bouncing markers to stop
 
 /* Methods of marker instances */
 var marker = L.marker([lat, lng]);
-marker.setBouncingOptions({..});    // defines bouncing options of this marker
-marker.isBouncing();    // tells if this marker actually bouncing or not
-marker.bounce();    // makes marker bouncing
-marker.bounce(n);   // makes marke bounce "n" times
-marker.stopBouncing();  // stops the bouncing of this marker
-marker.toogleBouncing();    // starts/stops bouncing of this marker
+marker.setBouncingOptions({..});   // sets options of bouncing of this marker
+marker.isBouncing();               // checks if marker is bouncing
+marker.bounce();                   // starts the bouncing
+marker.bounce(n);                  // makes marker bounce "n" times
+marker.stopBouncing();             // stops bouncing marker
+marker.toogleBouncing();           // starts/stops bouncing of this marker
 ```
-Plugin defines fluent API. All marker instance methods (except `isBouncing`) return the marker object.
-Some usage exemples:
+Plugin respects fluent API. All marker instance methods (except `isBouncing`) return the marker object.  
+Some usage examples:
 ```javascript
-/* Creates the marker that starts to bounce immediatelly after
- * it's creation.
- */
+/* Create a marker and make it bounce immediately */
 var marker = L.marker([lat, lng]).bounce();
 
-/* Create marker and set bouncing options.
- * Bouncing can be started/stoped by click on the marker.
+/* Create a marker and define it's bouncing options.
+ * Bouncing can be started/stoped by the click on the marker.
  */
 var marker = L.marker([lat, lng])
     .setBouncingOptions({
-        bounceHeight: 60,   // height of bouncing
-        bounceSpeed: 54,    // bouncing speed coeficient
-        exclusif: true,     // if this marker is bouncing all others stop
+        bounceHeight : 60,    // height of the bouncing
+        bounceSpeed  : 54,    // bouncing speed coefficient
+        exclusive    : true,  // if this marker bouncing all others must stop
     }).on('click', function() {
         this.toogleBouncing();
     });
 
 /* Define options of bouncing for all markers */
 L.Marker.setBouncingOptions({
-        bounceHeight: 60,   // height of bouncing
-        bounceSpeed: 54,    // bouncing speed coeficient
+        bounceHeight : 60,   // height of the bouncing
+        bounceSpeed  : 54,   // bouncing speed coefficient
 });
 
-/* Create 10 marker and each of them will bounce 3 times when
- * it will be clicked.
- */
+/* Create 10 markers and each of them will bounce 3 times when clicked */
 for (var i = 0; i < 10; i++) {
     var marker = L.marker([lat, lng])
         .on('click', function() {
             this.bounce(3); // bounce 3 times
-        })
+        });
 }
 ```
 
 Options of bouncing
 ----------------
-You can easy customize bouncing supplying options in method `setBouncingOptions`. This method available on the marker constructor and on each of marker instances.  
-It's highly recommended to define options of all markers via `L.Marker.setBouncingOptions` instead of define options of each marker individually. The
-performance of animation is highly icrease when all markers have the same animation of bouncing.
-Method `setBouncingOptions` accept an object as it's parameter which properties are options for the animation. Animation can be configured with next
-properties:
+You can easily customize bouncing animation supplying options in method `setBouncingOptions`. This method available on the marker class `L.Marker` and on each of marker instances.  
+It's highly recommended to define options for all markers via `L.Marker.setBouncingOptions` instead of define them on each marker individually. The animation performance highly increases when all markers have the same options.  
+Method `setBouncingOptions` accepts an object with options as parameter. Animation can be customized with following properties:
 - **bounceHeight** - how high marker will bounce (px), *default: 15*
 - **contractHeight** - how much marker will contract when it touch the ground (px), *default: 12*
-- **bounceSpeed** - bouncing speed coefficient, value used to calculate the speed of bounce animation, more it becomes high, more animation bocomes slow, *default: 52*
+- **bounceSpeed** - bouncing speed coefficient, value used to calculate the speed of bounce animation, more it becomes high, more animation becomes slow, *default: 52*
 - **contractSpeed** - contracting speed coefficient, *default: 52*
-- **shadowAngle** - shadow inclination angle (radians), *default: - Math.PI / 4*,
-- **elastic** - activate contract animation when markzer touch the ground, *default: true*
-- **exclusif** - when it true, not allows another markers to bounce during the bouncing of this marker, *default: false*
+- **shadowAngle** - shadow inclination angle (radians), *default: - Math.PI / 4*
+- **elastic** - activate contract animation when marker touch the ground, *default: true*
+- **exclusive** - when it's true, stops the bouncing of other markers when this one starts to bounce. If another marker start to bounce after, this marker stops. *default: false*
+
+Tested on
+---------
+:white_check_mark: Chrome 40.0  
+:white_check_mark: Firefox 35.0  
+:white_check_mark: IE 11
+
+License
+-------
+Plugin distributed under BSD license.

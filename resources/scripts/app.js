@@ -50,7 +50,7 @@
 			icon: new UniqueIcon(),
 			bouncingExclusif: true
 		}).setBouncingOptions({
-			exclusif: true,
+			exclusive: true,
 			elastic: false
 		}).on('click', function() {
 			this.toogleBouncing();
@@ -70,7 +70,7 @@
 			bounceSpeed: 60,
 			contractSpeed: 30
 		}).on('click', function() {
-			this.toogleBouncing();
+			this.bounce(3);
 		}).addTo(map);
 	});
 

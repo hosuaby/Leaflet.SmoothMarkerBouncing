@@ -25,7 +25,6 @@
     "commit": "3324874049a643c05eca4f1f74d0a94a7be67c9e"
   },
   "_source": "git://github.com/sindresorhus/github-markdown-css.git",
-  "_target": "~2.0.5",
-  "_originalSource": "github-markdown-css",
-  "_direct": true
+  "_target": "*",
+  "_originalSource": "github-markdown-css"
 }
