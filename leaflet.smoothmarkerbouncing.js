@@ -151,12 +151,12 @@
      * @return array of points [x, y]
      */
     function calculateIconMovePoints(x, y, bounceHeight) {
-        var p = [],                 // array of points
-            dY = bounceHeight + 1;    // delta of height
+        var p = [],                   // array of points
+            dH = bounceHeight + 1;    // delta of height
 
         /* Use fast inverse while loop to fill the array */
         while (dH--) {
-            p[dY] = [x, y - dY];
+            p[dH] = [x, y - dH];
         }
 
         return p;
@@ -174,7 +174,7 @@
      * @return array of the points [x, y]
      */
     function calculateShadowMovePoints(x, y, bounceHeight, angle) {
-        return calculateLine(x, y, angle, bounceHeight);
+        return calculateLine(x, y, angle, bounceHeight + 1);
     }
 
     /**
@@ -441,7 +441,7 @@
         if (exclusive || marker._bouncingOptions.exclusive) {
             L.Marker.stopAllBouncingMarkers();
         } else {
-            L.Marker._stopEclusifMarkerBouncing();
+            L.Marker._stopEclusiveMarkerBouncing();
         }
         L.Marker._bouncingMarkers.push(marker);
     };
@@ -622,8 +622,8 @@
 
             /* Reset shadow's cssText */
             shadow.style.cssText = baseShadowCssText;
-            icon.style.left = motion.shadowMovePoints[step][0] + 'px';
-            icon.style.top =  motion.shadowMovePoints[step][1] + 'px';
+            shadow.style.left = motion.shadowMovePoints[step][0] + 'px';
+            shadow.style.top  = motion.shadowMovePoints[step][1] + 'px';
         }
 
         /**
@@ -889,7 +889,7 @@
 
         /* Create base cssText */
         var styles = parseCssText(this._icon.style.cssText);
-        delete styles.transform;    // delete old trasform style definition
+        delete styles.transform;     // delete old trasform style definition
         delete styles['z-index'];    // delete old z-index
         this._bouncingMotion.baseIconCssText = renderCssText(styles);
 
