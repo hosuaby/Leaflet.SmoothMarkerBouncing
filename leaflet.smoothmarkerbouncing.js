@@ -54,7 +54,7 @@
      * of the object.
      *
      * @param cssText   cssText string
-     * 
+     *
      * @return object with style definitions as keys
      */
     function parseCssText(cssText) {
@@ -169,12 +169,20 @@
      * @param x               x coordinate of original position of the marker
      * @param y               y coordinate of original position of the marker
      * @param bounceHeight    height of bouncing (px)
-     * @param angle           shadow inclination angle (radians)
+     * @param angle           shadow inclination angle, if null shadow don't
+     *                        moves from it's initial position (radians)
      *
      * @return array of the points [x, y]
      */
     function calculateShadowMovePoints(x, y, bounceHeight, angle) {
-        return calculateLine(x, y, angle, bounceHeight + 1);
+        if (angle != null) {  // important: 0 is not null
+            return calculateLine(x, y, angle, bounceHeight + 1);
+        } else {
+            for (var p = [], i = 0; i <= bounceHeight; i++) {
+                p[i] = [x, y];
+            }
+            return p;
+        }
     }
 
     /**
@@ -211,15 +219,23 @@
      * @param x               x coordinate of original position of marker
      * @param y               y coordinate of original position of marker
      * @param bounceHeight    height of bouncing (px)
-     * @param angle           shadow inclination angle (radians)
+     * @param angle           shadow inclination angle, if null shadow don't
+     *                        moves from it's initial position (radians)
      *
      * @return array of transformation definitions
      */
     function calculateShadowMoveTransforms(x, y, bounceHeight, angle) {
         // TODO: check this method to know if bounceHeight + 1 is normal
         var t = [],                   // array of transformation definitions
-            p = calculateLine(x, y, angle, bounceHeight + 1),
             dY = bounceHeight + 1;    // delta Y
+
+        if (angle != null) {  // important: 0 is not null
+            var p = calculateLine(x, y, angle, bounceHeight + 1);
+        } else {
+            for (var p = [], i = 0; i <= bounceHeight; i++) {
+                p[i] = [x, y];
+            }
+        }
 
         /* Use fast inverse while loop to fill the array */
         while (dY--) {
@@ -492,7 +508,8 @@
         contractHeight : 12,    // how much marker can contract (px)
         bounceSpeed    : 52,    // bouncing speed coefficient
         contractSpeed  : 52,    // contracting speed coefficient
-        shadowAngle    : - Math.PI / 4, // shadow inclination angle (radians)
+        shadowAngle    : - Math.PI / 4, // shadow inclination angle (radians);
+                                        // null value annulates shadow movement
         elastic        : true,  // activate contract animation
         exclusive      : false, // many markers can bounce in the same time 
     };
@@ -639,9 +656,11 @@
                 + transform + ': ' + motion.iconResizeTransforms[step];
 
             /* Reset shadow's cssText */
-            shadow.style.cssText = baseShadowCssText
-                + transform + ': '
-                + motion.shadowResizeTransforms[step];
+            if (shadowAngle != null) {  // only if shadow animation enabled
+                shadow.style.cssText = baseShadowCssText
+                    + transform + ': '
+                    + motion.shadowResizeTransforms[step];
+            }
         }
 
         /**
