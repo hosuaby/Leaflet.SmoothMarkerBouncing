@@ -1,6 +1,6 @@
 {
   "name": "Leaflet.SmoothMarkerBouncing",
-  "version": "1.0.0-beta",
+  "version": "1.0.0",
   "homepage": "https://github.com/hosuaby/Leaflet.SmoothMarkerBouncing",
   "authors": [
     "Alexei KLENIN <alexey_klenin@hotmail.fr>"
@@ -22,11 +22,11 @@
     "test",
     "tests"
   ],
-  "_release": "1.0.0-beta",
+  "_release": "1.0.0",
   "_resolution": {
     "type": "version",
-    "tag": "v1.0.0-beta",
-    "commit": "478e12f87451f084db1166d2a8fd335e084f30eb"
+    "tag": "v1.0.0",
+    "commit": "bfff87dbc6da26c0758d92dfbaff6ebd68e73e1d"
   },
   "_source": "git://github.com/hosuaby/Leaflet.SmoothMarkerBouncing.git",
   "_target": "*",

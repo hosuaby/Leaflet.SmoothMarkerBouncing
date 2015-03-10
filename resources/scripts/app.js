@@ -68,7 +68,8 @@
 			bounceHeight: 40,
 			contractHeight: 20,
 			bounceSpeed: 60,
-			contractSpeed: 30
+			contractSpeed: 30,
+			shadowAngle: null
 		}).on('click', function() {
 			this.bounce(3);
 		}).addTo(map);
