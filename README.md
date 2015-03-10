@@ -75,7 +75,7 @@ Method `setBouncingOptions` accepts an object with options as parameter. Animati
 - **contractHeight** - how much marker will contract when it touch the ground (px), *default: 12*
 - **bounceSpeed** - bouncing speed coefficient, value used to calculate the speed of bounce animation, more it becomes high, more animation becomes slow, *default: 52*
 - **contractSpeed** - contracting speed coefficient, *default: 52*
-- **shadowAngle** - shadow inclination angle, if set to `null` shadow movement is disabled (radians), *default: - Math.PI / 4*
+- **shadowAngle** - shadow inclination angle, if set to `null` shadow animation is disabled (radians), *default: - Math.PI / 4*
 - **elastic** - activate contract animation when marker touch the ground, *default: true*
 - **exclusive** - when it's true, stops the bouncing of other markers when this one starts to bounce. If another marker start to bounce after, this marker stops. *default: false*
 
