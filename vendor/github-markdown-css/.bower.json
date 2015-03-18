@@ -17,12 +17,12 @@
     "index.html"
   ],
   "homepage": "https://github.com/sindresorhus/github-markdown-css",
-  "version": "2.0.5",
-  "_release": "2.0.5",
+  "version": "2.0.7",
+  "_release": "2.0.7",
   "_resolution": {
     "type": "version",
-    "tag": "v2.0.5",
-    "commit": "3324874049a643c05eca4f1f74d0a94a7be67c9e"
+    "tag": "v2.0.7",
+    "commit": "4d31bd0b3967cf6c5d3bbecb676f5ca8463d7be4"
   },
   "_source": "git://github.com/sindresorhus/github-markdown-css.git",
   "_target": "*",
