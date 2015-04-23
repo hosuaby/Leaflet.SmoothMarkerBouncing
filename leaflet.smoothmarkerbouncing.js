@@ -756,7 +756,7 @@
      *
      * @return this marker
      */
-    L.Marker.prototype.toogleBouncing = function() {
+    L.Marker.prototype.toggleBouncing = function() {
         if (this._bouncingMotion.isBouncing) {
             this.stopBouncing();
         } else {

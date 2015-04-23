@@ -31,7 +31,7 @@ marker.isBouncing();               // checks if marker is bouncing
 marker.bounce();                   // starts the bouncing
 marker.bounce(n);                  // makes marker bounce "n" times
 marker.stopBouncing();             // stops bouncing marker
-marker.toogleBouncing();           // starts/stops bouncing of this marker
+marker.toggleBouncing();           // starts/stops bouncing of this marker
 ```
 Plugin respects fluent API. All marker instance methods (except `isBouncing`) return the marker object.  
 Some usage examples:
@@ -48,7 +48,7 @@ var marker = L.marker([lat, lng])
         bounceSpeed  : 54,    // bouncing speed coefficient
         exclusive    : true,  // if this marker bouncing all others must stop
     }).on('click', function() {
-        this.toogleBouncing();
+        this.toggleBouncing();
     });
 
 /* Define options of bouncing for all markers */
