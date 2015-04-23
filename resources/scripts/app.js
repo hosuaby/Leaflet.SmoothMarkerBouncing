@@ -37,7 +37,7 @@
 				bounceHeight: 20
 			})
 			.on('click', function() {
-				this.toogleBouncing();
+				this.toggleBouncing();
 			}).addTo(map);
 	});
 
@@ -53,7 +53,7 @@
 			exclusive: true,
 			elastic: false
 		}).on('click', function() {
-			this.toogleBouncing();
+			this.toggleBouncing();
 		}).addTo(map);
 	});
 
