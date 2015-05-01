@@ -292,7 +292,7 @@
     // TODO: fix & deploy this function
     function calculateShadowResizeTransforms(x, y, width, height,
             contractHeight, angle) {
-        var t = [],                        // array of transformation definitions
+        var t = [],                     // array of transformation definitions
             p = calculateLine(width, height, angle + Math.PI, contractHeight),
             dH = contractHeight + 1;    // delta height
 
@@ -419,10 +419,7 @@
      * @param options    object with options
      */
     L.Marker.setBouncingOptions = function(options) {
-        // TODO: find more elegant way to merge the options
-        for (var option in options) {
-            L.Marker.prototype._bouncingOptions[option] = options[option];
-        }
+        L.extend(L.Marker.prototype._bouncingOptions, options);
     };
 
     /**
@@ -502,400 +499,423 @@
      * -------------------------------------------------------------------------
      */
 
-    /* Default bouncing animation properties */
-    L.Marker.prototype._bouncingOptions = {
-        bounceHeight   : 15,    // how high marker can bounce (px)
-        contractHeight : 12,    // how much marker can contract (px)
-        bounceSpeed    : 52,    // bouncing speed coefficient
-        contractSpeed  : 52,    // contracting speed coefficient
-        shadowAngle    : - Math.PI / 4, // shadow inclination angle (radians);
-                                        // null value annulates shadow movement
-        elastic        : true,  // activate contract animation
-        exclusive      : false, // many markers can bounce in the same time 
-    };
+    L.Marker.include({
 
-    /**
-     * Registers options of bouncing animation for this marker. After
-     * registration of options for concreet marker, it will ignore the changes
-     * of default options. Function automatically recalculates animation steps
-     * and delays.
-     *
-     * @param options    options object
-     *
-     * @return this marker
-     */
-    L.Marker.prototype.setBouncingOptions = function(options) {
+        /* Default bouncing animation properties */
+        _bouncingOptions: {
+            bounceHeight   : 15,    // how high marker can bounce (px)
+            contractHeight : 12,    // how much marker can contract (px)
+            bounceSpeed    : 52,    // bouncing speed coefficient
+            contractSpeed  : 52,    // contracting speed coefficient
+            shadowAngle    : - Math.PI / 4, // shadow inclination angle
+                                            // (radians); null value annulates
+                                            // shadow movement
+            elastic        : true,  // activate contract animation
+            exclusive      : false, // many markers can bounce in the same time
+        },
 
-        /* If _bouncingOptions was not redefined yet for this marker create
-         * own property.
+        /**
+         * Registers options of bouncing animation for this marker. After
+         * registration of options for concreet marker, it will ignore the
+         * changes of default options. Function automatically recalculates
+         * animation steps and delays.
+         *
+         * @param options    options object
+         *
+         * @return this marker
          */
-        if (!this.hasOwnProperty('_bouncingOptions')) {
-            this._bouncingOptions = {};
-        }
+        setBouncingOptions: function(options) {
 
-        for (var option in L.Marker.prototype._bouncingOptions) {
-            if (options.hasOwnProperty(option)) {
-                /* Copy passed option's value */
-                this._bouncingOptions[option] = options[option];
-            } else {
-                /* Copy default option's value */
-                this._bouncingOptions[option] =
-                    L.Marker.prototype._bouncingOptions[option];
+            /* If _bouncingOptions was not redefined yet for this marker create
+             * own property and clone _bouncingOptions of prototype.
+             */
+            if (!this.hasOwnProperty('_bouncingOptions')) {
+                this._bouncingOptions = L.extend(
+                    {},
+                    L.Marker.prototype._bouncingOptions
+                );
             }
-        }
 
-        /* Recalculate steps & delays of movement & resize animations */
-        this._calculateTimeline();
+            /* Copy options passed as param */
+            L.extend(this._bouncingOptions, options);
 
-        /* Recalculate transformations */
-        this._calculateTransforms();
+            /* Recalculate steps & delays of movement & resize animations */
+            this._calculateTimeline();
 
-        return this;    // fluent API
-    };
+            /* Recalculate transformations */
+            this._calculateTransforms();
 
-    /**
-     * Returns true if this marker is bouncing. If this marker is not bouncing
-     * returns false.
-     *
-     * @return true if marker is bouncing, false if not
-     */
-    L.Marker.prototype.isBouncing = function() {
-        return this._bouncingMotion.isBouncing;
-    };
-
-    /**
-     * Let's bounce now!
-     *
-     * @param times    number of animation repeations (optional)
-     *
-     * @return this marker
-     */
-    L.Marker.prototype.bounce = function() {
-        var marker = this,
-            icon   = this._icon,
-            shadow = this._shadow,
-
-            bouncingOptions = marker._bouncingOptions,
-            motion          = marker._bouncingMotion,
-
-            bounceHeight   = bouncingOptions.bounceHeight,
-            contractHeight = bouncingOptions.contractHeight,
-            bounceSpeed    = bouncingOptions.bounceSpeed,
-            contractSpeed  = bouncingOptions.contractSpeed,
-            shadowAngle    = bouncingOptions.shadowAngle,
-            elastic        = bouncingOptions.elastic,
-            exclusive      = bouncingOptions.exclusive,
-
-            moveSteps    = motion.moveSteps,
-            moveDelays   = motion.moveDelays,
-            resizeSteps  = motion.resizeSteps,
-            resizeDelays = motion.resizeDelays,
-
-            nbMoveSteps   = moveSteps.length,
-            nbResizeSteps = resizeSteps.length,
-
-            baseIconCssText   = motion.baseIconCssText,
-            baseShadowCssText = motion.baseShadowCssText,
-
-            is3d      = L.Browser.any3d,
-            transform = L.DomUtil.TRANSFORM,
-
-            times = null;    // null for infinite bouncing
-
-        if (arguments.length == 1) {
-            times = arguments[0];
-        }
+            return this;    // fluent API
+        },
 
         /**
-         * Makes the step of the movement animation.
+         * Returns true if this marker is bouncing. If this marker is not
+         * bouncing returns false.
          *
-         * @param step    step number
+         * @return true if marker is bouncing, false if not
          */
-        function makeMoveStep(step) {
-
-            /* Reset icon's cssText */
-            icon.style.cssText = baseIconCssText
-                + 'z-index: ' + marker._zIndex + ';'
-                + transform + ': ' + motion.iconMoveTransforms[step];
-
-            /* Reset shadow's cssText */
-            shadow.style.cssText = baseShadowCssText
-                + transform + ': '
-                + motion.shadowMoveTransforms[step];
-        }
+        isBouncing: function() {
+            return this._bouncingMotion.isBouncing;
+        },
 
         /**
-         * Makes the step of the movement animation in no 3D able web browser.
+         * Let's bounce now!
          *
-         * @param step    step number
-         */
-        function makeMoveStepNo3D(step) {
-
-            /* Reset icon's cssText */
-            icon.style.cssText = baseIconCssText
-                + 'z-index: ' + marker._zIndex + ';';
-            icon.style.left = motion.iconMovePoints[step][0] + 'px';
-            icon.style.top  = motion.iconMovePoints[step][1] + 'px';
-
-            /* Reset shadow's cssText */
-            shadow.style.cssText = baseShadowCssText;
-            shadow.style.left = motion.shadowMovePoints[step][0] + 'px';
-            shadow.style.top  = motion.shadowMovePoints[step][1] + 'px';
-        }
-
-        /**
-         * Makes the step of resizing animation.
+         * @param times    number of animation repeations (optional)
          *
-         * @param step    step number
+         * @return this marker
          */
-        function makeResizeStep(step) {
+        bounce: function() {
+            var marker = this,
+                icon   = this._icon,
+                shadow = this._shadow,
 
-            /* Reset icon's cssText */
-            icon.style.cssText = baseIconCssText
-                + 'z-index: ' + marker._zIndex + ';'
-                + transform + ': ' + motion.iconResizeTransforms[step];
+                bouncingOptions = marker._bouncingOptions,
+                motion          = marker._bouncingMotion,
 
-            /* Reset shadow's cssText */
-            if (shadowAngle != null) {  // only if shadow animation enabled
-                shadow.style.cssText = baseShadowCssText
-                    + transform + ': '
-                    + motion.shadowResizeTransforms[step];
+                bounceHeight   = bouncingOptions.bounceHeight,
+                contractHeight = bouncingOptions.contractHeight,
+                bounceSpeed    = bouncingOptions.bounceSpeed,
+                contractSpeed  = bouncingOptions.contractSpeed,
+                shadowAngle    = bouncingOptions.shadowAngle,
+                elastic        = bouncingOptions.elastic,
+                exclusive      = bouncingOptions.exclusive,
+
+                moveSteps    = motion.moveSteps,
+                moveDelays   = motion.moveDelays,
+                resizeSteps  = motion.resizeSteps,
+                resizeDelays = motion.resizeDelays,
+
+                nbMoveSteps   = moveSteps.length,
+                nbResizeSteps = resizeSteps.length,
+
+                baseIconCssText   = motion.baseIconCssText,
+                baseShadowCssText = motion.baseShadowCssText,
+
+                is3d      = L.Browser.any3d,
+                transform = L.DomUtil.TRANSFORM,
+
+                times = null;    // null for infinite bouncing
+
+            if (arguments.length == 1) {
+                times = arguments[0];
             }
-        }
 
-        /**
-         * Moves the marker up & down.
-         */
-        function move() {
-            if (times !== null) {
-                if (!--times) {
-                    motion.isBouncing = false;    // this is the last bouncing
+            /**
+             * Makes the step of the movement animation.
+             *
+             * @param step    step number
+             */
+            function makeMoveStep(step) {
+
+                /* Reset icon's cssText */
+                icon.style.cssText = baseIconCssText
+                    + 'z-index: ' + marker._zIndex + ';'
+                    + transform + ': ' + motion.iconMoveTransforms[step];
+
+                /* Reset shadow's cssText */
+                if (shadow) {
+                    shadow.style.cssText = baseShadowCssText
+                        + transform + ': '
+                        + motion.shadowMoveTransforms[step];
                 }
             }
 
-            var i = nbMoveSteps;
+            /**
+             * Makes the step of the movement animation in no 3D able web
+             * browser.
+             *
+             * @param step    step number
+             */
+            function makeMoveStepNo3D(step) {
 
-            /* Lauch timeouts for every step of the movement animation */
-            if (is3d) {
+                /* Reset icon's cssText */
+                icon.style.cssText = baseIconCssText
+                    + 'z-index: ' + marker._zIndex + ';';
+                icon.style.left = motion.iconMovePoints[step][0] + 'px';
+                icon.style.top  = motion.iconMovePoints[step][1] + 'px';
+
+                /* Reset shadow's cssText */
+                if (shadow) {
+                    shadow.style.cssText = baseShadowCssText;
+                    shadow.style.left = motion.shadowMovePoints[step][0] + 'px';
+                    shadow.style.top  = motion.shadowMovePoints[step][1] + 'px';
+                }
+            }
+
+            /**
+             * Makes the step of resizing animation.
+             *
+             * @param step    step number
+             */
+            function makeResizeStep(step) {
+
+                /* Reset icon's cssText */
+                icon.style.cssText = baseIconCssText
+                    + 'z-index: ' + marker._zIndex + ';'
+                    + transform + ': ' + motion.iconResizeTransforms[step];
+
+                /* Reset shadow's cssText */
+                if (shadow && shadowAngle != null) {
+                    shadow.style.cssText = baseShadowCssText
+                        + transform + ': '
+                        + motion.shadowResizeTransforms[step];
+                }
+            }
+
+            /**
+             * Moves the marker up & down.
+             */
+            function move() {
+                if (times !== null) {
+                    if (!--times) {
+                        motion.isBouncing = false;  // this is the last bouncing
+                    }
+                }
+
+                var i = nbMoveSteps;
+
+                /* Lauch timeouts for every step of the movement animation */
+                if (is3d) {
+                    while (i--) {
+                        setTimeout(
+                            makeMoveStep,
+                            moveDelays[i],
+                            moveSteps[i]);
+                    }
+                } else {
+                    while (i--) {
+                        setTimeout(
+                            makeMoveStepNo3D,
+                            moveDelays[i],
+                            moveSteps[i]);
+                    }
+                }
+
+                /* At the end of movement animation check if continue the
+                 * bouncing with rezise animation, move animation or stop it.
+                 */
+                // TODO: longer timeout if there is not resize part of animation
+                setTimeout(function() {
+                    if (elastic && is3d) {
+                        resize();    // possible only in 3D able browsers
+                    } else if (motion.isBouncing) {
+                        setTimeout(move, bounceSpeed);
+                    }
+                }, moveDelays[nbMoveSteps - 1]);
+            }
+
+            /**
+             * Contracts & expands the marker.
+             */
+            function resize() {
+                var i = nbResizeSteps;
+
+                /* Lauch timeouts for every step of the contraction animation */
                 while (i--) {
                     setTimeout(
-                        makeMoveStep,
-                        moveDelays[i],
-                        moveSteps[i]);
+                        makeResizeStep,
+                        resizeDelays[i],
+                        resizeSteps[i]);
                 }
-            } else {
-                while (i--) {
-                    setTimeout(
-                        makeMoveStepNo3D,
-                        moveDelays[i],
-                        moveSteps[i]);
-                }
+
+                /* At the end of contraction animation check if continue the
+                 * bouncing with move animation or stop it.
+                 */
+                setTimeout(function() {
+                    if (motion.isBouncing) {
+                        move();
+                    }
+                }, resizeDelays[nbResizeSteps - 1]);
             }
 
-            /* At the end of movement animation check if continue the
-             * bouncing with rezise animation, move animation or stop it.
-             */
-            // TODO: longer timeout if there is not resize part of animation
-            setTimeout(function() {
-                if (elastic && is3d) {
-                    resize();    // possible only in 3D able browsers
-                } else if (motion.isBouncing) {
-                    setTimeout(move, bounceSpeed);
-                    //move();
-                }
-            }, moveDelays[nbMoveSteps - 1]);
-        }
+            motion.isBouncing = true;
+            L.Marker._addBouncingMarker(marker, exclusive);
+            move();        // start animation
+
+            return marker;    // fluent API
+        },
 
         /**
-         * Contracts & expands the marker.
+         * Stops bouncing of this marker. Note: the bouncing not stops
+         * immediatly after the call of this method. Instead, the animation is
+         * executed until marker returns to it's original position and takes
+         * it's full size.
+         *
+         * @return this marker
          */
-        function resize() {
-            var i = nbResizeSteps;
+        stopBouncing: function() {
+            this._bouncingMotion.isBouncing = false;
+            L.Marker._removeBouncingMarker(this);
 
-            /* Lauch timeouts for every step of the contraction animation */
-            while (i--) {
-                setTimeout(
-                    makeResizeStep,
-                    resizeDelays[i],
-                    resizeSteps[i]);
+            return this;    // fluent API
+        },
+
+        /**
+         * Starts/stops bouncing of this marker.
+         *
+         * @return this marker
+         */
+        toggleBouncing: function() {
+            if (this._bouncingMotion.isBouncing) {
+                this.stopBouncing();
+            } else {
+                this.bounce();
             }
 
-            /* At the end of contraction animation check if continue the
-             * bouncing with move animation or stop it.
-             */
-            setTimeout(function() {
-                if (motion.isBouncing) {
-                    move();
-                }
-            }, resizeDelays[nbResizeSteps - 1]);
-        }
+            return this;    // fluent API
+        },
 
-        motion.isBouncing = true;
-        L.Marker._addBouncingMarker(marker, exclusive);
-        move();        // start animation
-
-        return marker;    // fluent API
-    };
-
-    /**
-     * Stops bouncing of this marker. Note: the bouncing not stops immediatly
-     * after the call of this method. Instead, the animation is executed until
-     * marker returns to it's original position and takes it's full size.
-     *
-     * @return this marker
-     */
-    L.Marker.prototype.stopBouncing = function() {
-        this._bouncingMotion.isBouncing = false;
-        L.Marker._removeBouncingMarker(this);
-
-        return this;    // fluent API
-    };
-
-    /**
-     * Starts/stops bouncing of this marker
-     *
-     * @return this marker
-     */
-    L.Marker.prototype.toggleBouncing = function() {
-        if (this._bouncingMotion.isBouncing) {
-            this.stopBouncing();
-        } else {
-            this.bounce();
-        }
-
-        return this;    // fluent API
-    };
-
-    /**
-     * Calculates moveSteps, moveDelays, resizeSteps & resizeDelays for
-     * animation of this marker.
-     */
-    L.Marker.prototype._calculateTimeline = function() {
-
-        /*
-         * Animation is defined by shifts of the marker from it's original
-         * position. Each step of the animation is a shift of 1px.
-         *
-         * We define function f(x) - time of waiting between shift of x px and
-         * shift of x+1 px.
-         *
-         * We use for this the inverse function f(x) = a / x; where a is the
-         * animation speed and x is the shift from original position in px.
+        /**
+         * Calculates moveSteps, moveDelays, resizeSteps & resizeDelays for
+         * animation of this marker.
          */
+        _calculateTimeline: function() {
 
-        /* recalculate steps & delays of movement & resize animations */
-        this._bouncingMotion.moveSteps = calculateSteps(
-            this._bouncingOptions.bounceHeight,
-            'moveSteps_'
-        );
+            /*
+             * Animation is defined by shifts of the marker from it's original
+             * position. Each step of the animation is a shift of 1px.
+             *
+             * We define function f(x) - time of waiting between shift of x px
+             * and shift of x+1 px.
+             *
+             * We use for this the inverse function f(x) = a / x; where a is the
+             * animation speed and x is the shift from original position in px.
+             */
 
-        this._bouncingMotion.moveDelays = calculateDelays(
-            this._bouncingOptions.bounceHeight,
-            this._bouncingOptions.bounceSpeed,
-            'moveDelays_'
-        );
-
-        this._bouncingMotion.resizeSteps = calculateSteps(
-            this._bouncingOptions.contractHeight,
-            'resizeSteps_'
-        );
-
-        this._bouncingMotion.resizeDelays = calculateDelays(
-            this._bouncingOptions.contractHeight,
-            this._bouncingOptions.contractSpeed,
-            'resizeDelays_'
-        );
-    };
-
-    /**
-     * Calculated the transformations of this marker.
-     */
-    L.Marker.prototype._calculateTransforms = function() {
-        if (L.Browser.any3d) {
-
-            /* Calculate transforms for 3D browsers */
-
-            /* Calculate move transforms of icon */
-            this._bouncingMotion.iconMoveTransforms =
-                calculateIconMoveTransforms(
-                    this._bouncingMotion.x,
-                    this._bouncingMotion.y,
-                    this._bouncingOptions.bounceHeight
-                );
-
-            /* Calculate resize transforms of icon */
-            this._bouncingMotion.iconResizeTransforms =
-                calculateIconResizeTransforms(
-                    this._bouncingMotion.x,
-                    this._bouncingMotion.y,
-                    this.options.icon.options.iconSize[1],
-                    this._bouncingOptions.contractHeight
-                );
-
-            /* Calculate move transformations of shadow */
-            this._bouncingMotion.shadowMoveTransforms =
-                calculateShadowMoveTransforms(
-                    this._bouncingMotion.x,
-                    this._bouncingMotion.y,
-                    this._bouncingOptions.bounceHeight,
-                    this._bouncingOptions.shadowAngle
-                );
-
-            /* Calculate resize transforms of shadow */
-            // TODO: use function calculateShadowResizeTransforms
-            this._bouncingMotion.shadowResizeTransforms =
-                calculateIconResizeTransforms(
-                    this._bouncingMotion.x,
-                    this._bouncingMotion.y,
-                    this.options.icon.options.shadowSize[1],
-                    this._bouncingOptions.contractHeight
-                );
-
-        } else {
-
-            /* Calculate move points */
-
-            /* For the icon */
-            this._bouncingMotion.iconMovePoints = calculateIconMovePoints(
-                this._bouncingMotion.x,
-                this._bouncingMotion.y,
-                this._bouncingOptions.bounceHeight
-            );
-
-            /* And for the shadow */
-            this._bouncingMotion.shadowMovePoints = calculateShadowMovePoints(
-                this._bouncingMotion.x,
-                this._bouncingMotion.y,
+            /* recalculate steps & delays of movement & resize animations */
+            this._bouncingMotion.moveSteps = calculateSteps(
                 this._bouncingOptions.bounceHeight,
-                this._bouncingOptions.shadowAngle
+                'moveSteps_'
             );
 
-        }
-    };
+            this._bouncingMotion.moveDelays = calculateDelays(
+                this._bouncingOptions.bounceHeight,
+                this._bouncingOptions.bounceSpeed,
+                'moveDelays_'
+            );
 
-    // TODO: decide to redeclare ether only public or only private methods
-    var oldInitialize = L.Marker.prototype.initialize;
-    var oldSetPos = L.Marker.prototype._setPos;
-    var oldOnAdd = L.Marker.prototype.onAdd;
+            /* Calculate resize steps & delays only if elastic animation is
+             * enabled */
+            if (this._bouncingOptions.elastic) {
+                this._bouncingMotion.resizeSteps = calculateSteps(
+                    this._bouncingOptions.contractHeight,
+                    'resizeSteps_'
+                );
+
+                this._bouncingMotion.resizeDelays = calculateDelays(
+                    this._bouncingOptions.contractHeight,
+                    this._bouncingOptions.contractSpeed,
+                    'resizeDelays_'
+                );
+            }
+        },
+
+        /**
+         * Calculated the transformations of this marker.
+         */
+        _calculateTransforms: function() {
+            if (L.Browser.any3d) {
+
+                /* Calculate transforms for 3D browsers */
+
+                if (this.options.icon.options.iconSize) {
+                    var iconHeight = this.options.icon.options.iconSize[1];
+                } else {
+
+                    /* To fix the case when icon is in _iconObj */
+                    var iconHeight = this._iconObj.options.iconSize[1];
+                }
+
+                /* Calculate move transforms of icon */
+                this._bouncingMotion.iconMoveTransforms =
+                    calculateIconMoveTransforms(
+                        this._bouncingMotion.x,
+                        this._bouncingMotion.y,
+                        this._bouncingOptions.bounceHeight
+                    );
+
+                /* Calculate resize transforms of icon */
+                this._bouncingMotion.iconResizeTransforms =
+                    calculateIconResizeTransforms(
+                        this._bouncingMotion.x,
+                        this._bouncingMotion.y,
+                        iconHeight,
+                        this._bouncingOptions.contractHeight
+                    );
+
+                if (this._shadow) {
+
+                    /* Calculate move transformations of shadow */
+                    this._bouncingMotion.shadowMoveTransforms =
+                        calculateShadowMoveTransforms(
+                            this._bouncingMotion.x,
+                            this._bouncingMotion.y,
+                            this._bouncingOptions.bounceHeight,
+                            this._bouncingOptions.shadowAngle
+                        );
+
+                    /* Calculate resize transforms of shadow */
+                    // TODO: use function calculateShadowResizeTransforms
+                    this._bouncingMotion.shadowResizeTransforms =
+                        calculateIconResizeTransforms(
+                            this._bouncingMotion.x,
+                            this._bouncingMotion.y,
+                            this.options.icon.options.shadowSize[1],
+                            this._bouncingOptions.contractHeight
+                        );
+                }
+
+            } else {
+
+                /* Calculate move points */
+
+                /* For the icon */
+                this._bouncingMotion.iconMovePoints =
+                    calculateIconMovePoints(
+                        this._bouncingMotion.x,
+                        this._bouncingMotion.y,
+                        this._bouncingOptions.bounceHeight
+                    );
+
+                /* And for the shadow */
+                this._bouncingMotion.shadowMovePoints =
+                    calculateShadowMovePoints(
+                        this._bouncingMotion.x,
+                        this._bouncingMotion.y,
+                        this._bouncingOptions.bounceHeight,
+                        this._bouncingOptions.shadowAngle
+                    );
+
+            }
+        }
+
+    });
 
     /**
-     * Redeclaration of function initialize.
-     *
-     * @param latlng    latitude-longitude object
+     * Add init hook to calculate animation timeline.
      */
-    L.Marker.prototype.initialize = function(latlng, options) {
-        oldInitialize.call(this, latlng, options);
-
-        var bounceHeight   = this._bouncingOptions.bounceHeight,
-            bounceSpeed    = this._bouncingOptions.bounceSpeed,
-            contractHeight = this._bouncingOptions.contractHeight,
-            contractSpeed  = this._bouncingOptions.contractSpeed;
-
-        /* Calculate steps & delays of movement & resize animations */
+    L.Marker.addInitHook(function() {
         this._bouncingMotion = {
             isBouncing: false
         };
         this._calculateTimeline();
+    });
+
+    // TODO: decide to redeclare ether only public or only private methods
+    var oldSetPos = L.Marker.prototype._setPos;
+    var oldOnAdd = L.Marker.prototype.onAdd;
+
+    /**
+     * Redeclaration of _setPos function.
+     *
+     * @param pos    position object
+     */
+    L.Marker.prototype._setPos = function(pos) {
+        oldSetPos.call(this, pos);
+        this._bouncingMotion.x = pos.x;
+        this._bouncingMotion.y = pos.y;
+        this._calculateTransforms();
     };
 
     /**
@@ -913,21 +933,11 @@
         this._bouncingMotion.baseIconCssText = renderCssText(styles);
 
         /* Create base cssText for shadow */
-        styles = parseCssText(this._shadow.style.cssText);
-        delete styles.transform;    // delete old trasform style definition
-        this._bouncingMotion.baseShadowCssText = renderCssText(styles);
-    };
-
-    /**
-     * Redeclaration of _setPos function.
-     *
-     * @param pos    position object
-     */
-    L.Marker.prototype._setPos = function(pos) {
-        oldSetPos.call(this, pos);
-        this._bouncingMotion.x = pos.x;
-        this._bouncingMotion.y = pos.y;
-        this._calculateTransforms();
+        if (this._shadow) {
+            styles = parseCssText(this._shadow.style.cssText);
+            delete styles.transform;    // delete old trasform style definition
+            this._bouncingMotion.baseShadowCssText = renderCssText(styles);
+        }
     };
 
 })(L);

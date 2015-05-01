@@ -1,6 +1,6 @@
 {
   "name": "Leaflet.SmoothMarkerBouncing.Demo",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "homepage": "https://github.com/hosuaby/Leaflet.SmoothMarkerBouncing",
   "authors": [
     "Alexei KLENIN <alexey_klenin@hotmail.fr>"
@@ -23,6 +23,6 @@
     "lodash": "latest",
     "components-font-awesome": "latest",
     "github-markdown-css": "latest",
-    "Leaflet.SmoothMarkerBouncing": "hosuaby/Leaflet.SmoothMarkerBouncing#1.1.0"
+    "Leaflet.SmoothMarkerBouncing": "hosuaby/Leaflet.SmoothMarkerBouncing#1.1.1"
   }
 }
