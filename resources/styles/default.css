@@ -3,3 +3,13 @@ html, body, #map {
 	padding: 0;
 	height: 100%;
 }
+
+/* Panbitt */
+.panbitt-control {
+    opacity: 0.5;
+    cursor: pointer;
+}
+
+.panbitt-control:hover {
+    opacity: 1;
+}
