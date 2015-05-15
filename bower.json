@@ -23,6 +23,6 @@
     "lodash": "latest",
     "components-font-awesome": "latest",
     "github-markdown-css": "latest",
-    "Leaflet.SmoothMarkerBouncing": "hosuaby/Leaflet.SmoothMarkerBouncing#1.1.1"
+    "Leaflet.SmoothMarkerBouncing": "hosuaby/Leaflet.SmoothMarkerBouncing#1.1.2"
   }
 }

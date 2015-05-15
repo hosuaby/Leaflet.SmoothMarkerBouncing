@@ -85,7 +85,7 @@ Tested on
 :white_check_mark: Firefox 35.0  
 :white_check_mark: IE 11  
 :white_check_mark: Android 4.4/5.0  
-:no_entry: iPhone 6
+:white_check_mark: Safari
 
 License
 -------

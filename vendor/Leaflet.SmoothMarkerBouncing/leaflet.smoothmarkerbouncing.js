@@ -36,6 +36,22 @@
 
     var regStyle = /([\w-]+): ([^;]+);/g,    // regex to parse style definitions
 
+        /**
+         * CSS3 transform properties for different browsers
+         */
+        css3_transforms = {
+            transform       : 'transform',
+            WebkitTransform : '-webkit-transform',
+            OTransform      : '-o-transform',
+            MozTransform    : '-moz-transform',
+            msTransform     : '-ms-transform'
+        },
+
+        /**
+         * CSS3 transform property for this browser
+         */
+        transform = css3_transforms[L.DomUtil.TRANSFORM],
+
         /* Cache for motion data that not depends on x & y of the marker:
          *    - moveSteps
          *    - moveDelays
@@ -593,7 +609,7 @@
                 baseShadowCssText = motion.baseShadowCssText,
 
                 is3d      = L.Browser.any3d,
-                transform = L.DomUtil.TRANSFORM,
+                // transform = L.DomUtil.TRANSFORM,
 
                 times = null;    // null for infinite bouncing
 
@@ -928,14 +944,14 @@
 
         /* Create base cssText */
         var styles = parseCssText(this._icon.style.cssText);
-        delete styles.transform;     // delete old trasform style definition
+        delete styles[transform];    // delete old trasform style definition
         delete styles['z-index'];    // delete old z-index
         this._bouncingMotion.baseIconCssText = renderCssText(styles);
 
         /* Create base cssText for shadow */
         if (this._shadow) {
             styles = parseCssText(this._shadow.style.cssText);
-            delete styles.transform;    // delete old trasform style definition
+            delete styles[transform];    // delete old trasform style definition
             this._bouncingMotion.baseShadowCssText = renderCssText(styles);
         }
     };
