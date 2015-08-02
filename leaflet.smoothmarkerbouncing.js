@@ -75,8 +75,7 @@
      */
     function parseCssText(cssText) {
         var styleDefinitions = {},
-
-        match = regStyle.exec(cssText);
+            match = regStyle.exec(cssText);
 
         while (match) {
             styleDefinitions[match[1]] = match[2];
