@@ -5,10 +5,9 @@
 
     var map = L.map('map').setView([48.847547, 2.351074], 14);
 
-    L.tileLayer('https://{s}.tiles.mapbox.com/v3/{id}/{z}/{x}/{y}.png', {
+    L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
         zoomControl: true,
-        maxZoom: 18,
-        id: 'examples.map-i875mjb7'
+        maxZoom: 18
     }).addTo(map);
 
     /* Limit to Paris area */
