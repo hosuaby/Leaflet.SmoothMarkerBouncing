@@ -607,8 +607,7 @@
                 baseIconCssText   = motion.baseIconCssText,
                 baseShadowCssText = motion.baseShadowCssText,
 
-                is3d      = L.Browser.any3d,
-                // transform = L.DomUtil.TRANSFORM,
+                is3d = L.Browser.any3d,
 
                 times = null;    // null for infinite bouncing
 
@@ -744,8 +743,8 @@
                 }, resizeDelays[nbResizeSteps - 1]);
             }
 
-            motion.isBouncing = true;
             L.Marker._addBouncingMarker(marker, exclusive);
+            motion.isBouncing = true;
             move();        // start animation
 
             return marker;    // fluent API
@@ -945,6 +944,15 @@
         var styles = parseCssText(this._icon.style.cssText);
         delete styles[transform];    // delete old trasform style definition
         delete styles['z-index'];    // delete old z-index
+
+        /* Restores opacity when marker (re)added :
+         * 1) checks opacityWhenUnclustered option used by cluster plugin
+         * 2) checks opacity option
+         * 3) assumes opacity is 1 */
+        styles.opacity = this.options.opacityWhenUnclustered
+            || this.options.opacity
+            || 1;
+
         this._bouncingMotion.baseIconCssText = renderCssText(styles);
 
         /* Create base cssText for shadow */
@@ -952,6 +960,10 @@
             styles = parseCssText(this._shadow.style.cssText);
             delete styles[transform];    // delete old trasform style definition
             this._bouncingMotion.baseShadowCssText = renderCssText(styles);
+        }
+
+        if (this._bouncingMotion.isBouncing) {
+            this.bounce();
         }
     };
 
