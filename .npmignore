@@ -1,0 +1,7 @@
+.git
+.gitignore
+node_modules
+vendor
+test
+tests
+debug
