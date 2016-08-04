@@ -959,6 +959,7 @@
         if (this._shadow) {
             styles = parseCssText(this._shadow.style.cssText);
             delete styles[transform];    // delete old trasform style definition
+            delete styles['opacity'];
             this._bouncingMotion.baseShadowCssText = renderCssText(styles);
         }
 
