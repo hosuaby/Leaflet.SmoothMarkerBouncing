@@ -1,4 +1,4 @@
-Leaflet.SmoothMarkerBouncing
+Leaflet.SmoothMarkerBouncing [![npm](https://img.shields.io/npm/v/leaflet.smooth_marker_bouncing.svg)](http://npm.im/leaflet.smooth_marker_bouncing) 
 ============================
 Plugin for [Leaflet](http://leafletjs.com/) that will make you markers bounce!
 
