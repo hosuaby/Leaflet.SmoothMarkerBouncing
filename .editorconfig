@@ -10,5 +10,11 @@ insert_final_newline = true
 ij_continuation_indent_size = 8
 ij_visual_guides = 100
 
+[*.js]
+ij_javascript_use_double_quotes = false
+
+[*.json]
+indent_size = 2
+
 [*.md]
 trim_trailing_whitespace = false

@@ -19,5 +19,51 @@
   "bugs": {
     "url": "https://github.com/hosuaby/Leaflet.SmoothMarkerBouncing/issues"
   },
-  "homepage": "https://github.com/hosuaby/Leaflet.SmoothMarkerBouncing#readme"
+  "homepage": "https://github.com/hosuaby/Leaflet.SmoothMarkerBouncing#readme",
+  "devDependencies": {
+    "@ava/babel": "^1.0.1",
+    "@babel/cli": "^7.10.5",
+    "@babel/plugin-proposal-class-properties": "^7.10.4",
+    "@babel/preset-env": "^7.11.0",
+    "@babel/register": "^7.10.5",
+    "ava": "3.12.1",
+    "browser-env": "^3.3.0",
+    "concurrently": "^5.3.0",
+    "font-awesome": "^4.7.0",
+    "http-server": "^0.12.3",
+    "jquery": "^3.5.1",
+    "leaflet": "1.7.1",
+    "leaflet.awesome-markers": "^2.0.5",
+    "leaflet.markercluster": "^1.4.1",
+    "lodash": "4.17.20",
+    "npm-check": "^5.9.2",
+    "onchange": "^7.0.2",
+    "rollup": "^2.26.4",
+    "rollup-plugin-babel": "^4.4.0",
+    "rollup-plugin-commonjs": "^10.1.0",
+    "rollup-plugin-node-resolve": "^5.2.0",
+    "sidebar-v2": "^0.4.0"
+  },
+  "scripts": {
+    "compile": "babel src --out-dir dist",
+    "build": "rollup -c",
+    "deps:check": "npm-check || true",
+    "deps:upgrade": "npm-check -u -E",
+    "dev": "concurrently \"npm run watch\" \"npm run serve\"",
+    "serve": "http-server -o /debug",
+    "test": "ava",
+    "watch": "onchange 'src/*' -- npm run build"
+  },
+  "ava": {
+    "files": [
+      "tests/**/*",
+      "!tests/helpers/*"
+    ],
+    "babel": true,
+    "require": [
+      "@babel/register",
+      "./tests/helpers/setup-browser-env.js"
+    ],
+    "verbose": true
+  }
 }
