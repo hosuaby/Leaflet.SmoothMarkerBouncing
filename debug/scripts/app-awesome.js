@@ -24,6 +24,8 @@
         markerColor: 'green'
     });
 
+    var sidebar = $('#sidebar');
+
     /* 20 normal markers */
     _.times(20, function() {
         var lat = _.random(bounds[0][0], bounds[1][0]);
@@ -36,6 +38,16 @@
             .on('click', function() {
                 this.toggleBouncing();
             }).addTo(map);
+
+        var button = $('<button>toto</button>');
+        button.mouseenter(function () {
+            marker.bounce();
+        });
+        button.mouseleave(function () {
+            marker.stopBouncing();
+        });
+
+        sidebar.append(button);
     });
 
     /* Stop all bouncing markers on click on the map */

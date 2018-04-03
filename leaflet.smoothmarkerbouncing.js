@@ -611,6 +611,11 @@
 
                 times = null;    // null for infinite bouncing
 
+            if (motion.bouncingAnimationPlaying) {
+                motion.isBouncing = true;
+                return;
+            }
+
             if (arguments.length == 1) {
                 times = arguments[0];
             }
@@ -684,6 +689,7 @@
                 if (times !== null) {
                     if (!--times) {
                         motion.isBouncing = false;  // this is the last bouncing
+                        motion.bouncingAnimationPlaying = false;
                     }
                 }
 
@@ -715,6 +721,8 @@
                         resize();    // possible only in 3D able browsers
                     } else if (motion.isBouncing) {
                         setTimeout(move, bounceSpeed);
+                    } else {
+                        motion.bouncingAnimationPlaying = false;
                     }
                 }, moveDelays[nbMoveSteps - 1]);
             }
@@ -724,6 +732,13 @@
              */
             function resize() {
                 var i = nbResizeSteps;
+
+                /* Stop animation at the end if necessary */
+                setTimeout(function () {
+                    if (!motion.isBouncing) {
+                        motion.bouncingAnimationPlaying = false;
+                    }
+                }, resizeDelays[i]);
 
                 /* Lauch timeouts for every step of the contraction animation */
                 while (i--) {
@@ -745,6 +760,7 @@
 
             L.Marker._addBouncingMarker(marker, exclusive);
             motion.isBouncing = true;
+            motion.bouncingAnimationPlaying = true;
             move();        // start animation
 
             return marker;    // fluent API
@@ -911,7 +927,8 @@
      */
     L.Marker.addInitHook(function() {
         this._bouncingMotion = {
-            isBouncing: false
+            isBouncing: false,
+            bouncingAnimationPlaying: false
         };
         this._calculateTimeline();
     });
