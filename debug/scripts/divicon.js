@@ -18,22 +18,30 @@
         bounceSpeed: 60
     });
 
+    var icon = L.divIcon({
+        className: 'ball-icon',
+        iconSize: [35, 36]
+    });
+
     /* 20 ball markers */
     _.times(20, function() {
         var lat = _.random(bounds[0][0], bounds[1][0]);
         var lng = _.random(bounds[0][1], bounds[1][1]);
 
-        var marker = L.marker([lat, lng], {
-            icon: L.divIcon({ className: 'ball-icon' })
-        }).setBouncingOptions({
-            bounceHeight: 40,
-            contractHeight: 20,
-            bounceSpeed: 60,
-            contractSpeed: 30,
-            shadowAngle: null
-        }).on('click', function() {
-            this.bounce(3);
-        }).addTo(map);
+        var marker = L.marker([lat, lng])
+            .setBouncingOptions({
+                bounceHeight: 40,
+                contractHeight: 20,
+                bounceSpeed: 60,
+                contractSpeed: 30,
+                shadowAngle: null
+            })
+            .on('click', function() {
+                this.bounce(3);
+            })
+            .addTo(map);
+
+        marker.setIcon(icon);
     });
 
     /* Stop all bouncing markers on click on the map */

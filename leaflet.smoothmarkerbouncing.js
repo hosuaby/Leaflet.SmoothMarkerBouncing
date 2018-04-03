@@ -919,6 +919,7 @@
     // TODO: decide to redeclare ether only public or only private methods
     var oldSetPos = L.Marker.prototype._setPos;
     var oldOnAdd = L.Marker.prototype.onAdd;
+    var oldSetIcon = L.Marker.prototype.setIcon;
 
     /**
      * Redeclaration of _setPos function.
@@ -965,6 +966,32 @@
 
         if (this._bouncingMotion.isBouncing) {
             this.bounce();
+        }
+    };
+
+    L.Marker.prototype.setIcon = function(icon) {
+        oldSetIcon.call(this, icon);
+
+        /* Create base cssText */
+        var styles = parseCssText(this._icon.style.cssText);
+        delete styles[transform];    // delete old trasform style definition
+        delete styles['z-index'];    // delete old z-index
+
+        /* Restores opacity when marker (re)added :
+         * 1) checks opacityWhenUnclustered option used by cluster plugin
+         * 2) checks opacity option
+         * 3) assumes opacity is 1 */
+        styles.opacity = this.options.opacityWhenUnclustered
+            || this.options.opacity
+            || 1;
+
+        this._bouncingMotion.baseIconCssText = renderCssText(styles);
+
+        if (this._shadow) {
+            styles = parseCssText(this._shadow.style.cssText);
+            delete styles[transform];    // delete old trasform style definition
+            delete styles['opacity'];
+            this._bouncingMotion.baseShadowCssText = renderCssText(styles);
         }
     };
 
