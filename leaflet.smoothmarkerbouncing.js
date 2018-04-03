@@ -981,6 +981,7 @@
             this._bouncingMotion.baseShadowCssText = renderCssText(styles);
         }
 
+        this._bouncingMotion.bouncingAnimationPlaying = false;
         if (this._bouncingMotion.isBouncing) {
             this.bounce();
         }
