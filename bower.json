@@ -24,12 +24,12 @@
     "debug"
   ],
   "devDependencies": {
-    "leaflet": "^0.7.3",
-    "leaflet.markercluster": "^0.5.0",
-    "lodash": "^3.8.0",
-    "install": "^1.0.4",
-    "bootstrap": "^3.3.7",
-    "Leaflet.awesome-markers": "^2.0.2",
-    "sidebar-v2": "Turbo87/sidebar-v2#^0.4.0"
+    "leaflet": "1.3.1",
+    "leaflet.markercluster": "1.3.0",
+    "lodash": "3.8.0",
+    "install": "1.0.4",
+    "bootstrap": "3.3.7",
+    "Leaflet.awesome-markers": "2.0.2",
+    "sidebar-v2": "Turbo87/sidebar-v2#0.4.0"
   }
 }
