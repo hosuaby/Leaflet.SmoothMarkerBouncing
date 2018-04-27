@@ -937,6 +937,7 @@
     var oldSetPos = L.Marker.prototype._setPos;
     var oldOnAdd = L.Marker.prototype.onAdd;
     var oldSetIcon = L.Marker.prototype.setIcon;
+    var oldOn = L.Marker.prototype._on;
 
     /**
      * Redeclaration of _setPos function.
@@ -1011,6 +1012,18 @@
             delete styles['opacity'];
             this._bouncingMotion.baseShadowCssText = renderCssText(styles);
         }
+    };
+
+    L.Marker.prototype._on = function (type, fn, context) {
+        var newFn = function (event) {
+            if (type === 'click') {
+                document.activeElement.blur();
+            }
+
+            fn.call(this, event);
+        };
+        
+        oldOn.call(this, type, newFn, context);
     };
 
 })(L);
