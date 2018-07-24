@@ -686,13 +686,6 @@
              * Moves the marker up & down.
              */
             function move() {
-                if (times !== null) {
-                    if (!--times) {
-                        motion.isBouncing = false;  // this is the last bouncing
-                        motion.bouncingAnimationPlaying = false;
-                    }
-                }
-
                 var i = nbMoveSteps;
 
                 /* Lauch timeouts for every step of the movement animation */
@@ -717,6 +710,13 @@
                  */
                 // TODO: longer timeout if there is not resize part of animation
                 setTimeout(function() {
+                    if (times !== null) {
+                        if (!--times) {
+                            motion.isBouncing = false;  // this is the last bouncing
+                            motion.bouncingAnimationPlaying = false;
+                        }
+                    }
+
                     if (elastic && is3d) {
                         resize();    // possible only in 3D able browsers
                     } else if (motion.isBouncing) {
