@@ -30,7 +30,22 @@
  *
  * @author Alexei KLENIN <alexey_klenin@hotmail.fr>
  */
-;(function(L) {
+ (function (factory, window) {
+
+    // define an AMD module that relies on 'leaflet'
+    if (typeof define === 'function' && define.amd) {
+        define(['leaflet'], factory);
+
+    // define a Common JS module that relies on 'leaflet'
+    } else if (typeof exports === 'object') {
+        module.exports = factory(require('leaflet'));
+    }
+
+    // attach your plugin to the global 'L' variable
+    if (typeof window !== 'undefined' && window.L) {
+        window.L.YourPlugin = factory(L);
+    }
+}(function (L) {
 
     'use strict';
 
@@ -1026,4 +1041,4 @@
         oldOn.call(this, type, newFn, context);
     };
 
-})(L);
+}, window));
