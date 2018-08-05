@@ -30,15 +30,19 @@
  *
  * @author Alexei KLENIN <alexey_klenin@hotmail.fr>
  */
- (function (factory, window) {
+;(function (factory, window) {
 
-    // define an AMD module that relies on 'leaflet'
+    /* Define an AMD module that relies on 'leaflet' */
     if (typeof define === 'function' && define.amd) {
         define(['leaflet'], factory);
 
-    // define a Common JS module that relies on 'leaflet'
+        /* Define a Common JS module that relies on 'leaflet'*/
     } else if (typeof exports === 'object') {
         module.exports = factory(require('leaflet'));
+    }
+
+    if (typeof window !== 'undefined' && window.L) {
+        factory(L);
     }
 }(function (L) {
 
@@ -316,7 +320,7 @@
      */
     // TODO: fix & deploy this function
     function calculateShadowResizeTransforms(x, y, width, height,
-            contractHeight, angle) {
+                                             contractHeight, angle) {
         var t = [],                     // array of transformation definitions
             p = calculateLine(width, height, angle + Math.PI, contractHeight),
             dH = contractHeight + 1;    // delta height
@@ -1037,7 +1041,7 @@
 
             fn.call(this, event);
         };
-        
+
         oldOn.call(this, type, newFn, context);
     };
 
