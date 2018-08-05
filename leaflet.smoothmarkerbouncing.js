@@ -3,7 +3,7 @@
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the fLeaflet.SmoothMarkerBouncingollowing conditions are met:
+ * modification, are permitted provided that the following conditions are met:
  *
  *   1. Redistributions of source code must retain the above copyright notice,
  *        this list of conditions and the following disclaimer.
@@ -991,9 +991,12 @@
     L.Marker.prototype.setIcon = function(icon) {
         oldSetIcon.call(this, icon);
 
-        if(this._icon){
+        var styles = {};
+
+        if (this._icon) {
+
             /* Create base cssText */
-            var styles = parseCssText(this._icon.style.cssText);
+            styles = parseCssText(this._icon.style.cssText);
             delete styles[transform];    // delete old trasform style definition
             delete styles['z-index'];    // delete old z-index
 
@@ -1004,9 +1007,9 @@
             styles.opacity = this.options.opacityWhenUnclustered
                 || this.options.opacity
                 || 1;
-
-            this._bouncingMotion.baseIconCssText = renderCssText(styles);
         }
+
+        this._bouncingMotion.baseIconCssText = renderCssText(styles);
 
         if (this._shadow) {
             styles = parseCssText(this._shadow.style.cssText);
