@@ -39,6 +39,17 @@ Some usage examples:
 /* Create a marker and make it bounce immediately */
 var marker = L.marker([lat, lng]).bounce();
 
+/* Create a marker and make it bounce 2 times when clicked.
+ * Do something when the bouncing is stoped, such as opening popup.
+ */
+var marker = L.marker([lat, lng])
+    .on('click', function() {
+        this.bounce(2) // bounce 3 times
+        .on('bounceend',function() {
+            console.log('bounce end');
+        }); 
+    });
+
 /* Create a marker and define it's bouncing options.
  * Bouncing can be started/stoped by the click on the marker.
  */
