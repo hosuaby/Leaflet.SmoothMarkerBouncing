@@ -79,6 +79,12 @@ Method `setBouncingOptions` accepts an object with options as parameter. Animati
 - **elastic** - activate contract animation when marker touch the ground, *default: true*
 - **exclusive** - when it's true, stops the bouncing of other markers when this one starts to bounce. If another marker start to bounce after, this marker stops. *default: false*
 
+Events
+----------------
+|Event|Description|
+|---|---|
+|bounceend|Fired when the animation is done|
+
 Tested on
 ---------
 :white_check_mark: Chrome 40.0  
