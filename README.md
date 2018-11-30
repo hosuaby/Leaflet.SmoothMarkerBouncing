@@ -44,7 +44,7 @@ var marker = L.marker([lat, lng]).bounce();
  */
 var marker = L.marker([lat, lng])
     .on('click', function() {
-        this.bounce(2) // bounce 3 times
+        this.bounce(2) // bounce 2 times
         .on('bounceend',function() {
             console.log('bounce end');
         }); 
