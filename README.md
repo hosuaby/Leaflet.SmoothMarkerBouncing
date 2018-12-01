@@ -39,6 +39,17 @@ Some usage examples:
 /* Create a marker and make it bounce immediately */
 var marker = L.marker([lat, lng]).bounce();
 
+/* Create a marker and make it bounce 2 times when clicked.
+ * Do something when the bouncing is stoped, such as opening popup.
+ */
+var marker = L.marker([lat, lng])
+    .on('click', function() {
+        this.bounce(2) // bounce 2 times
+        .on('bounceend',function() {
+            console.log('bounce end');
+        }); 
+    });
+
 /* Create a marker and define it's bouncing options.
  * Bouncing can be started/stoped by the click on the marker.
  */
@@ -78,6 +89,12 @@ Method `setBouncingOptions` accepts an object with options as parameter. Animati
 - **shadowAngle** - shadow inclination angle, if set to `null` shadow animation is disabled (radians), *default: - Math.PI / 4*
 - **elastic** - activate contract animation when marker touch the ground, *default: true*
 - **exclusive** - when it's true, stops the bouncing of other markers when this one starts to bounce. If another marker start to bounce after, this marker stops. *default: false*
+
+Events
+----------------
+|Event|Description|
+|---|---|
+|bounceend|Fired when the animation is done|
 
 Tested on
 ---------

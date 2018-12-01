@@ -768,7 +768,9 @@
                 setTimeout(function() {
                     if (motion.isBouncing) {
                         move();
-                    }
+                    } else {
+                        marker.fire('bounceend');
+                  }
                 }, resizeDelays[nbResizeSteps - 1]);
             }
 
