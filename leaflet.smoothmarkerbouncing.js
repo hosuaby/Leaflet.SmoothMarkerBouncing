@@ -30,7 +30,7 @@
  *
  * @author Alexei KLENIN <alexey_klenin@hotmail.fr>
  */
-;(function (factory, window) {
+; (function (factory, window) {
 
     /* Define an AMD module that relies on 'leaflet' */
     if (typeof define === 'function' && define.amd) {
@@ -54,11 +54,11 @@
          * CSS3 transform properties for different browsers
          */
         css3_transforms = {
-            transform       : 'transform',
-            WebkitTransform : '-webkit-transform',
-            OTransform      : '-o-transform',
-            MozTransform    : '-moz-transform',
-            msTransform     : '-ms-transform'
+            transform: 'transform',
+            WebkitTransform: '-webkit-transform',
+            OTransform: '-o-transform',
+            MozTransform: '-moz-transform',
+            msTransform: '-ms-transform'
         },
 
         /**
@@ -320,7 +320,7 @@
      */
     // TODO: fix & deploy this function
     function calculateShadowResizeTransforms(x, y, width, height,
-                                             contractHeight, angle) {
+        contractHeight, angle) {
         var t = [],                     // array of transformation definitions
             p = calculateLine(width, height, angle + Math.PI, contractHeight),
             dH = contractHeight + 1;    // delta height
@@ -329,7 +329,7 @@
         while (dH--) {
 
             /* Use matrix3d for hardware acceleration */
-            t[dH] = ' matrix3d(' + (width / p[dH][0]) +  ',0,0,0,0,'
+            t[dH] = ' matrix3d(' + (width / p[dH][0]) + ',0,0,0,0,'
                 + (p[dH][1] / height) + ',0,0,0,0,1,0,' + x + ','
                 + (y + height - p[dH][1]) + ',0,1) ';
         }
@@ -447,7 +447,7 @@
      *
      * @param options    object with options
      */
-    L.Marker.setBouncingOptions = function(options) {
+    L.Marker.setBouncingOptions = function (options) {
         L.extend(L.Marker.prototype._bouncingOptions, options);
     };
 
@@ -456,7 +456,7 @@
      *
      * @return array of bouncing markers
      */
-    L.Marker.getBouncingMarkers = function() {
+    L.Marker.getBouncingMarkers = function () {
         return L.Marker._bouncingMarkers;
     };
 
@@ -464,7 +464,7 @@
      * Stops the bouncing of all currently bouncing markers. Purge the array of
      * bouncing markers.
      */
-    L.Marker.stopAllBouncingMarkers = function() {
+    L.Marker.stopAllBouncingMarkers = function () {
         var marker;
         while (marker = L.Marker._bouncingMarkers.shift()) {
             marker._bouncingMotion.isBouncing = false;    // stop bouncing
@@ -479,7 +479,7 @@
      * @param exclusive   flag of exclusive bouncing. If set to true, stops the
      *                    bouncing of all other markers.
      */
-    L.Marker._addBouncingMarker = function(marker, exclusive) {
+    L.Marker._addBouncingMarker = function (marker, exclusive) {
         if (exclusive || marker._bouncingOptions.exclusive) {
             L.Marker.stopAllBouncingMarkers();
         } else {
@@ -493,7 +493,7 @@
      *
      * @param marker    marker object
      */
-    L.Marker._removeBouncingMarker = function(marker) {
+    L.Marker._removeBouncingMarker = function (marker) {
         var i = L.Marker._bouncingMarkers.length;
 
         if (i) {
@@ -509,7 +509,7 @@
     /**
      * Stops the bouncing of exclusive marker.
      */
-    L.Marker._stopEclusiveMarkerBouncing = function() {
+    L.Marker._stopEclusiveMarkerBouncing = function () {
         var i = L.Marker._bouncingMarkers.length;
 
         if (i) {
@@ -532,15 +532,15 @@
 
         /* Default bouncing animation properties */
         _bouncingOptions: {
-            bounceHeight   : 15,    // how high marker can bounce (px)
-            contractHeight : 12,    // how much marker can contract (px)
-            bounceSpeed    : 52,    // bouncing speed coefficient
-            contractSpeed  : 52,    // contracting speed coefficient
-            shadowAngle    : - Math.PI / 4, // shadow inclination angle
-                                            // (radians); null value annulates
-                                            // shadow movement
-            elastic        : true,  // activate contract animation
-            exclusive      : false, // many markers can bounce in the same time
+            bounceHeight: 15,    // how high marker can bounce (px)
+            contractHeight: 12,    // how much marker can contract (px)
+            bounceSpeed: 52,    // bouncing speed coefficient
+            contractSpeed: 52,    // contracting speed coefficient
+            shadowAngle: - Math.PI / 4, // shadow inclination angle
+            // (radians); null value annulates
+            // shadow movement
+            elastic: true,  // activate contract animation
+            exclusive: false, // many markers can bounce in the same time
         },
 
         /**
@@ -553,7 +553,7 @@
          *
          * @return this marker
          */
-        setBouncingOptions: function(options) {
+        setBouncingOptions: function (options) {
 
             /* If _bouncingOptions was not redefined yet for this marker create
              * own property and clone _bouncingOptions of prototype.
@@ -583,7 +583,7 @@
          *
          * @return true if marker is bouncing, false if not
          */
-        isBouncing: function() {
+        isBouncing: function () {
             return this._bouncingMotion.isBouncing;
         },
 
@@ -594,31 +594,31 @@
          *
          * @return this marker
          */
-        bounce: function() {
+        bounce: function () {
             var marker = this,
-                icon   = this._icon,
+                icon = this._icon,
                 shadow = this._shadow,
 
                 bouncingOptions = marker._bouncingOptions,
-                motion          = marker._bouncingMotion,
+                motion = marker._bouncingMotion,
 
-                bounceHeight   = bouncingOptions.bounceHeight,
+                bounceHeight = bouncingOptions.bounceHeight,
                 contractHeight = bouncingOptions.contractHeight,
-                bounceSpeed    = bouncingOptions.bounceSpeed,
-                contractSpeed  = bouncingOptions.contractSpeed,
-                shadowAngle    = bouncingOptions.shadowAngle,
-                elastic        = bouncingOptions.elastic,
-                exclusive      = bouncingOptions.exclusive,
+                bounceSpeed = bouncingOptions.bounceSpeed,
+                contractSpeed = bouncingOptions.contractSpeed,
+                shadowAngle = bouncingOptions.shadowAngle,
+                elastic = bouncingOptions.elastic,
+                exclusive = bouncingOptions.exclusive,
 
-                moveSteps    = motion.moveSteps,
-                moveDelays   = motion.moveDelays,
-                resizeSteps  = motion.resizeSteps,
+                moveSteps = motion.moveSteps,
+                moveDelays = motion.moveDelays,
+                resizeSteps = motion.resizeSteps,
                 resizeDelays = motion.resizeDelays,
 
-                nbMoveSteps   = moveSteps.length,
+                nbMoveSteps = moveSteps.length,
                 nbResizeSteps = resizeSteps.length,
 
-                baseIconCssText   = motion.baseIconCssText,
+                baseIconCssText = motion.baseIconCssText,
                 baseShadowCssText = motion.baseShadowCssText,
 
                 is3d = L.Browser.any3d,
@@ -642,9 +642,11 @@
             function makeMoveStep(step) {
 
                 /* Reset icon's cssText */
-                icon.style.cssText = baseIconCssText
-                    + 'z-index: ' + marker._zIndex + ';'
-                    + transform + ': ' + motion.iconMoveTransforms[step];
+                if (icon) {
+                    icon.style.cssText = baseIconCssText
+                        + 'z-index: ' + marker._zIndex + ';'
+                        + transform + ': ' + motion.iconMoveTransforms[step];
+                }
 
                 /* Reset shadow's cssText */
                 if (shadow) {
@@ -663,16 +665,18 @@
             function makeMoveStepNo3D(step) {
 
                 /* Reset icon's cssText */
-                icon.style.cssText = baseIconCssText
-                    + 'z-index: ' + marker._zIndex + ';';
-                icon.style.left = motion.iconMovePoints[step][0] + 'px';
-                icon.style.top  = motion.iconMovePoints[step][1] + 'px';
+                if (icon) {
+                    icon.style.cssText = baseIconCssText
+                        + 'z-index: ' + marker._zIndex + ';';
+                    icon.style.left = motion.iconMovePoints[step][0] + 'px';
+                    icon.style.top = motion.iconMovePoints[step][1] + 'px';
+                }
 
                 /* Reset shadow's cssText */
                 if (shadow) {
                     shadow.style.cssText = baseShadowCssText;
                     shadow.style.left = motion.shadowMovePoints[step][0] + 'px';
-                    shadow.style.top  = motion.shadowMovePoints[step][1] + 'px';
+                    shadow.style.top = motion.shadowMovePoints[step][1] + 'px';
                 }
             }
 
@@ -684,9 +688,11 @@
             function makeResizeStep(step) {
 
                 /* Reset icon's cssText */
-                icon.style.cssText = baseIconCssText
-                    + 'z-index: ' + marker._zIndex + ';'
-                    + transform + ': ' + motion.iconResizeTransforms[step];
+                if (icon) {
+                    icon.style.cssText = baseIconCssText
+                        + 'z-index: ' + marker._zIndex + ';'
+                        + transform + ': ' + motion.iconResizeTransforms[step];
+                }
 
                 /* Reset shadow's cssText */
                 if (shadow && shadowAngle != null) {
@@ -730,7 +736,7 @@
                  * bouncing with rezise animation, move animation or stop it.
                  */
                 // TODO: longer timeout if there is not resize part of animation
-                setTimeout(function() {
+                setTimeout(function () {
                     if (elastic && is3d) {
                         resize();    // possible only in 3D able browsers
                     } else if (motion.isBouncing) {
@@ -765,12 +771,12 @@
                 /* At the end of contraction animation check if continue the
                  * bouncing with move animation or stop it.
                  */
-                setTimeout(function() {
+                setTimeout(function () {
                     if (motion.isBouncing) {
                         move();
                     } else {
                         marker.fire('bounceend');
-                  }
+                    }
                 }, resizeDelays[nbResizeSteps - 1]);
             }
 
@@ -790,7 +796,7 @@
          *
          * @return this marker
          */
-        stopBouncing: function() {
+        stopBouncing: function () {
             this._bouncingMotion.isBouncing = false;
             L.Marker._removeBouncingMarker(this);
 
@@ -802,7 +808,7 @@
          *
          * @return this marker
          */
-        toggleBouncing: function() {
+        toggleBouncing: function () {
             if (this._bouncingMotion.isBouncing) {
                 this.stopBouncing();
             } else {
@@ -816,7 +822,7 @@
          * Calculates moveSteps, moveDelays, resizeSteps & resizeDelays for
          * animation of this marker.
          */
-        _calculateTimeline: function() {
+        _calculateTimeline: function () {
 
             /*
              * Animation is defined by shifts of the marker from it's original
@@ -860,7 +866,7 @@
         /**
          * Calculated the transformations of this marker.
          */
-        _calculateTransforms: function() {
+        _calculateTransforms: function () {
             if (L.Browser.any3d) {
 
                 /* Calculate transforms for 3D browsers */
@@ -941,7 +947,7 @@
     /**
      * Add init hook to calculate animation timeline.
      */
-    L.Marker.addInitHook(function() {
+    L.Marker.addInitHook(function () {
         this._bouncingMotion = {
             isBouncing: false,
             bouncingAnimationPlaying: false
@@ -960,7 +966,7 @@
      *
      * @param pos    position object
      */
-    L.Marker.prototype._setPos = function(pos) {
+    L.Marker.prototype._setPos = function (pos) {
         oldSetPos.call(this, pos);
         this._bouncingMotion.x = pos.x;
         this._bouncingMotion.y = pos.y;
@@ -972,7 +978,7 @@
      *
      * @param map    map object
      */
-    L.Marker.prototype.onAdd = function(map) {
+    L.Marker.prototype.onAdd = function (map) {
         oldOnAdd.call(this, map);
 
         /* Create base cssText */
@@ -1004,7 +1010,7 @@
         }
     };
 
-    L.Marker.prototype.setIcon = function(icon) {
+    L.Marker.prototype.setIcon = function (icon) {
         oldSetIcon.call(this, icon);
 
         var styles = {};
