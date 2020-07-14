@@ -37,12 +37,13 @@ Plugin respects fluent API. All marker instance methods (except `isBouncing`) re
 Some usage examples:
 ```javascript
 /* Create a marker and make it bounce immediately */
-var marker = L.marker([lat, lng]).bounce();
+var marker = L.marker([lat, lng]).addTo(map).bounce();
 
 /* Create a marker and make it bounce 2 times when clicked.
  * Do something when the bouncing is stoped, such as opening popup.
  */
 var marker = L.marker([lat, lng])
+    .addTo(map)
     .on('click', function() {
         this.bounce(2) // bounce 2 times
         .on('bounceend',function() {
@@ -58,7 +59,9 @@ var marker = L.marker([lat, lng])
         bounceHeight : 60,    // height of the bouncing
         bounceSpeed  : 54,    // bouncing speed coefficient
         exclusive    : true,  // if this marker bouncing all others must stop
-    }).on('click', function() {
+    })
+    .addTo(map)
+    .on('click', function() {
         this.toggleBouncing();
     });
 
@@ -71,6 +74,7 @@ L.Marker.setBouncingOptions({
 /* Create 10 markers and each of them will bounce 3 times when clicked */
 for (var i = 0; i < 10; i++) {
     var marker = L.marker([lat, lng])
+        .addTo(map)
         .on('click', function() {
             this.bounce(3); // bounce 3 times
         });
