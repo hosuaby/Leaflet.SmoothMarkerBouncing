@@ -1,7 +1,6 @@
 .git
 .gitignore
+.idea
 node_modules
-vendor
-test
-tests
 debug
+.editorconfig
