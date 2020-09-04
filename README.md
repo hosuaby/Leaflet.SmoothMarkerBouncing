@@ -1,5 +1,8 @@
-Leaflet.SmoothMarkerBouncing [![npm](https://img.shields.io/npm/v/leaflet.smooth_marker_bouncing.svg)](http://npm.im/leaflet.smooth_marker_bouncing) 
-============================
+# Leaflet.SmoothMarkerBouncing 
+
+[![npm](https://img.shields.io/npm/v/leaflet.smooth_marker_bouncing.svg)](http://npm.im/leaflet.smooth_marker_bouncing) 
+[![Build Status](https://travis-ci.org/hosuaby/Leaflet.SmoothMarkerBouncing.svg?branch=master)](https://travis-ci.org/hosuaby/Leaflet.SmoothMarkerBouncing)
+
 Plugin for [Leaflet](http://leafletjs.com/) that will make you markers bounce!
 
 It provides smooth, lightweight and customisable animation of marker bouncing.
@@ -7,12 +10,10 @@ Allows the bouncing of multiple markers on the map, without lose of performance.
 Plugin shows it's best performances on the 3D-able modern browsers, using hardware acceleration.  
 On old browsers plugin provides simplified animation.
 
-Demo
-----
+## Demo
 Check out the [demo](http://hosuaby.github.io/Leaflet.SmoothMarkerBouncing/).
 
-Usage
------
+## Usage
 Add Javascript file on your page:
 ```html
 <script type="text/javascript" src="js/leaflet.smoothmarkerbouncing.js" />
@@ -81,8 +82,7 @@ for (var i = 0; i < 10; i++) {
 }
 ```
 
-Options of bouncing
-----------------
+## Options of bouncing
 You can easily customize bouncing animation supplying options in method `setBouncingOptions`. This method available on the marker class `L.Marker` and on each of marker instances.  
 It's highly recommended to define options for all markers via `L.Marker.setBouncingOptions` instead of define them on each marker individually. The animation performance highly increases when all markers have the same options.  
 Method `setBouncingOptions` accepts an object with options as parameter. Animation can be customized with following properties:
@@ -94,20 +94,17 @@ Method `setBouncingOptions` accepts an object with options as parameter. Animati
 - **elastic** - activate contract animation when marker touch the ground, *default: true*
 - **exclusive** - when it's true, stops the bouncing of other markers when this one starts to bounce. If another marker start to bounce after, this marker stops. *default: false*
 
-Events
-----------------
+## Events
 |Event|Description|
 |---|---|
 |bounceend|Fired when the animation is done|
 
-Tested on
----------
+## Tested on
 :white_check_mark: Chrome 40.0  
 :white_check_mark: Firefox 35.0  
 :white_check_mark: IE 11  
 :white_check_mark: Android 4.4/5.0  
 :white_check_mark: Safari
 
-License
--------
+## License
 Plugin distributed under BSD license.
