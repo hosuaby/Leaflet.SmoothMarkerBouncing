@@ -27,7 +27,9 @@ export default class Styles {
     }
 
     /**
+     * Creates a copy of styles with provided 'transform' property.
      * @param transform {String}
+     * @return {Styles} copy of styles with defined 'transform'.
      */
     withTransform(transform) {
         const copy = new Styles(this);

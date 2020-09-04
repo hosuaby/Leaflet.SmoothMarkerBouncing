@@ -9,8 +9,7 @@
         maxZoom: 18
     }).addTo(map);
 
-    /* Limit to Paris area */
-    const bounds = [[48.824384, 2.284298], [48.872054, 2.409782]];
+    const parisArea = [[48.824384, 2.284298], [48.872054, 2.409782]];
 
     L.Marker.setBouncingOptions({
         bounceHeight: 40,
@@ -22,8 +21,8 @@
 
     /* 20 normal markers */
     _.times(20, function() {
-        const lat = _.random(bounds[0][0], bounds[1][0]);
-        const lng = _.random(bounds[0][1], bounds[1][1]);
+        const lat = _.random(parisArea[0][0], parisArea[1][0]);
+        const lng = _.random(parisArea[0][1], parisArea[1][1]);
 
         L.marker([lat, lng])
             .setBouncingOptions({
@@ -36,8 +35,8 @@
 
     /* 5 unique markers */
     _.times(5, function() {
-        const lat = _.random(bounds[0][0], bounds[1][0]);
-        const lng = _.random(bounds[0][1], bounds[1][1]);
+        const lat = _.random(parisArea[0][0], parisArea[1][0]);
+        const lng = _.random(parisArea[0][1], parisArea[1][1]);
 
         L.marker([lat, lng], {
             icon: new UniqueIcon(),
@@ -52,8 +51,8 @@
 
     /* 7 ball markers */
     _.times(7, function() {
-        const lat = _.random(bounds[0][0], bounds[1][0]);
-        const lng = _.random(bounds[0][1], bounds[1][1]);
+        const lat = _.random(parisArea[0][0], parisArea[1][0]);
+        const lng = _.random(parisArea[0][1], parisArea[1][1]);
 
         L.marker([lat, lng], {
             icon: new BallIcon()

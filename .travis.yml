@@ -12,5 +12,5 @@ jobs:
         - stage: test-with-coverage
           if: branch = master
           install: "npm install"
-          script: "npm run test"
+          script: "npm run test:ci"
           after_success: "npm run coverage"

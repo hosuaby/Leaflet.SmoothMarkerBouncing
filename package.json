@@ -54,7 +54,8 @@
     "deps:upgrade": "npm-check -u -E",
     "dev": "concurrently \"npm run watch\" \"npm run serve\"",
     "serve": "http-server -o /debug",
-    "test": "nyc --reporter=html --reporter=text ava",
+    "test": "ava",
+    "test:ci": "nyc --reporter=html --reporter=text ava",
     "watch": "onchange 'src/*' -- npm run build"
   },
   "ava": {
