@@ -34,6 +34,7 @@
     "http-server": "^0.12.3",
     "jquery": "^3.5.1",
     "leaflet": "1.7.1",
+    "leaflet-rotatedmarker": "^0.2.0",
     "leaflet.awesome-markers": "^2.0.5",
     "leaflet.markercluster": "^1.4.1",
     "lodash": "4.17.20",
