@@ -2,6 +2,7 @@
 
 [![npm](https://img.shields.io/npm/v/leaflet.smooth_marker_bouncing.svg)](http://npm.im/leaflet.smooth_marker_bouncing) 
 [![Build Status](https://travis-ci.org/hosuaby/Leaflet.SmoothMarkerBouncing.svg?branch=master)](https://travis-ci.org/hosuaby/Leaflet.SmoothMarkerBouncing)
+[![Coverage Status](https://coveralls.io/repos/github/hosuaby/Leaflet.SmoothMarkerBouncing/badge.svg?branch=master)](https://coveralls.io/github/hosuaby/Leaflet.SmoothMarkerBouncing?branch=master)
 
 Plugin for [Leaflet](http://leafletjs.com/) that will make you markers bounce!
 
