@@ -42,7 +42,9 @@ var Styles = /*#__PURE__*/function () {
       ) || (options === null || options === void 0 ? void 0 : options.opacity) || 1;
     }
     /**
+     * Creates a copy of styles with provided 'transform' property.
      * @param transform {String}
+     * @return {Styles} copy of styles with defined 'transform'.
      */
 
   }, {

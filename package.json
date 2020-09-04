@@ -3,7 +3,7 @@
   "version": "1.3.0",
   "description": "Smooth animation of marker bouncing for Leaflet.",
   "author": "Alexei KLENIN <alexei.klenin@gmail.com> (https://github.com/hosuaby)",
-  "main": "leaflet.smoothmarkerbouncing.js",
+  "main": "dist/bundle.js",
   "license": "BSD-2-Clause",
   "keywords": [
     "Leaflet",
@@ -44,6 +44,7 @@
     "rollup-plugin-babel": "^4.4.0",
     "rollup-plugin-commonjs": "^10.1.0",
     "rollup-plugin-node-resolve": "^5.2.0",
+    "rollup-plugin-uglify": "^6.0.4",
     "sidebar-v2": "^0.4.0"
   },
   "scripts": {
@@ -53,6 +54,7 @@
     "deps:check": "npm-check || true",
     "deps:upgrade": "npm-check -u -E",
     "dev": "concurrently \"npm run watch\" \"npm run serve\"",
+    "release": "npm run test && npm run compile && npm run build",
     "serve": "http-server -o /debug",
     "test": "ava",
     "test:ci": "nyc --reporter=html --reporter=text ava",
