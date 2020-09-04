@@ -1,10 +1,4 @@
-/**
- * Unique icon for leaflet marker.
- *
- * @author Alexei KLENIN - alexei.klenin@g2mobility.com
- */
 (function(L) {
-
     UniqueIcon = L.Icon.extend({
         options: {
             iconUrl: 'images/unique.png',
@@ -17,5 +11,4 @@
             popupAnchor:  [0, -46],  // point from which the popup should open relative to the iconAnchor
         }
     });
-
 })(L);

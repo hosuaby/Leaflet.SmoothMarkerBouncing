@@ -1,6 +1,3 @@
-/**
- * Main application script.
- */
 ;window.onload = () => {
     const map = L.map('map').setView([48.847547, 2.351074], 14);
 
