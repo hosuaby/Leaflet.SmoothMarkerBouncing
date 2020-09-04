@@ -5,10 +5,12 @@ node_js:
 jobs:
     include:
         - stage: test
+          if: branch != master
           install: "npm install"
           script: "npm run test"
 
-        - stage: report-coverage
+        - stage: test-with-coverage
           if: branch = master
           install: "npm install"
-          script: "npm run coverage"
+          script: "npm run test"
+          after_success: "npm run coverage"
