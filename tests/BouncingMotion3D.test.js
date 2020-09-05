@@ -34,7 +34,7 @@ test('Test calculate icon move transforms', t => {
     ]);
 });
 
-test('Test calculate icon resize transforms', t => {
+test('Test calculate resize transforms', t => {
 
     // Given
     const x = 100;
@@ -43,7 +43,7 @@ test('Test calculate icon resize transforms', t => {
     const contractHeight = 12;
 
     // When
-    const transforms = BouncingMotion3D.calculateIconResizeTransforms(x, y, height, contractHeight);
+    const transforms = BouncingMotion3D.calculateResizeTransforms(x, y, height, contractHeight);
 
     // Then
     t.deepEqual(transforms, [
@@ -124,28 +124,6 @@ test('Test calculate shadow move transforms without angle', t => {
         ' matrix3d(1,0,0,0,0,1,0,0,0,0,1,0,100,100,0,1) ',
         ' matrix3d(1,0,0,0,0,1,0,0,0,0,1,0,100,100,0,1) '
     ]);
-});
-
-// TODO: code this test
-test('Test calculate shadow resize transforms with angle', t => {
-
-    // Given
-
-    // When
-
-    // Then
-    t.pass();
-});
-
-// TODO: code this test
-test('Test calculate shadow resize transforms without angle', t => {
-
-    // Given
-
-    // When
-
-    // Then
-    t.pass();
 });
 
 test('Test new 3D bouncing motion', t => {

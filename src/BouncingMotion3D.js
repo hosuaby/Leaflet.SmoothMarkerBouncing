@@ -34,16 +34,15 @@ export default class BouncingMotion3D extends BouncingMotion {
         const {bounceHeight, contractHeight, shadowAngle} = this.bouncingOptions;
 
         this.iconMoveTransforms = BouncingMotion3D.calculateIconMoveTransforms(x, y, bounceHeight);
-        this.iconResizeTransforms = BouncingMotion3D.calculateIconResizeTransforms(
+        this.iconResizeTransforms = BouncingMotion3D.calculateResizeTransforms(
                 x, y, iconHeight, contractHeight);
 
         if (this.marker._shadow) {
             this.shadowMoveTransforms = BouncingMotion3D.calculateShadowMoveTransforms(
                     x, y, bounceHeight, shadowAngle);
 
-            // TODO: use function calculateShadowResizeTransforms
             const shadowHeight = this.marker.getIcon()?.options?.shadowSize[1];
-            this.shadowResizeTransforms = BouncingMotion3D.calculateIconResizeTransforms(
+            this.shadowResizeTransforms = BouncingMotion3D.calculateResizeTransforms(
                     x, y, shadowHeight, contractHeight);
         }
     }
@@ -141,7 +140,7 @@ export default class BouncingMotion3D extends BouncingMotion {
      *
      * @return {string[]} array of transformation definitions
      */
-    static calculateIconResizeTransforms(x, y, height, contractHeight) {
+    static calculateResizeTransforms(x, y, height, contractHeight) {
         let transforms = [];
         let deltaHeight = contractHeight + 1;
 
@@ -184,35 +183,6 @@ export default class BouncingMotion3D extends BouncingMotion {
         // Use fast inverse while loop to fill the array
         while (deltaY--) {
             transforms[deltaY] = moveMatrixFormat(points[deltaY][0], points[deltaY][1]);
-        }
-
-        return transforms;
-    }
-
-    /**
-     * Returns calculated array of transformation definitions for the animation of shadow resizing.
-     * Function defines one transform for every pixel of shadow resizing.
-     *
-     * @param x {number}  x coordinate of original position of marker
-     * @param y {number}  y coordinate of original position of marker
-     * @param width {number}  original marker width (px)
-     * @param height {number}  original marker height (px)
-     * @param contractHeight {number}  height of marker contraction (px)
-     * @param angle {number|null}  shadow inclination angle (radians)
-     *
-     * @return {string[]} array of transformation definitions
-     */
-    // TODO: fix & deploy this function
-    static calculateShadowResizeTransforms(x, y, width, height, contractHeight, angle= null) {
-        let transforms = [];
-        let points = calculateLine(width, height, angle + Math.PI, contractHeight);
-        let deltaHeight = contractHeight + 1;
-
-        /* Use fast inverse while loop to fill the array */
-        while (deltaHeight--) {
-            transforms[deltaHeight] = ' matrix3d(' + (width / points[deltaHeight][0]) +  ',0,0,0,0,'
-                    + (points[deltaHeight][1] / height) + ',0,0,0,0,1,0,' + x + ','
-                    + (y + height - points[deltaHeight][1]) + ',0,1) ';
         }
 
         return transforms;
