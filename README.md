@@ -6,7 +6,9 @@
 
 Plugin for [Leaflet](http://leafletjs.com/) that will make you markers bounce!
 
-<img src="./doc/bouncing_marker.gif"/>
+<p align="center">
+    <img src="./doc/bouncing_marker.gif"/>
+</p>
 
 It provides smooth, lightweight and customizable animation of marker bouncing.
 Allows the bouncing of multiple markers on the map, without loss of performance.
@@ -115,7 +117,7 @@ Animation can be customized with following properties:
 - **bounceSpeed** - bouncing speed coefficient, value used to calculate the speed of bounce animation,
 more it becomes high, more animation becomes slow, *default: 52*
 - **contractSpeed** - contracting speed coefficient, *default: 52*
-- **shadowAngle** - shadow inclination angle, if set to `null` shadow animation disabled (radians), *default: -𝜋÷4*
+- **shadowAngle** - shadow inclination angle, if set to `null` shadow animation disabled (radians), *default:* -𝜋÷4
 - **elastic** - activate contract animation when marker touches the ground, *default: true*
 - **exclusive** - when it's true, stops the bouncing of other markers when this one starts to bounce.
 If another marker start to bounce after, this marker stops. *default: false*
