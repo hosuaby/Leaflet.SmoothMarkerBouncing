@@ -1,102 +1,74 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<title>Leaflet.SmoothMarkerBouncing plugin demo</title>
-
-	<!-- Disable page scaling -->
-	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <title>Leaflet.SmoothMarkerBouncing plugin demo</title>
+    <!-- Disable page scaling -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
 </head>
 <body>
-
-	<!-- Sidebar -->
     <div id="sidebar" class="sidebar collapsed">
-
-        <!-- Nav tabs -->
         <ul class="sidebar-tabs" role="tablist">
             <li><a href="#home" role="tab"><i class="fa fa-info"></i></a></li>
         </ul>
-
-        <!-- Tab panes -->
         <div class="sidebar-content active">
             <div class="sidebar-pane markdown-body" id="home">
-				<h1>Leaflet.SmoothMarkerBouncing plugin demo</h1>
-				<p>Let's see how it looks like!</p>
-				<ol class="task-list">
-					<li>Click any marker to make it bounce</li>
-					<li>Click on the bouncing marker to stop</li>
-					<li>Make bounce some markers together</li>
-					<li>Click anywhere on the map to stop the bouncing of all markers</li>
-				</ol>
-				<p>Different markers have different options of animation:</p>
-				<p>
-					<img src="vendor/leaflet/dist/images/marker-icon.png" />
-					<span>- normal marker with default options</span>
-				</p>
-				<p>
-					<img src="resources/images/ball.png" />
-					<span>- ball marker with big height of bouncing and strong collapsing. Bounces 3 times</span>
-				<p>
-				<p>
-					<img src="resources/images/unique.png" />
-					<span>- star marker, not collapses when touches the ground and no allows other markers to bounce during it's own bouncing</span>
-				</p>
-				<p>Check this demo on mobile device!</p>
+                <h1>Leaflet.SmoothMarkerBouncing plugin demo</h1>
+                <h3>v2.0.0</h3>
+                <p>Let's see how it looks like!</p>
+                <ol class="task-list">
+                    <li>Click any marker to make it bounce</li>
+                    <li>Click on the bouncing marker to stop</li>
+                    <li>Make bounce some markers together</li>
+                    <li>Click anywhere on the map to stop the bouncing of all markers</li>
+                </ol>
+                <p>Different markers have different options of animation:</p>
+                <p>
+                    <img src="https://unpkg.com/leaflet@1.7.1/dist/images/marker-icon.png" />
+                    <span>- normal marker with default options</span>
+                </p>
+                <p>
+                    <img src="resources/images/ball.png" />
+                    <span>- ball marker with big height of bouncing and strong collapsing. Bounces 3 times</span>
+                <p>
+                <p>
+                    <img src="resources/images/unique.png" />
+                    <span>- star marker, not collapses when touches the ground and no allows other markers to bounce during it's own bouncing</span>
+                </p>
+                <p>Check this demo on mobile device!</p>
             </div>
         </div>
     </div>
 
-	<!-- The map -->
-	<div id="map" />
+    <div id="map"></div>
 </body>
 </html>
 
-<!-- CSS -->
-
-<!-- Vendors -->
 <link rel="stylesheet"
-	type="text/css"
-	href="vendor/HTML5-Reset/assets/css/reset.css" />
+      href="https://cdnjs.cloudflare.com/ajax/libs/github-markdown-css/4.0.0/github-markdown.css"
+      integrity="sha512-j84w/URwwK++Im1eDnefcHbtMSYWbwaLmJqcj58tDiZtjfPFPHEzxcnyOpqfGhTgxd/6xL2J9rmF987W64S8Tw=="
+      crossorigin="anonymous" />
 <link rel="stylesheet"
-	href="vendor/components-font-awesome/css/font-awesome.min.css" />
-<link rel="stylesheet"
-	type="text/css"
-	href="vendor/leaflet/dist/leaflet.css" />
-<link rel="stylesheet"
-	type="text/css"
-	href="vendor/sidebar-v2/css/leaflet-sidebar.min.css" />
-<link rel="stylesheet"
-	type="text/css"
-	href="vendor/github-markdown-css/github-markdown.css">
+      href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css"
+      integrity="sha384-AYmEC3Yw5cVb3ZcuHtOA93w35dYTsvhLPVnYs9eStHfGJvOvKxVfELGroGkvsg+p"
+      crossorigin="anonymous"/>
+<link rel="stylesheet" type="text/css" href="resources/styles/default.css" />
 
-<!-- Resources -->
-<link rel="stylesheet"
-	type="text/css"
-	href="resources/styles/default.css" />
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"
+      integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A=="
+      crossorigin="anonymous"/>
+<script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"
+        integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA=="
+        crossorigin="anonymous"></script>
 
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Turbo87/sidebar-v2@v0.4.0/css/leaflet-sidebar.css" />
+<script src="https://cdn.jsdelivr.net/gh/Turbo87/sidebar-v2@v0.4.0/js/leaflet-sidebar.js"
+        crossorigin="anonymous"></script>
 
-<!-- Scripts -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.17.20/lodash.js"
+        integrity="sha512-HBD0cOZJYcymSn0H0CnN3VBhQLdiH8imucm16ZQ792TT2n48u6nmX+T7hZTCwmzIrgMt76x4rHhR7KkZqhIGxA=="
+        crossorigin="anonymous"></script>
 
-<!-- Vendors -->
-<script type="text/javascript"
-	src="vendor/lodash/lodash.min.js"></script>
-<script type="text/javascript"
-	src="vendor/leaflet/dist/leaflet.js"></script>
-<script type="text/javascript"
-	src="vendor/sidebar-v2/js/leaflet-sidebar.min.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/hosuaby/Leaflet.SmoothMarkerBouncing@v2.0.0/dist/bundle.js"
+        crossorigin="anonymous"></script>
 
-<!-- Leaflet.SmoothMarkerBouncing plugin -->
-<script type="text/javascript"
-	src="vendor/Leaflet.SmoothMarkerBouncing/leaflet.smoothmarkerbouncing.js">
-</script>
-
-<!-- Resources -->
-<script type="text/javascript"
-	src="resources/scripts/ball.icon.js"></script>
-<script type="text/javascript"
-	src="resources/scripts/unique.icon.js"></script>
-<script type="text/javascript"
-    src="resources/scripts/panbitt.control.js"></script>
-
-<!-- Main application script -->
-<script type="text/javascript"
-	src="resources/scripts/app.js"></script>
+<script type="text/javascript" src="resources/scripts/app.js"></script>

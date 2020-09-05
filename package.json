@@ -1,0 +1,22 @@
+{
+  "name": "leaflet.smooth_marker_bouncing-demo",
+  "version": "2.0.0",
+  "description": "Demo of Leaflet.SmoothMarkerBouncing plugin",
+  "main": "index.html",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/hosuaby/Leaflet.SmoothMarkerBouncing.git"
+  },
+  "author": "Alexei KLENIN <alexei.klenin@gmail.com> (https://github.com/hosuaby)",
+  "license": "BSD-2-Clause",
+  "bugs": {
+    "url": "https://github.com/hosuaby/Leaflet.SmoothMarkerBouncing/issues"
+  },
+  "homepage": "https://github.com/hosuaby/Leaflet.SmoothMarkerBouncing#readme",
+  "devDependencies": {
+    "http-server": "^0.12.3"
+  },
+  "scripts": {
+    "serve": "http-server"
+  }
+}
