@@ -151,6 +151,10 @@
     return _get(target, property, receiver || target);
   }
 
+  function _slicedToArray(arr, i) {
+    return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _unsupportedIterableToArray(arr, i) || _nonIterableRest();
+  }
+
   function _toConsumableArray(arr) {
     return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _unsupportedIterableToArray(arr) || _nonIterableSpread();
   }
@@ -159,8 +163,39 @@
     if (Array.isArray(arr)) return _arrayLikeToArray(arr);
   }
 
+  function _arrayWithHoles(arr) {
+    if (Array.isArray(arr)) return arr;
+  }
+
   function _iterableToArray(iter) {
     if (typeof Symbol !== "undefined" && Symbol.iterator in Object(iter)) return Array.from(iter);
+  }
+
+  function _iterableToArrayLimit(arr, i) {
+    if (typeof Symbol === "undefined" || !(Symbol.iterator in Object(arr))) return;
+    var _arr = [];
+    var _n = true;
+    var _d = false;
+    var _e = undefined;
+
+    try {
+      for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) {
+        _arr.push(_s.value);
+
+        if (i && _arr.length === i) break;
+      }
+    } catch (err) {
+      _d = true;
+      _e = err;
+    } finally {
+      try {
+        if (!_n && _i["return"] != null) _i["return"]();
+      } finally {
+        if (_d) throw _e;
+      }
+    }
+
+    return _arr;
   }
 
   function _unsupportedIterableToArray(o, minLen) {
@@ -182,6 +217,10 @@
 
   function _nonIterableSpread() {
     throw new TypeError("Invalid attempt to spread non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method.");
+  }
+
+  function _nonIterableRest() {
+    throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method.");
   }
 
   function _classPrivateFieldGet(receiver, privateMap) {
@@ -270,6 +309,8 @@
 
       _defineProperty(this, "exclusive", false);
 
+      _defineProperty(this, "css", false);
+
       options && Object.assign(this, options);
     }
 
@@ -339,6 +380,19 @@
         ) || (options === null || options === void 0 ? void 0 : options.opacity) || 1;
       }
       /**
+       * Creates a copy of styles merged with provided 'styles'.
+       * @param {Object} styles  object with styles to merge
+       * @return {Styles} copy of styles
+       */
+
+    }, {
+      key: "withStyles",
+      value: function withStyles(styles) {
+        var copy = new Styles(this);
+        copy && Object.assign(copy, styles);
+        return copy;
+      }
+      /**
        * Creates a copy of styles with provided 'transform' property.
        * @param transform {String}
        * @return {Styles} copy of styles with defined 'transform'.
@@ -375,7 +429,6 @@
           match = regStyle.exec(cssText);
         }
 
-        delete styles[transformProperty];
         delete styles['z-index'];
         delete styles['opacity'];
         styles['outline'] = 'none';
@@ -1287,8 +1340,287 @@
     }
   };
 
+  function styleInject(css, ref) {
+    if ( ref === void 0 ) ref = {};
+    var insertAt = ref.insertAt;
+
+    if (!css || typeof document === 'undefined') { return; }
+
+    var head = document.head || document.getElementsByTagName('head')[0];
+    var style = document.createElement('style');
+    style.type = 'text/css';
+
+    if (insertAt === 'top') {
+      if (head.firstChild) {
+        head.insertBefore(style, head.firstChild);
+      } else {
+        head.appendChild(style);
+      }
+    } else {
+      head.appendChild(style);
+    }
+
+    if (style.styleSheet) {
+      style.styleSheet.cssText = css;
+    } else {
+      style.appendChild(document.createTextNode(css));
+    }
+  }
+
+  var css_248z = "@keyframes l-smooth-marker-bouncing-move {\n    from {\n        transform: translate(var(--pos-x), var(--pos-y))\n    }\n    to {\n        transform: translate(var(--pos-x-jump, var(--pos-x)), var(--pos-y-jump))\n    }\n}\n\n@keyframes l-smooth-marker-bouncing-contract {\n    from {\n        transform: translate(var(--pos-x), var(--pos-y))\n    }\n    to {\n        transform: translate(var(--pos-x), var(--pos-y-contract)) scaleY(var(--scale-contract))\n    }\n}\n\n.bouncing {\n    animation-name: l-smooth-marker-bouncing-move, l-smooth-marker-bouncing-move, l-smooth-marker-bouncing-contract, l-smooth-marker-bouncing-contract;\n    animation-direction: normal, reverse, normal, reverse;\n    animation-duration: var(--duration-jump), var(--duration-jump), var(--duration-contract), var(--duration-contract);\n    animation-delay: var(--delays)\n}\n\n.bouncing.simple {\n    animation-name: l-smooth-marker-bouncing-move, l-smooth-marker-bouncing-move;\n    animation-direction: normal, reverse;\n    animation-duration: var(--duration-jump), var(--duration-jump);\n    animation-delay: var(--delays)\n}\n";
+  styleInject(css_248z);
+
+  var animationNamePrefix = 'l-smooth-marker-bouncing-';
+  var moveAnimationName = animationNamePrefix + 'move';
+  var contractAnimationName = animationNamePrefix + 'contract';
+  /*
+   * CSS3 animation runs faster than transform-based animation. We need to reduce speed in order
+   * to be compatible with old API.
+   */
+
+  var speedCoefficient = 0.8;
+  /**
+   * Removes and then resets required classes on the HTML element.
+   * Used as hack to restart CSS3 animation.
+   *
+   * @param element {HTMLElement}  HTML element
+   * @param classes {string[]}  names of classes
+   */
+
+  function resetClasses(element, classes) {
+    classes.forEach(function (className) {
+      return L.DomUtil.removeClass(element, className);
+    });
+    void element.offsetWidth;
+    classes.forEach(function (className) {
+      return L.DomUtil.addClass(element, className);
+    });
+  }
+
+  var _lastAnimationName = new WeakMap();
+
+  var _classes = new WeakMap();
+
+  var _eventCounter = new WeakMap();
+
+  var _times = new WeakMap();
+
+  var BouncingMotionCss3 = /*#__PURE__*/function (_BouncingMotion) {
+    _inherits(BouncingMotionCss3, _BouncingMotion);
+
+    var _super = _createSuper(BouncingMotionCss3);
+
+    function BouncingMotionCss3() {
+      var _this;
+
+      _classCallCheck(this, BouncingMotionCss3);
+
+      for (var _len = arguments.length, args = new Array(_len), _key = 0; _key < _len; _key++) {
+        args[_key] = arguments[_key];
+      }
+
+      _this = _super.call.apply(_super, [this].concat(args));
+
+      _lastAnimationName.set(_assertThisInitialized(_this), {
+        writable: true,
+        value: contractAnimationName
+      });
+
+      _classes.set(_assertThisInitialized(_this), {
+        writable: true,
+        value: ['bouncing']
+      });
+
+      _eventCounter.set(_assertThisInitialized(_this), {
+        writable: true,
+        value: void 0
+      });
+
+      _times.set(_assertThisInitialized(_this), {
+        writable: true,
+        value: void 0
+      });
+
+      return _this;
+    }
+
+    _createClass(BouncingMotionCss3, [{
+      key: "updateBouncingOptions",
+      value: function updateBouncingOptions(options) {
+        _get(_getPrototypeOf(BouncingMotionCss3.prototype), "updateBouncingOptions", this).call(this, options);
+
+        if (!this.bouncingOptions.elastic) {
+          _classPrivateFieldSet(this, _lastAnimationName, moveAnimationName);
+
+          _classPrivateFieldGet(this, _classes).push('simple');
+        }
+      }
+    }, {
+      key: "onAnimationEnd",
+      value: function onAnimationEnd(event) {
+        var _this2 = this;
+
+        if (event.animationName === _classPrivateFieldGet(this, _lastAnimationName)) {
+          var _this$eventCounter;
+
+          _classPrivateFieldSet(this, _eventCounter, (_this$eventCounter = +_classPrivateFieldGet(this, _eventCounter)) + 1), _this$eventCounter;
+
+          _classPrivateFieldSet(this, _eventCounter, _classPrivateFieldGet(this, _eventCounter) % 2);
+
+          if (!_classPrivateFieldGet(this, _eventCounter)) {
+            if (this.isBouncing && (_classPrivateFieldGet(this, _times) === null || _classPrivateFieldSet(this, _times, +_classPrivateFieldGet(this, _times) - 1))) {
+              resetClasses(this.marker._icon, _classPrivateFieldGet(this, _classes));
+              resetClasses(this.marker._shadow, _classPrivateFieldGet(this, _classes));
+            } else {
+              _classPrivateFieldGet(this, _classes).forEach(function (className) {
+                L.DomUtil.removeClass(_this2.marker._icon, className);
+                L.DomUtil.removeClass(_this2.marker._shadow, className);
+              });
+
+              this.bouncingAnimationPlaying = false;
+            }
+          }
+        }
+      }
+    }, {
+      key: "resetStyles",
+      value: function resetStyles(marker) {
+        var _this$marker$getIcon, _this$marker$getIcon$, _this$marker, _this$marker$_iconObj, _this$marker$_iconObj2;
+
+        _get(_getPrototypeOf(BouncingMotionCss3.prototype), "resetStyles", this).call(this, marker);
+
+        var iconHeight = ((_this$marker$getIcon = this.marker.getIcon()) === null || _this$marker$getIcon === void 0 ? void 0 : (_this$marker$getIcon$ = _this$marker$getIcon.options) === null || _this$marker$getIcon$ === void 0 ? void 0 : _this$marker$getIcon$.iconSize[1]) || ((_this$marker = this.marker) === null || _this$marker === void 0 ? void 0 : (_this$marker$_iconObj = _this$marker._iconObj) === null || _this$marker$_iconObj === void 0 ? void 0 : (_this$marker$_iconObj2 = _this$marker$_iconObj.options) === null || _this$marker$_iconObj2 === void 0 ? void 0 : _this$marker$_iconObj2.iconSize[1]);
+        var iconAnimationParams = BouncingMotionCss3.animationParams(this.position, this.bouncingOptions, iconHeight);
+        this.iconStyles = this.iconStyles.withStyles(iconAnimationParams);
+        this.marker._icon.style.cssText = this.iconStyles.toString();
+        var _this$position = this.position,
+            x = _this$position.x,
+            y = _this$position.y;
+        var _this$bouncingOptions = this.bouncingOptions,
+            bounceHeight = _this$bouncingOptions.bounceHeight,
+            shadowAngle = _this$bouncingOptions.shadowAngle;
+
+        if (this.marker._shadow && shadowAngle) {
+          var points = calculateLine(x, y, shadowAngle, bounceHeight + 1);
+
+          var _points$bounceHeight = _slicedToArray(points[bounceHeight], 2),
+              posXJump = _points$bounceHeight[0],
+              posYJump = _points$bounceHeight[1];
+
+          this.shadowStyles = this.shadowStyles.withStyles(iconAnimationParams).withStyles({
+            '--pos-x-jump': "".concat(posXJump, "px"),
+            '--pos-y-jump': "".concat(posYJump, "px")
+          });
+          this.marker._shadow.style.cssText = this.shadowStyles.toString();
+        }
+      }
+    }, {
+      key: "bounce",
+      value: function bounce() {
+        var _this3 = this;
+
+        var times = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
+
+        _classPrivateFieldSet(this, _times, times);
+
+        _classPrivateFieldSet(this, _eventCounter, 0);
+
+        this.isBouncing = true;
+
+        if (this.bouncingAnimationPlaying) {
+          return;
+        }
+
+        this.bouncingAnimationPlaying = true;
+        resetClasses(this.marker._icon, _classPrivateFieldGet(this, _classes));
+        resetClasses(this.marker._shadow, _classPrivateFieldGet(this, _classes));
+
+        this.marker._icon.addEventListener('animationend', function (event) {
+          return _this3.onAnimationEnd(event);
+        });
+      }
+      /**
+       * Calculates parameters of CSS3 animation of bouncing.
+       *
+       * @param position {Point}  marker current position on the map canvas
+       * @param bouncingOptions {BouncingOptions}  options of bouncing animation
+       * @param height {number}  icons height
+       * @return {object} CSS3 animation parameters
+       */
+
+    }], [{
+      key: "animationParams",
+      value: function animationParams(position, bouncingOptions, height) {
+        var x = position.x,
+            y = position.y;
+        var bounceHeight = bouncingOptions.bounceHeight,
+            contractHeight = bouncingOptions.contractHeight,
+            bounceSpeed = bouncingOptions.bounceSpeed,
+            contractSpeed = bouncingOptions.contractSpeed;
+        var scaleContract = BouncingMotionCss3.contractScale(height, contractHeight);
+        var durationJump = BouncingMotionCss3.calculateDuration(bounceHeight, bounceSpeed);
+        var durationContract = BouncingMotionCss3.calculateDuration(contractHeight, contractSpeed);
+        var delays = [0, durationJump, durationJump * 2, durationJump * 2 + durationContract];
+        return {
+          '--pos-x': "".concat(x, "px"),
+          '--pos-y': "".concat(y, "px"),
+          '--pos-y-jump': "".concat(y - bounceHeight, "px"),
+          '--pos-y-contract': "".concat(y + contractHeight, "px"),
+          '--scale-contract': scaleContract,
+          '--duration-jump': "".concat(durationJump, "ms"),
+          '--duration-contract': "".concat(durationContract, "ms"),
+          '--delays': "0ms, ".concat(delays[1], "ms, ").concat(delays[2], "ms, ").concat(delays[3], "ms")
+        };
+      }
+      /**
+       * Calculates scale of contracting.
+       *
+       * @param {number} height  original height
+       * @param {number} contractHeight  how much it must contract
+       * @return {number}  contracting scale between 0 and 1
+       */
+
+    }, {
+      key: "contractScale",
+      value: function contractScale(height, contractHeight) {
+        return (height - contractHeight) / height;
+      }
+      /**
+       * Calculates duration of animation.
+       *
+       * @param height {number}  height of movement or resizing (px)
+       * @param speed {number}  speed coefficient
+       *
+       * @return {number} duration of animation (ms)
+       */
+
+    }, {
+      key: "calculateDuration",
+      value: function calculateDuration(height, speed) {
+        var duration = Math.round(speed * speedCoefficient);
+        var i = height;
+
+        while (--i) {
+          duration += Math.round(speed / (height - i));
+        }
+
+        return duration;
+      }
+    }]);
+
+    return BouncingMotionCss3;
+  }(BouncingMotion);
+
   function createBouncingMotion(marker, position, bouncingOptions) {
-    return L.Browser.any3d ? new BouncingMotion3D(marker, position, bouncingOptions) : new BouncingMotionSimple(marker, position, bouncingOptions);
+    if (L.Browser.any3d) {
+      return bouncingOptions.css ? new BouncingMotionCss3(marker, position, bouncingOptions) : new BouncingMotion3D(marker, position, bouncingOptions);
+    } else {
+      return new BouncingMotionSimple(marker, position, bouncingOptions);
+    } // return Browser.any3d
+    // ? new BouncingMotion3D(marker, position, bouncingOptions)
+    // ? new BouncingMotionCss3(marker, position, bouncingOptions)
+    // : new BouncingMotionSimple(marker, position, bouncingOptions);
+
   }
 
   L__default['default'].Marker.include(MarkerPrototypeExt);

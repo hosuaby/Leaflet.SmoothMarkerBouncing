@@ -42,6 +42,19 @@ var Styles = /*#__PURE__*/function () {
       ) || (options === null || options === void 0 ? void 0 : options.opacity) || 1;
     }
     /**
+     * Creates a copy of styles merged with provided 'styles'.
+     * @param {Object} styles  object with styles to merge
+     * @return {Styles} copy of styles
+     */
+
+  }, {
+    key: "withStyles",
+    value: function withStyles(styles) {
+      var copy = new Styles(this);
+      copy && Object.assign(copy, styles);
+      return copy;
+    }
+    /**
      * Creates a copy of styles with provided 'transform' property.
      * @param transform {String}
      * @return {Styles} copy of styles with defined 'transform'.
@@ -78,7 +91,6 @@ var Styles = /*#__PURE__*/function () {
         match = regStyle.exec(cssText);
       }
 
-      delete styles[transformProperty];
       delete styles['z-index'];
       delete styles['opacity'];
       styles['outline'] = 'none';

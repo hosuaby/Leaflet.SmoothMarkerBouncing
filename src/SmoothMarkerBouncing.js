@@ -3,11 +3,21 @@ import BouncingOptions from './BouncingOptions';
 import BouncingMotion3D from './BouncingMotion3D';
 import BouncingMotionSimple from './BouncingMotionSimple';
 import MarkerPrototypeExt from './MarkerPrototypeExt';
+import BouncingMotionCss3 from './BouncingMotionCss3';
 
 function createBouncingMotion(marker, position, bouncingOptions) {
-    return Browser.any3d
-            ? new BouncingMotion3D(marker, position, bouncingOptions)
-            : new BouncingMotionSimple(marker, position, bouncingOptions);
+    if (Browser.any3d) {
+        return bouncingOptions.css
+            ? new BouncingMotionCss3(marker, position, bouncingOptions)
+            : new BouncingMotion3D(marker, position, bouncingOptions);
+    } else {
+        return new BouncingMotionSimple(marker, position, bouncingOptions);
+    }
+
+    // return Browser.any3d
+            // ? new BouncingMotion3D(marker, position, bouncingOptions)
+            // ? new BouncingMotionCss3(marker, position, bouncingOptions)
+            // : new BouncingMotionSimple(marker, position, bouncingOptions);
 }
 
 L.Marker.include(MarkerPrototypeExt);

@@ -1,0 +1,31 @@
+@keyframes l-smooth-marker-bouncing-move {
+    from {
+        transform: translate(var(--pos-x), var(--pos-y))
+    }
+    to {
+        transform: translate(var(--pos-x-jump, var(--pos-x)), var(--pos-y-jump))
+    }
+}
+
+@keyframes l-smooth-marker-bouncing-contract {
+    from {
+        transform: translate(var(--pos-x), var(--pos-y))
+    }
+    to {
+        transform: translate(var(--pos-x), var(--pos-y-contract)) scaleY(var(--scale-contract))
+    }
+}
+
+.bouncing {
+    animation-name: l-smooth-marker-bouncing-move, l-smooth-marker-bouncing-move, l-smooth-marker-bouncing-contract, l-smooth-marker-bouncing-contract;
+    animation-direction: normal, reverse, normal, reverse;
+    animation-duration: var(--duration-jump), var(--duration-jump), var(--duration-contract), var(--duration-contract);
+    animation-delay: var(--delays)
+}
+
+.bouncing.simple {
+    animation-name: l-smooth-marker-bouncing-move, l-smooth-marker-bouncing-move;
+    animation-direction: normal, reverse;
+    animation-duration: var(--duration-jump), var(--duration-jump);
+    animation-delay: var(--delays)
+}

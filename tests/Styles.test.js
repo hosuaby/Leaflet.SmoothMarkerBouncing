@@ -52,6 +52,26 @@ test('Test find opacity', t => {
     });
 });
 
+test('Test copy with styles', t => {
+
+    // Given
+    const styles = new Styles({ width: '25px', height: '41px' });
+
+    // When
+    const copy = styles.withStyles({
+        '--pos-x': '50px',
+        '--pos-y': '100px'
+    })
+
+    // Then
+    t.like(copy, {
+        width: '25px',
+        height: '41px',
+        '--pos-x': '50px',
+        '--pos-y': '100px'
+    });
+});
+
 test('Test copy with transform', t => {
 
     // Given

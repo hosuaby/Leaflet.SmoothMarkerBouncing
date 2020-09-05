@@ -44,6 +44,7 @@
     "rollup-plugin-babel": "^4.4.0",
     "rollup-plugin-commonjs": "^10.1.0",
     "rollup-plugin-node-resolve": "^5.2.0",
+    "rollup-plugin-postcss": "^3.1.8",
     "rollup-plugin-uglify": "^6.0.4",
     "serialize-javascript": ">=3.1.0",
     "sidebar-v2": "^0.4.0"
@@ -69,6 +70,7 @@
     "babel": true,
     "require": [
       "@babel/register",
+      "./tests/helpers/ignore-css.js",
       "./tests/helpers/setup-browser-env.js"
     ],
     "verbose": true

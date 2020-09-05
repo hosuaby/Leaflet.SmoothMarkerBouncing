@@ -27,6 +27,17 @@ export default class Styles {
     }
 
     /**
+     * Creates a copy of styles merged with provided 'styles'.
+     * @param {Object} styles  object with styles to merge
+     * @return {Styles} copy of styles
+     */
+    withStyles(styles) {
+        const copy = new Styles(this);
+        copy && Object.assign(copy, styles);
+        return copy;
+    }
+
+    /**
      * Creates a copy of styles with provided 'transform' property.
      * @param transform {String}
      * @return {Styles} copy of styles with defined 'transform'.
@@ -58,7 +69,6 @@ export default class Styles {
             match = regStyle.exec(cssText);
         }
 
-        delete styles[transformProperty];
         delete styles['z-index'];
         delete styles['opacity'];
 

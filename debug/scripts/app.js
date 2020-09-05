@@ -10,7 +10,8 @@
 
     L.Marker.setBouncingOptions({
         bounceHeight: 40,
-        bounceSpeed: 60
+        bounceSpeed: 60,
+        css: true
     });
 
     /* 20 normal markers */

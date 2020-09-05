@@ -12,6 +12,8 @@ var _BouncingMotionSimple = _interopRequireDefault(require("./BouncingMotionSimp
 
 var _MarkerPrototypeExt = _interopRequireDefault(require("./MarkerPrototypeExt"));
 
+var _BouncingMotionCss = _interopRequireDefault(require("./BouncingMotionCss3"));
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
 
 function _getRequireWildcardCache() { if (typeof WeakMap !== "function") return null; var cache = new WeakMap(); _getRequireWildcardCache = function _getRequireWildcardCache() { return cache; }; return cache; }
@@ -19,7 +21,15 @@ function _getRequireWildcardCache() { if (typeof WeakMap !== "function") return 
 function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } if (obj === null || _typeof(obj) !== "object" && typeof obj !== "function") { return { "default": obj }; } var cache = _getRequireWildcardCache(); if (cache && cache.has(obj)) { return cache.get(obj); } var newObj = {}; var hasPropertyDescriptor = Object.defineProperty && Object.getOwnPropertyDescriptor; for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) { var desc = hasPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : null; if (desc && (desc.get || desc.set)) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } newObj["default"] = obj; if (cache) { cache.set(obj, newObj); } return newObj; }
 
 function createBouncingMotion(marker, position, bouncingOptions) {
-  return _leaflet.Browser.any3d ? new _BouncingMotion3D["default"](marker, position, bouncingOptions) : new _BouncingMotionSimple["default"](marker, position, bouncingOptions);
+  if (_leaflet.Browser.any3d) {
+    return bouncingOptions.css ? new _BouncingMotionCss["default"](marker, position, bouncingOptions) : new _BouncingMotion3D["default"](marker, position, bouncingOptions);
+  } else {
+    return new _BouncingMotionSimple["default"](marker, position, bouncingOptions);
+  } // return Browser.any3d
+  // ? new BouncingMotion3D(marker, position, bouncingOptions)
+  // ? new BouncingMotionCss3(marker, position, bouncingOptions)
+  // : new BouncingMotionSimple(marker, position, bouncingOptions);
+
 }
 
 _leaflet["default"].Marker.include(_MarkerPrototypeExt["default"]);
