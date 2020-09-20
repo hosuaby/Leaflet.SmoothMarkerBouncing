@@ -80,7 +80,7 @@ export default {
     _setPos: function(position) {
         oldSetPos.call(this, position);
         if (this.isRealMarker()) {
-            this._bouncingMotion.recalculateMotion(position);
+            this._bouncingMotion.position = position;
             this._bouncingMotion.resetStyles(this);
         }
     },

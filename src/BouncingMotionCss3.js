@@ -1,7 +1,8 @@
 import {DomUtil} from 'leaflet';
-import BouncingMotion from './BouncingMotion';
 import {calculateLine} from './line';
 import './bouncing.css';
+import BouncingOptions from './BouncingOptions';
+import Styles from './Styles';
 
 const animationNamePrefix = 'l-smooth-marker-bouncing-';
 const moveAnimationName = animationNamePrefix + 'move';
@@ -26,14 +27,36 @@ function resetClasses(element, classes) {
     classes.forEach((className) => DomUtil.addClass(element, className));
 }
 
-export default class BouncingMotionCss3 extends BouncingMotion {
+export default class BouncingMotionCss3 {
+    marker;
+    position;
+    bouncingOptions;
+    isBouncing = false;
+    iconStyles;
+    shadowStyles;
+    bouncingAnimationPlaying = false;
     #lastAnimationName = contractAnimationName;
     #classes = ['bouncing'];
     #eventCounter;
     #times;
 
+    /**
+     * Constructor.
+     *
+     * @param marker {Marker}  marker
+     * @param position {Point}  marker current position on the map canvas
+     * @param bouncingOptions {BouncingOptions}  options of bouncing animation
+     */
+    constructor(marker, position, bouncingOptions) {
+        this.marker = marker;
+        this.position = position;
+        this.updateBouncingOptions(bouncingOptions);
+    }
+
     updateBouncingOptions(options) {
-        super.updateBouncingOptions(options);
+        this.bouncingOptions = options instanceof BouncingOptions
+                ? options
+                : this.bouncingOptions.override(options);
 
         if (!this.bouncingOptions.elastic) {
             this.#lastAnimationName = moveAnimationName;
@@ -62,7 +85,11 @@ export default class BouncingMotionCss3 extends BouncingMotion {
     }
 
     resetStyles(marker) {
-        super.resetStyles(marker);
+        this.iconStyles = Styles.ofMarker(marker);
+
+        if (marker._shadow) {
+            this.shadowStyles = Styles.parse(marker._shadow.style.cssText);
+        }
 
         const iconHeight = this.marker.getIcon()?.options?.iconSize[1]
                 || this.marker?._iconObj?.options?.iconSize[1];
@@ -106,6 +133,10 @@ export default class BouncingMotionCss3 extends BouncingMotion {
         resetClasses(this.marker._shadow, this.#classes);
 
         this.marker._icon.addEventListener('animationend', (event) => this.onAnimationEnd(event));
+    }
+
+    stopBouncing() {
+        this.isBouncing = false;
     }
 
     /**

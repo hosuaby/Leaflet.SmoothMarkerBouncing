@@ -1,14 +1,7 @@
-import L, {Browser, Marker, Point} from 'leaflet';
+import L, {Marker, Point} from 'leaflet';
 import BouncingOptions from './BouncingOptions';
-import BouncingMotionSimple from './BouncingMotionSimple';
 import MarkerPrototypeExt from './MarkerPrototypeExt';
 import BouncingMotionCss3 from './BouncingMotionCss3';
-
-function createBouncingMotion(marker, position, bouncingOptions) {
-    return Browser.any3d
-            ? new BouncingMotionCss3(marker, position, bouncingOptions)
-            : new BouncingMotionSimple(marker, position, bouncingOptions);
-}
 
 L.Marker.include(MarkerPrototypeExt);
 
@@ -40,6 +33,6 @@ L.Marker.stopAllBouncingMarkers = function() {
 L.Marker.addInitHook(function() {
     if (this.isRealMarker()) {
         const bouncingOptions = new BouncingOptions(Marker.prototype._bouncingOptions);
-        this._bouncingMotion = createBouncingMotion(this, new Point(0, 0), bouncingOptions);
+        this._bouncingMotion = new BouncingMotionCss3(this, new Point(0, 0), bouncingOptions);
     }
 });

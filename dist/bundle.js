@@ -42,115 +42,6 @@
     return obj;
   }
 
-  function _inherits(subClass, superClass) {
-    if (typeof superClass !== "function" && superClass !== null) {
-      throw new TypeError("Super expression must either be null or a function");
-    }
-
-    subClass.prototype = Object.create(superClass && superClass.prototype, {
-      constructor: {
-        value: subClass,
-        writable: true,
-        configurable: true
-      }
-    });
-    if (superClass) _setPrototypeOf(subClass, superClass);
-  }
-
-  function _getPrototypeOf(o) {
-    _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) {
-      return o.__proto__ || Object.getPrototypeOf(o);
-    };
-    return _getPrototypeOf(o);
-  }
-
-  function _setPrototypeOf(o, p) {
-    _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) {
-      o.__proto__ = p;
-      return o;
-    };
-
-    return _setPrototypeOf(o, p);
-  }
-
-  function _isNativeReflectConstruct() {
-    if (typeof Reflect === "undefined" || !Reflect.construct) return false;
-    if (Reflect.construct.sham) return false;
-    if (typeof Proxy === "function") return true;
-
-    try {
-      Date.prototype.toString.call(Reflect.construct(Date, [], function () {}));
-      return true;
-    } catch (e) {
-      return false;
-    }
-  }
-
-  function _assertThisInitialized(self) {
-    if (self === void 0) {
-      throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
-    }
-
-    return self;
-  }
-
-  function _possibleConstructorReturn(self, call) {
-    if (call && (typeof call === "object" || typeof call === "function")) {
-      return call;
-    }
-
-    return _assertThisInitialized(self);
-  }
-
-  function _createSuper(Derived) {
-    var hasNativeReflectConstruct = _isNativeReflectConstruct();
-
-    return function _createSuperInternal() {
-      var Super = _getPrototypeOf(Derived),
-          result;
-
-      if (hasNativeReflectConstruct) {
-        var NewTarget = _getPrototypeOf(this).constructor;
-
-        result = Reflect.construct(Super, arguments, NewTarget);
-      } else {
-        result = Super.apply(this, arguments);
-      }
-
-      return _possibleConstructorReturn(this, result);
-    };
-  }
-
-  function _superPropBase(object, property) {
-    while (!Object.prototype.hasOwnProperty.call(object, property)) {
-      object = _getPrototypeOf(object);
-      if (object === null) break;
-    }
-
-    return object;
-  }
-
-  function _get(target, property, receiver) {
-    if (typeof Reflect !== "undefined" && Reflect.get) {
-      _get = Reflect.get;
-    } else {
-      _get = function _get(target, property, receiver) {
-        var base = _superPropBase(target, property);
-
-        if (!base) return;
-        var desc = Object.getOwnPropertyDescriptor(base, property);
-
-        if (desc.get) {
-          return desc.get.call(receiver);
-        }
-
-        return desc.value;
-      };
-    }
-
-    return _get(target, property, receiver || target);
-  }
-
   function _slicedToArray(arr, i) {
     return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _unsupportedIterableToArray(arr, i) || _nonIterableRest();
   }
@@ -305,521 +196,6 @@
 
     return BouncingOptions;
   }();
-
-  var Cache = /*#__PURE__*/function () {
-    function Cache() {
-      _classCallCheck(this, Cache);
-
-      _defineProperty(this, "cache", {});
-    }
-
-    _createClass(Cache, [{
-      key: "get",
-
-      /**
-       * If item with supplied {@code key} is present in cache, returns it, otherwise executes
-       * {@code supplier} function and caches the result.
-       *
-       * @param key {String}  key of the cache
-       * @param supplier {function}  item supplier
-       * @return {Object}  item
-       */
-      value: function get(key, supplier) {
-        return this.cache[key] || (this.cache[key] = supplier.apply());
-      }
-    }]);
-
-    return Cache;
-  }();
-
-  /** Regex to parse style definitions. */
-  var regStyle = /([\w-]+): ([^;]+);/g;
-
-  var Styles = /*#__PURE__*/function () {
-    function Styles(styles) {
-      _classCallCheck(this, Styles);
-
-      styles && Object.assign(this, styles);
-    }
-
-    _createClass(Styles, [{
-      key: "findOpacity",
-      value: function findOpacity(options) {
-        this.opacity = (options === null || options === void 0 ? void 0 : options.opacityWhenUnclustered // used by cluster plugin
-        ) || (options === null || options === void 0 ? void 0 : options.opacity) || 1;
-      }
-      /**
-       * Creates a copy of styles merged with provided 'styles'.
-       * @param {Object} styles  object with styles to merge
-       * @return {Styles} copy of styles
-       */
-
-    }, {
-      key: "withStyles",
-      value: function withStyles(styles) {
-        var copy = new Styles(this);
-        copy && Object.assign(copy, styles);
-        return copy;
-      }
-    }, {
-      key: "toString",
-      value: function toString() {
-        return Object.entries(this).map(function (entry) {
-          return "".concat(entry[0], ": ").concat(entry[1], ";");
-        }).join(' ');
-      }
-      /**
-       * Parses cssText attribute into Styles object.
-       * @param cssText {string}  cssText string
-       * @return {Styles} Styles object
-       */
-
-    }], [{
-      key: "parse",
-      value: function parse(cssText) {
-        var styles = {};
-        var match = regStyle.exec(cssText);
-
-        while (match) {
-          styles[match[1]] = match[2];
-          match = regStyle.exec(cssText);
-        }
-
-        delete styles['z-index'];
-        delete styles['opacity'];
-        styles['outline'] = 'none';
-        return new Styles(styles);
-      }
-      /**
-       * @param marker {Marker}
-       */
-
-    }, {
-      key: "ofMarker",
-      value: function ofMarker(marker) {
-        var styles = Styles.parse(marker._icon.style.cssText);
-        styles.findOpacity(marker.options);
-        styles['z-index'] = marker._zIndex;
-        return styles;
-      }
-    }]);
-
-    return Styles;
-  }();
-
-  var bonceEndEvent = 'bounceend';
-
-  var BouncingMotion = /*#__PURE__*/function () {
-    // TODO: check if this cache working right (keys don't need prefix)
-
-    /**
-     * Constructor.
-     *
-     * @param marker {Marker}  marker
-     * @param position {Point}  marker current position on the map canvas
-     * @param bouncingOptions {BouncingOptions}  options of bouncing animation
-     */
-    function BouncingMotion(marker, position, bouncingOptions) {
-      _classCallCheck(this, BouncingMotion);
-
-      _defineProperty(this, "marker", void 0);
-
-      _defineProperty(this, "position", void 0);
-
-      _defineProperty(this, "bouncingOptions", void 0);
-
-      _defineProperty(this, "moveSteps", void 0);
-
-      _defineProperty(this, "moveDelays", void 0);
-
-      _defineProperty(this, "resizeSteps", void 0);
-
-      _defineProperty(this, "resizeDelays", void 0);
-
-      _defineProperty(this, "isBouncing", false);
-
-      _defineProperty(this, "iconStyles", void 0);
-
-      _defineProperty(this, "shadowStyles", void 0);
-
-      _defineProperty(this, "bouncingAnimationPlaying", false);
-
-      this.marker = marker;
-      this.position = position;
-      this.updateBouncingOptions(bouncingOptions);
-    }
-
-    _createClass(BouncingMotion, [{
-      key: "updateBouncingOptions",
-      value: function updateBouncingOptions(options) {
-        this.bouncingOptions = options instanceof BouncingOptions ? options : this.bouncingOptions.override(options);
-        var _this$bouncingOptions = this.bouncingOptions,
-            bounceHeight = _this$bouncingOptions.bounceHeight,
-            bounceSpeed = _this$bouncingOptions.bounceSpeed,
-            elastic = _this$bouncingOptions.elastic;
-        this.moveSteps = BouncingMotion.cache.get("moveSteps_".concat(bounceHeight), function () {
-          return BouncingMotion.calculateSteps(bounceHeight);
-        });
-        this.moveDelays = BouncingMotion.cache.get("moveDelays_".concat(bounceHeight, "_").concat(bounceSpeed), function () {
-          return BouncingMotion.calculateDelays(bounceHeight, bounceSpeed);
-        });
-
-        if (elastic) {
-          var _this$bouncingOptions2 = this.bouncingOptions,
-              contractHeight = _this$bouncingOptions2.contractHeight,
-              contractSpeed = _this$bouncingOptions2.contractSpeed;
-          this.resizeSteps = BouncingMotion.cache.get("resizeSteps_".concat(contractHeight), function () {
-            return BouncingMotion.calculateSteps(contractHeight);
-          });
-          this.resizeDelays = BouncingMotion.cache.get("resizeDelays_".concat(contractHeight, "_").concat(contractSpeed), function () {
-            return BouncingMotion.calculateDelays(contractHeight, contractSpeed);
-          });
-        }
-
-        this.recalculateMotion(this.position);
-      }
-    }, {
-      key: "resetStyles",
-      value: function resetStyles(marker) {
-        this.iconStyles = Styles.ofMarker(marker);
-
-        if (marker._shadow) {
-          this.shadowStyles = Styles.parse(marker._shadow.style.cssText);
-        }
-      }
-      /**
-       * Recalculates bouncing motion for new marker position.
-       * @param position {Point} new marker position
-       */
-
-    }, {
-      key: "recalculateMotion",
-      value: function recalculateMotion(position) {
-        this.position = position;
-      }
-      /**
-       * @param times {number|null}
-       */
-
-    }, {
-      key: "bounce",
-      value: function bounce() {
-        var times = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
-
-        if (this.bouncingAnimationPlaying) {
-          this.isBouncing = true;
-          return;
-        }
-
-        this.isBouncing = true;
-        this.bouncingAnimationPlaying = true;
-        this.move(times);
-      }
-    }, {
-      key: "stopBouncing",
-      value: function stopBouncing() {
-        this.isBouncing = false;
-      }
-      /**
-       * @param times {number|null}
-       */
-
-    }, {
-      key: "move",
-      value: function move() {
-        var _this = this;
-
-        var times = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
-
-        if (times !== null) {
-          if (! --times) {
-            this.isBouncing = false; // this is the last bouncing
-
-            this.bouncingAnimationPlaying = false;
-          }
-        }
-        /* Launch timeouts for every step of the movement animation */
-
-
-        var i = this.moveSteps.length;
-
-        while (i--) {
-          setTimeout(function (step) {
-            return _this.makeMoveStep(step);
-          }, this.moveDelays[i], this.moveSteps[i]);
-        }
-
-        setTimeout(function () {
-          return _this.afterMove(times);
-        }, this.moveDelays[this.moveSteps.length - 1]);
-      }
-    }, {
-      key: "afterMove",
-      value: function afterMove(times) {
-        var _this2 = this;
-
-        if (this.isBouncing) {
-          setTimeout(function () {
-            return _this2.move(times);
-          }, this.bouncingOptions.bounceSpeed);
-        } else {
-          this.bouncingAnimationPlaying = false;
-          this.marker.fire(bonceEndEvent);
-        }
-      }
-      /**
-       * @param step {number}
-       */
-
-    }, {
-      key: "makeMoveStep",
-      value: function makeMoveStep(step) {
-        this.marker._icon.style.cssText = this.iconStyles.toString();
-
-        if (this.marker._shadow) {
-          this.marker._shadow.style.cssText = this.shadowStyles.toString();
-        }
-      }
-      /**
-       * Returns calculated array of animation steps. This function used to calculate both movement
-       * and resizing animations.
-       *
-       * @param height {number}  height of movement or resizing (px)
-       *
-       * @return {number[]} array of animation steps
-       */
-
-    }], [{
-      key: "calculateSteps",
-      value: function calculateSteps(height) {
-        /* Calculate the sequence of animation steps:
-         * steps = [1 .. height] concat [height-1 .. 0]
-         */
-        var i = 1;
-        var steps = [];
-
-        while (i <= height) {
-          steps.push(i++);
-        }
-
-        i = height;
-
-        while (i--) {
-          steps.push(i);
-        }
-
-        return steps;
-      }
-      /**
-       * Returns calculated array of delays between animation start and the steps of animation. This
-       * function used to calculate both movement and resizing animations. Element with index i of
-       * this array contains the delay in milliseconds between animation start and the step number i.
-       *
-       * @param height {number}  height of movement or resizing (px)
-       * @param speed {number}  speed coefficient
-       *
-       * @return {number[]} array of delays before steps of animation
-       */
-
-    }, {
-      key: "calculateDelays",
-      value: function calculateDelays(height, speed) {
-        // Calculate delta time for bouncing animation
-        // Delta time to movement in one direction
-        var deltas = []; // time between steps of animation
-
-        deltas[height] = speed;
-        deltas[0] = 0;
-        var i = height;
-
-        while (--i) {
-          deltas[i] = Math.round(speed / (height - i));
-        } // Delta time for movement in two directions
-
-
-        i = height;
-
-        while (i--) {
-          deltas.push(deltas[i]);
-        } // Calculate move delays (cumulated deltas)
-        // TODO: instead of deltas.lenght write bounceHeight * 2 - 1
-
-
-        var delays = []; // delays before steps from beginning of animation
-
-        var totalDelay = 0;
-
-        for (i = 0; i < deltas.length; i++) {
-          totalDelay += deltas[i];
-          delays.push(totalDelay);
-        }
-
-        return delays;
-      }
-    }]);
-
-    return BouncingMotion;
-  }();
-
-  _defineProperty(BouncingMotion, "cache", new Cache());
-
-  /**
-   * Calculates the points to draw the continous line on the screen. Returns the array of ordered
-   * point coordinates. Uses Bresenham algorithm.
-   *
-   * @param x {number}  x coordinate of origin
-   * @param y {number}  y coordinate of origin
-   * @param angle {number}  angle (radians)
-   * @param length {number}  length of line (px)
-   *
-   * @return {[number, number][]} array of ordered point coordinates
-   *
-   * @see http://rosettacode.org/wiki/Bitmap/Bresenham's_line_algorithm#JavaScript
-   */
-  function calculateLine(x, y, angle, length) {
-    // TODO: use something else than multiply length by 2 to calculate the line with defined
-    // length
-    var xD = Math.round(x + Math.cos(angle) * (length * 2)),
-        yD = Math.round(y + Math.sin(angle) * (length * 2)),
-        dx = Math.abs(xD - x),
-        sx = x < xD ? 1 : -1,
-        dy = Math.abs(yD - y),
-        sy = y < yD ? 1 : -1,
-        err = (dx > dy ? dx : -dy) / 2,
-        e2,
-        p = [],
-        i = 0;
-
-    while (true) {
-      p.push([x, y]);
-      i++;
-      if (i === length) break;
-      e2 = err;
-
-      if (e2 > -dx) {
-        err -= dy;
-        x += sx;
-      }
-
-      if (e2 < dy) {
-        err += dx;
-        y += sy;
-      }
-    }
-
-    return p;
-  }
-
-  var BouncingMotionSimple = /*#__PURE__*/function (_BouncingMotion) {
-    _inherits(BouncingMotionSimple, _BouncingMotion);
-
-    var _super = _createSuper(BouncingMotionSimple);
-
-    /**
-     * Constructor.
-     *
-     * @param marker {Marker}  marker
-     * @param position {Point}  marker current position on the map canvas
-     * @param bouncingOptions {BouncingOptions}  options of bouncing animation
-     */
-    function BouncingMotionSimple(marker, position, bouncingOptions) {
-      var _this;
-
-      _classCallCheck(this, BouncingMotionSimple);
-
-      _this = _super.call(this, marker, position, bouncingOptions);
-
-      _defineProperty(_assertThisInitialized(_this), "iconMovePoints", void 0);
-
-      _defineProperty(_assertThisInitialized(_this), "shadowMovePoints", void 0);
-
-      _this.recalculateMotion(position);
-
-      return _this;
-    }
-
-    _createClass(BouncingMotionSimple, [{
-      key: "recalculateMotion",
-      value: function recalculateMotion(position) {
-        _get(_getPrototypeOf(BouncingMotionSimple.prototype), "recalculateMotion", this).call(this, position);
-
-        var x = position.x,
-            y = position.y;
-        var _this$bouncingOptions = this.bouncingOptions,
-            bounceHeight = _this$bouncingOptions.bounceHeight,
-            shadowAngle = _this$bouncingOptions.shadowAngle;
-        this.iconMovePoints = BouncingMotionSimple.calculateIconMovePoints(x, y, bounceHeight);
-        this.shadowMovePoints = BouncingMotionSimple.calculateShadowMovePoints(x, y, bounceHeight, shadowAngle);
-      }
-    }, {
-      key: "makeMoveStep",
-      value: function makeMoveStep(step) {
-        _get(_getPrototypeOf(BouncingMotionSimple.prototype), "makeMoveStep", this).call(this, step);
-
-        this.marker._icon.style.left = this.iconMovePoints[step][0] + 'px';
-        this.marker._icon.style.top = this.iconMovePoints[step][1] + 'px';
-
-        if (this.marker._shadow) {
-          this.marker._shadow.style.left = this.shadowMovePoints[step][0] + 'px';
-          this.marker._shadow.style.top = this.shadowMovePoints[step][1] + 'px';
-        }
-      }
-      /**
-       * Returns calculated array of points for icon movement. Used to animate markers in browsers
-       * that doesn't support 'transform' attribute.
-       *
-       * @param x {number}  x coordinate of original position of the marker
-       * @param y {number}  y coordinate of original position of the marker
-       * @param bounceHeight {number}  height of bouncing (px)
-       *
-       * @return {[number, number][]} array of points
-       */
-
-    }], [{
-      key: "calculateIconMovePoints",
-      value: function calculateIconMovePoints(x, y, bounceHeight) {
-        var deltaHeight = bounceHeight + 1;
-        var points = []; // Use fast inverse while loop to fill the array
-
-        while (deltaHeight--) {
-          points[deltaHeight] = [x, y - deltaHeight];
-        }
-
-        return points;
-      }
-      /**
-       * Returns calculated array of points for shadow movement. Used to animate markers in browsers
-       * that doesn't support 'transform' attribute.
-       *
-       * @param x {number}  x coordinate of original position of the marker
-       * @param y {number}  y coordinate of original position of the marker
-       * @param bounceHeight {number}  height of bouncing (px)
-       * @param angle {number}  shadow inclination angle, if null shadow don't moves from it's initial
-       *      position (radians)
-       *
-       * @return {[number, number][]} array of points
-       */
-
-    }, {
-      key: "calculateShadowMovePoints",
-      value: function calculateShadowMovePoints(x, y, bounceHeight, angle) {
-        if (angle != null) {
-          // important: 0 is not null
-          return calculateLine(x, y, angle, bounceHeight + 1);
-        } else {
-          var points = [];
-
-          for (var i = 0; i <= bounceHeight; i++) {
-            points[i] = [x, y];
-          }
-
-          return points;
-        }
-      }
-    }]);
-
-    return BouncingMotionSimple;
-  }(BouncingMotion);
 
   var _bouncingMarkers = new WeakMap();
 
@@ -988,7 +364,7 @@
       oldSetPos.call(this, position);
 
       if (this.isRealMarker()) {
-        this._bouncingMotion.recalculateMotion(position);
+        this._bouncingMotion.position = position;
 
         this._bouncingMotion.resetStyles(this);
       }
@@ -1008,6 +384,53 @@
       }
     }
   };
+
+  /**
+   * Calculates the points to draw the continous line on the screen. Returns the array of ordered
+   * point coordinates. Uses Bresenham algorithm.
+   *
+   * @param x {number}  x coordinate of origin
+   * @param y {number}  y coordinate of origin
+   * @param angle {number}  angle (radians)
+   * @param length {number}  length of line (px)
+   *
+   * @return {[number, number][]} array of ordered point coordinates
+   *
+   * @see http://rosettacode.org/wiki/Bitmap/Bresenham's_line_algorithm#JavaScript
+   */
+  function calculateLine(x, y, angle, length) {
+    // TODO: use something else than multiply length by 2 to calculate the line with defined
+    // length
+    var xD = Math.round(x + Math.cos(angle) * (length * 2)),
+        yD = Math.round(y + Math.sin(angle) * (length * 2)),
+        dx = Math.abs(xD - x),
+        sx = x < xD ? 1 : -1,
+        dy = Math.abs(yD - y),
+        sy = y < yD ? 1 : -1,
+        err = (dx > dy ? dx : -dy) / 2,
+        e2,
+        p = [],
+        i = 0;
+
+    while (true) {
+      p.push([x, y]);
+      i++;
+      if (i === length) break;
+      e2 = err;
+
+      if (e2 > -dx) {
+        err -= dy;
+        x += sx;
+      }
+
+      if (e2 < dy) {
+        err += dx;
+        y += sy;
+      }
+    }
+
+    return p;
+  }
 
   function styleInject(css, ref) {
     if ( ref === void 0 ) ref = {};
@@ -1038,6 +461,81 @@
 
   var css_248z = "@keyframes l-smooth-marker-bouncing-move {\n    from {\n        transform: translate(var(--pos-x), var(--pos-y))\n    }\n    to {\n        transform: translate(var(--pos-x-jump, var(--pos-x)), var(--pos-y-jump))\n    }\n}\n\n@keyframes l-smooth-marker-bouncing-contract {\n    from {\n        transform: translate(var(--pos-x), var(--pos-y))\n    }\n    to {\n        transform: translate(var(--pos-x), var(--pos-y-contract)) scaleY(var(--scale-contract))\n    }\n}\n\n.bouncing {\n    animation-name: l-smooth-marker-bouncing-move, l-smooth-marker-bouncing-move, l-smooth-marker-bouncing-contract, l-smooth-marker-bouncing-contract;\n    animation-direction: normal, reverse, normal, reverse;\n    animation-duration: var(--duration-jump), var(--duration-jump), var(--duration-contract), var(--duration-contract);\n    animation-delay: var(--delays)\n}\n\n.bouncing.simple {\n    animation-name: l-smooth-marker-bouncing-move, l-smooth-marker-bouncing-move;\n    animation-direction: normal, reverse;\n    animation-duration: var(--duration-jump), var(--duration-jump);\n    animation-delay: var(--delays)\n}\n";
   styleInject(css_248z);
+
+  /** Regex to parse style definitions. */
+  var regStyle = /([\w-]+): ([^;]+);/g;
+
+  var Styles = /*#__PURE__*/function () {
+    function Styles(styles) {
+      _classCallCheck(this, Styles);
+
+      styles && Object.assign(this, styles);
+    }
+
+    _createClass(Styles, [{
+      key: "findOpacity",
+      value: function findOpacity(options) {
+        this.opacity = (options === null || options === void 0 ? void 0 : options.opacityWhenUnclustered // used by cluster plugin
+        ) || (options === null || options === void 0 ? void 0 : options.opacity) || 1;
+      }
+      /**
+       * Creates a copy of styles merged with provided 'styles'.
+       * @param {Object} styles  object with styles to merge
+       * @return {Styles} copy of styles
+       */
+
+    }, {
+      key: "withStyles",
+      value: function withStyles(styles) {
+        var copy = new Styles(this);
+        copy && Object.assign(copy, styles);
+        return copy;
+      }
+    }, {
+      key: "toString",
+      value: function toString() {
+        return Object.entries(this).map(function (entry) {
+          return "".concat(entry[0], ": ").concat(entry[1], ";");
+        }).join(' ');
+      }
+      /**
+       * Parses cssText attribute into Styles object.
+       * @param cssText {string}  cssText string
+       * @return {Styles} Styles object
+       */
+
+    }], [{
+      key: "parse",
+      value: function parse(cssText) {
+        var styles = {};
+        var match = regStyle.exec(cssText);
+
+        while (match) {
+          styles[match[1]] = match[2];
+          match = regStyle.exec(cssText);
+        }
+
+        delete styles['z-index'];
+        delete styles['opacity'];
+        styles['outline'] = 'none';
+        return new Styles(styles);
+      }
+      /**
+       * @param marker {Marker}
+       */
+
+    }, {
+      key: "ofMarker",
+      value: function ofMarker(marker) {
+        var styles = Styles.parse(marker._icon.style.cssText);
+        styles.findOpacity(marker.options);
+        styles['z-index'] = marker._zIndex;
+        return styles;
+      }
+    }]);
+
+    return Styles;
+  }();
 
   var animationNamePrefix = 'l-smooth-marker-bouncing-';
   var moveAnimationName = animationNamePrefix + 'move';
@@ -1074,49 +572,60 @@
 
   var _times = new WeakMap();
 
-  var BouncingMotionCss3 = /*#__PURE__*/function (_BouncingMotion) {
-    _inherits(BouncingMotionCss3, _BouncingMotion);
-
-    var _super = _createSuper(BouncingMotionCss3);
-
-    function BouncingMotionCss3() {
-      var _this;
-
+  var BouncingMotionCss3 = /*#__PURE__*/function () {
+    /**
+     * Constructor.
+     *
+     * @param marker {Marker}  marker
+     * @param position {Point}  marker current position on the map canvas
+     * @param bouncingOptions {BouncingOptions}  options of bouncing animation
+     */
+    function BouncingMotionCss3(marker, position, bouncingOptions) {
       _classCallCheck(this, BouncingMotionCss3);
 
-      for (var _len = arguments.length, args = new Array(_len), _key = 0; _key < _len; _key++) {
-        args[_key] = arguments[_key];
-      }
+      _defineProperty(this, "marker", void 0);
 
-      _this = _super.call.apply(_super, [this].concat(args));
+      _defineProperty(this, "position", void 0);
 
-      _lastAnimationName.set(_assertThisInitialized(_this), {
+      _defineProperty(this, "bouncingOptions", void 0);
+
+      _defineProperty(this, "isBouncing", false);
+
+      _defineProperty(this, "iconStyles", void 0);
+
+      _defineProperty(this, "shadowStyles", void 0);
+
+      _defineProperty(this, "bouncingAnimationPlaying", false);
+
+      _lastAnimationName.set(this, {
         writable: true,
         value: contractAnimationName
       });
 
-      _classes.set(_assertThisInitialized(_this), {
+      _classes.set(this, {
         writable: true,
         value: ['bouncing']
       });
 
-      _eventCounter.set(_assertThisInitialized(_this), {
+      _eventCounter.set(this, {
         writable: true,
         value: void 0
       });
 
-      _times.set(_assertThisInitialized(_this), {
+      _times.set(this, {
         writable: true,
         value: void 0
       });
 
-      return _this;
+      this.marker = marker;
+      this.position = position;
+      this.updateBouncingOptions(bouncingOptions);
     }
 
     _createClass(BouncingMotionCss3, [{
       key: "updateBouncingOptions",
       value: function updateBouncingOptions(options) {
-        _get(_getPrototypeOf(BouncingMotionCss3.prototype), "updateBouncingOptions", this).call(this, options);
+        this.bouncingOptions = options instanceof BouncingOptions ? options : this.bouncingOptions.override(options);
 
         if (!this.bouncingOptions.elastic) {
           _classPrivateFieldSet(this, _lastAnimationName, moveAnimationName);
@@ -1127,7 +636,7 @@
     }, {
       key: "onAnimationEnd",
       value: function onAnimationEnd(event) {
-        var _this2 = this;
+        var _this = this;
 
         if (event.animationName === _classPrivateFieldGet(this, _lastAnimationName)) {
           var _this$eventCounter;
@@ -1142,8 +651,8 @@
               resetClasses(this.marker._shadow, _classPrivateFieldGet(this, _classes));
             } else {
               _classPrivateFieldGet(this, _classes).forEach(function (className) {
-                L.DomUtil.removeClass(_this2.marker._icon, className);
-                L.DomUtil.removeClass(_this2.marker._shadow, className);
+                L.DomUtil.removeClass(_this.marker._icon, className);
+                L.DomUtil.removeClass(_this.marker._shadow, className);
               });
 
               this.bouncingAnimationPlaying = false;
@@ -1156,7 +665,11 @@
       value: function resetStyles(marker) {
         var _this$marker$getIcon, _this$marker$getIcon$, _this$marker, _this$marker$_iconObj, _this$marker$_iconObj2;
 
-        _get(_getPrototypeOf(BouncingMotionCss3.prototype), "resetStyles", this).call(this, marker);
+        this.iconStyles = Styles.ofMarker(marker);
+
+        if (marker._shadow) {
+          this.shadowStyles = Styles.parse(marker._shadow.style.cssText);
+        }
 
         var iconHeight = ((_this$marker$getIcon = this.marker.getIcon()) === null || _this$marker$getIcon === void 0 ? void 0 : (_this$marker$getIcon$ = _this$marker$getIcon.options) === null || _this$marker$getIcon$ === void 0 ? void 0 : _this$marker$getIcon$.iconSize[1]) || ((_this$marker = this.marker) === null || _this$marker === void 0 ? void 0 : (_this$marker$_iconObj = _this$marker._iconObj) === null || _this$marker$_iconObj === void 0 ? void 0 : (_this$marker$_iconObj2 = _this$marker$_iconObj.options) === null || _this$marker$_iconObj2 === void 0 ? void 0 : _this$marker$_iconObj2.iconSize[1]);
         var iconAnimationParams = BouncingMotionCss3.animationParams(this.position, this.bouncingOptions, iconHeight);
@@ -1186,7 +699,7 @@
     }, {
       key: "bounce",
       value: function bounce() {
-        var _this3 = this;
+        var _this2 = this;
 
         var times = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
 
@@ -1205,8 +718,13 @@
         resetClasses(this.marker._shadow, _classPrivateFieldGet(this, _classes));
 
         this.marker._icon.addEventListener('animationend', function (event) {
-          return _this3.onAnimationEnd(event);
+          return _this2.onAnimationEnd(event);
         });
+      }
+    }, {
+      key: "stopBouncing",
+      value: function stopBouncing() {
+        this.isBouncing = false;
       }
       /**
        * Calculates parameters of CSS3 animation of bouncing.
@@ -1278,11 +796,7 @@
     }]);
 
     return BouncingMotionCss3;
-  }(BouncingMotion);
-
-  function createBouncingMotion(marker, position, bouncingOptions) {
-    return L.Browser.any3d ? new BouncingMotionCss3(marker, position, bouncingOptions) : new BouncingMotionSimple(marker, position, bouncingOptions);
-  }
+  }();
 
   L__default['default'].Marker.include(MarkerPrototypeExt);
   /**
@@ -1314,7 +828,7 @@
   L__default['default'].Marker.addInitHook(function () {
     if (this.isRealMarker()) {
       var bouncingOptions = new BouncingOptions(L.Marker.prototype._bouncingOptions);
-      this._bouncingMotion = createBouncingMotion(this, new L.Point(0, 0), bouncingOptions);
+      this._bouncingMotion = new BouncingMotionCss3(this, new L.Point(0, 0), bouncingOptions);
     }
   });
 
