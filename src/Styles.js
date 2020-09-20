@@ -1,19 +1,5 @@
-import {DomUtil} from 'leaflet';
-
 /** Regex to parse style definitions. */
 const regStyle = /([\w-]+): ([^;]+);/g;
-
-/** CSS3 transform properties for different browsers. */
-const css3Transforms = {
-    transform: 'transform',
-    WebkitTransform: '-webkit-transform',
-    OTransform: '-o-transform',
-    MozTransform: '-moz-transform',
-    msTransform: '-ms-transform'
-};
-
-/** CSS3 transform property for this browser. */
-const transformProperty = css3Transforms[DomUtil.TRANSFORM];
 
 export default class Styles {
     constructor(styles) {
@@ -34,17 +20,6 @@ export default class Styles {
     withStyles(styles) {
         const copy = new Styles(this);
         copy && Object.assign(copy, styles);
-        return copy;
-    }
-
-    /**
-     * Creates a copy of styles with provided 'transform' property.
-     * @param transform {String}
-     * @return {Styles} copy of styles with defined 'transform'.
-     */
-    withTransform(transform) {
-        const copy = new Styles(this);
-        copy[transformProperty] = transform;
         return copy;
     }
 

@@ -72,22 +72,6 @@ test('Test copy with styles', t => {
     });
 });
 
-test('Test copy with transform', t => {
-
-    // Given
-    const styles = new Styles({ width: '25px', height: '41px' });
-
-    // When
-    const copy = styles.withTransform('matrix3d(1,0,0,0,0,1,0,0,0,0,1,0,100,100,0,1)');
-
-    // Then
-    t.like(copy, {
-        width: '25px',
-        height: '41px',
-        transform: 'matrix3d(1,0,0,0,0,1,0,0,0,0,1,0,100,100,0,1)'
-    });
-});
-
 test('Test toString', t => {
 
     // Given

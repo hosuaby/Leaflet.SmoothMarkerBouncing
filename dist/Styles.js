@@ -5,8 +5,6 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports["default"] = void 0;
 
-var _leaflet = require("leaflet");
-
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
@@ -15,18 +13,6 @@ function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _d
 
 /** Regex to parse style definitions. */
 var regStyle = /([\w-]+): ([^;]+);/g;
-/** CSS3 transform properties for different browsers. */
-
-var css3Transforms = {
-  transform: 'transform',
-  WebkitTransform: '-webkit-transform',
-  OTransform: '-o-transform',
-  MozTransform: '-moz-transform',
-  msTransform: '-ms-transform'
-};
-/** CSS3 transform property for this browser. */
-
-var transformProperty = css3Transforms[_leaflet.DomUtil.TRANSFORM];
 
 var Styles = /*#__PURE__*/function () {
   function Styles(styles) {
@@ -52,19 +38,6 @@ var Styles = /*#__PURE__*/function () {
     value: function withStyles(styles) {
       var copy = new Styles(this);
       copy && Object.assign(copy, styles);
-      return copy;
-    }
-    /**
-     * Creates a copy of styles with provided 'transform' property.
-     * @param transform {String}
-     * @return {Styles} copy of styles with defined 'transform'.
-     */
-
-  }, {
-    key: "withTransform",
-    value: function withTransform(transform) {
-      var copy = new Styles(this);
-      copy[transformProperty] = transform;
       return copy;
     }
   }, {

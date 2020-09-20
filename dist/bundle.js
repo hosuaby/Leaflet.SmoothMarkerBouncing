@@ -155,20 +155,8 @@
     return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _unsupportedIterableToArray(arr, i) || _nonIterableRest();
   }
 
-  function _toConsumableArray(arr) {
-    return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _unsupportedIterableToArray(arr) || _nonIterableSpread();
-  }
-
-  function _arrayWithoutHoles(arr) {
-    if (Array.isArray(arr)) return _arrayLikeToArray(arr);
-  }
-
   function _arrayWithHoles(arr) {
     if (Array.isArray(arr)) return arr;
-  }
-
-  function _iterableToArray(iter) {
-    if (typeof Symbol !== "undefined" && Symbol.iterator in Object(iter)) return Array.from(iter);
   }
 
   function _iterableToArrayLimit(arr, i) {
@@ -213,10 +201,6 @@
     for (var i = 0, arr2 = new Array(len); i < len; i++) arr2[i] = arr[i];
 
     return arr2;
-  }
-
-  function _nonIterableSpread() {
-    throw new TypeError("Invalid attempt to spread non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method.");
   }
 
   function _nonIterableRest() {
@@ -309,8 +293,6 @@
 
       _defineProperty(this, "exclusive", false);
 
-      _defineProperty(this, "css", false);
-
       options && Object.assign(this, options);
     }
 
@@ -351,20 +333,7 @@
   }();
 
   /** Regex to parse style definitions. */
-
   var regStyle = /([\w-]+): ([^;]+);/g;
-  /** CSS3 transform properties for different browsers. */
-
-  var css3Transforms = {
-    transform: 'transform',
-    WebkitTransform: '-webkit-transform',
-    OTransform: '-o-transform',
-    MozTransform: '-moz-transform',
-    msTransform: '-ms-transform'
-  };
-  /** CSS3 transform property for this browser. */
-
-  var transformProperty = css3Transforms[L.DomUtil.TRANSFORM];
 
   var Styles = /*#__PURE__*/function () {
     function Styles(styles) {
@@ -390,19 +359,6 @@
       value: function withStyles(styles) {
         var copy = new Styles(this);
         copy && Object.assign(copy, styles);
-        return copy;
-      }
-      /**
-       * Creates a copy of styles with provided 'transform' property.
-       * @param transform {String}
-       * @return {Styles} copy of styles with defined 'transform'.
-       */
-
-    }, {
-      key: "withTransform",
-      value: function withTransform(transform) {
-        var copy = new Styles(this);
-        copy[transformProperty] = transform;
         return copy;
       }
     }, {
@@ -707,82 +663,6 @@
 
   _defineProperty(BouncingMotion, "cache", new Cache());
 
-  var rowMap = {
-    'a': 0,
-    'b': 1,
-    'c': 2,
-    'd': 3
-  };
-  var zeros = Array(16).fill(0);
-  var _identity = [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1];
-  /**
-   * @see https://developer.mozilla.org/en-US/docs/Web/CSS/transform-function/matrix3d
-   */
-
-  var _matrix = new WeakMap();
-
-  var Matrix3D = /*#__PURE__*/function () {
-    function Matrix3D() {
-      var matrix = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : zeros;
-
-      _classCallCheck(this, Matrix3D);
-
-      _matrix.set(this, {
-        writable: true,
-        value: void 0
-      });
-
-      _classPrivateFieldSet(this, _matrix, _toConsumableArray(matrix));
-    }
-
-    _createClass(Matrix3D, [{
-      key: "toFormat",
-      value: function toFormat() {
-        for (var _len = arguments.length, placeholders = new Array(_len), _key = 0; _key < _len; _key++) {
-          placeholders[_key] = arguments[_key];
-        }
-
-        placeholders = placeholders.map(Matrix3D.valueNameToIndex);
-        var nextPlaceholderIndex = 0;
-
-        var fnBody = _classPrivateFieldGet(this, _matrix).map(function (value, index) {
-          return index === placeholders[nextPlaceholderIndex] ? "'+arguments[".concat(nextPlaceholderIndex++, "]+'") : value;
-        }).join(',');
-
-        fnBody = "return ' matrix3d(".concat(fnBody, ") ';");
-
-        function formatFn() {
-          return Function.apply(this, [fnBody]);
-        }
-
-        formatFn.prototype = Function.prototype;
-        return new formatFn();
-      }
-    }, {
-      key: "toString",
-      value: function toString() {
-        return " matrix3d(".concat(_classPrivateFieldGet(this, _matrix).join(','), ") ");
-      }
-    }], [{
-      key: "zeros",
-      value: function zeros() {
-        return new Matrix3D();
-      }
-    }, {
-      key: "identity",
-      value: function identity() {
-        return new Matrix3D(_identity);
-      }
-    }, {
-      key: "valueNameToIndex",
-      value: function valueNameToIndex(valueName) {
-        return rowMap[valueName[0]] * 4 + parseInt(valueName[1]) - 1;
-      }
-    }]);
-
-    return Matrix3D;
-  }();
-
   /**
    * Calculates the points to draw the continous line on the screen. Returns the array of ordered
    * point coordinates. Uses Bresenham algorithm.
@@ -829,217 +709,6 @@
 
     return p;
   }
-
-  var moveMatrixFormat = Matrix3D.identity().toFormat('d1', 'd2');
-  var resizeMatrixFormat = Matrix3D.identity().toFormat('b2', 'd1', 'd2');
-
-  var BouncingMotion3D = /*#__PURE__*/function (_BouncingMotion) {
-    _inherits(BouncingMotion3D, _BouncingMotion);
-
-    var _super = _createSuper(BouncingMotion3D);
-
-    /**
-     * Constructor.
-     *
-     * @param marker {Marker}  marker
-     * @param position {Point}  marker current position on the map canvas
-     * @param bouncingOptions {BouncingOptions}  options of bouncing animation
-     */
-    function BouncingMotion3D(marker, position, bouncingOptions) {
-      var _this;
-
-      _classCallCheck(this, BouncingMotion3D);
-
-      _this = _super.call(this, marker, position, bouncingOptions);
-
-      _defineProperty(_assertThisInitialized(_this), "iconMoveTransforms", void 0);
-
-      _defineProperty(_assertThisInitialized(_this), "iconResizeTransforms", void 0);
-
-      _defineProperty(_assertThisInitialized(_this), "shadowMoveTransforms", void 0);
-
-      _defineProperty(_assertThisInitialized(_this), "shadowResizeTransforms", void 0);
-
-      _this.recalculateMotion(position);
-
-      return _this;
-    }
-
-    _createClass(BouncingMotion3D, [{
-      key: "recalculateMotion",
-      value: function recalculateMotion(position) {
-        var _this$marker$getIcon, _this$marker$getIcon$, _this$marker, _this$marker$_iconObj, _this$marker$_iconObj2;
-
-        _get(_getPrototypeOf(BouncingMotion3D.prototype), "recalculateMotion", this).call(this, position);
-
-        var iconHeight = ((_this$marker$getIcon = this.marker.getIcon()) === null || _this$marker$getIcon === void 0 ? void 0 : (_this$marker$getIcon$ = _this$marker$getIcon.options) === null || _this$marker$getIcon$ === void 0 ? void 0 : _this$marker$getIcon$.iconSize[1]) || ((_this$marker = this.marker) === null || _this$marker === void 0 ? void 0 : (_this$marker$_iconObj = _this$marker._iconObj) === null || _this$marker$_iconObj === void 0 ? void 0 : (_this$marker$_iconObj2 = _this$marker$_iconObj.options) === null || _this$marker$_iconObj2 === void 0 ? void 0 : _this$marker$_iconObj2.iconSize[1]);
-        var x = position.x,
-            y = position.y;
-        var _this$bouncingOptions = this.bouncingOptions,
-            bounceHeight = _this$bouncingOptions.bounceHeight,
-            contractHeight = _this$bouncingOptions.contractHeight,
-            shadowAngle = _this$bouncingOptions.shadowAngle;
-        this.iconMoveTransforms = BouncingMotion3D.calculateIconMoveTransforms(x, y, bounceHeight);
-        this.iconResizeTransforms = BouncingMotion3D.calculateResizeTransforms(x, y, iconHeight, contractHeight);
-
-        if (this.marker._shadow) {
-          var _this$marker$getIcon2, _this$marker$getIcon3;
-
-          this.shadowMoveTransforms = BouncingMotion3D.calculateShadowMoveTransforms(x, y, bounceHeight, shadowAngle);
-          var shadowHeight = (_this$marker$getIcon2 = this.marker.getIcon()) === null || _this$marker$getIcon2 === void 0 ? void 0 : (_this$marker$getIcon3 = _this$marker$getIcon2.options) === null || _this$marker$getIcon3 === void 0 ? void 0 : _this$marker$getIcon3.shadowSize[1];
-          this.shadowResizeTransforms = BouncingMotion3D.calculateResizeTransforms(x, y, shadowHeight, contractHeight);
-        }
-      }
-    }, {
-      key: "afterMove",
-      value: function afterMove(times) {
-        if (this.bouncingOptions.elastic) {
-          this.resize(times);
-        } else {
-          _get(_getPrototypeOf(BouncingMotion3D.prototype), "afterMove", this).call(this, times);
-        }
-      }
-    }, {
-      key: "resize",
-      value: function resize(times) {
-        var _this2 = this;
-
-        var nbResizeSteps = this.resizeSteps.length;
-        var i = nbResizeSteps;
-
-        while (i--) {
-          setTimeout(function (step) {
-            return _this2.makeResizeStep(step);
-          }, this.resizeDelays[i], this.resizeSteps[i]);
-        }
-
-        setTimeout(function () {
-          if (!_this2.isBouncing) {
-            _this2.bouncingAnimationPlaying = false;
-          }
-        }, this.resizeDelays[this.resizeSteps.length]);
-        setTimeout(function () {
-          if (_this2.isBouncing) {
-            _this2.move(times);
-          } else {
-            _this2.marker.fire('bounceend');
-          }
-        }, this.resizeDelays[nbResizeSteps - 1]);
-      }
-    }, {
-      key: "makeMoveStep",
-      value: function makeMoveStep(step) {
-        this.marker._icon.style.cssText = this.iconStyles.withTransform(this.iconMoveTransforms[step]).toString();
-
-        if (this.marker._shadow) {
-          this.marker._shadow.style.cssText = this.shadowStyles.withTransform(this.shadowMoveTransforms[step]).toString();
-        }
-      }
-      /**
-       * @param step {number}
-       */
-
-    }, {
-      key: "makeResizeStep",
-      value: function makeResizeStep(step) {
-        this.marker._icon.style.cssText = this.iconStyles.withTransform(this.iconResizeTransforms[step]).toString();
-
-        if (this.marker._shadow && this.bouncingOptions.shadowAngle) {
-          this.marker._shadow.style.cssText = this.shadowStyles.withTransform(this.shadowResizeTransforms[step]).toString();
-        }
-      }
-      /**
-       * Returns calculated array of transformation definitions for the animation of icon movement.
-       * Function defines one transform for every pixel of shift of the icon from it's original y
-       * position.
-       *
-       * @param x {number}  x coordinate of original position of the marker
-       * @param y {number}  y coordinate of original position of the marker
-       * @param bounceHeight {number}  height of bouncing (px)
-       *
-       * @return {string[]} array of transformation definitions
-       */
-
-    }], [{
-      key: "calculateIconMoveTransforms",
-      value: function calculateIconMoveTransforms(x, y, bounceHeight) {
-        var transforms = [];
-        var deltaY = bounceHeight + 1; // Use fast inverse while loop to fill the array
-
-        while (deltaY--) {
-          transforms[deltaY] = moveMatrixFormat(x, y - deltaY);
-        }
-
-        return transforms;
-      }
-      /**
-       * Returns calculated array of transformation definitions for the animation of icon resizing.
-       * Function defines one transform for every pixel of resizing of marker from it's original
-       * height.
-       *
-       * @param x {number}  x coordinate of original position of marker
-       * @param y {number}  y coordinate of original position of marker
-       * @param height {number}  original marker height (px)
-       * @param contractHeight {number}  height of marker contraction (px)
-       *
-       * @return {string[]} array of transformation definitions
-       */
-
-    }, {
-      key: "calculateResizeTransforms",
-      value: function calculateResizeTransforms(x, y, height, contractHeight) {
-        var transforms = [];
-        var deltaHeight = contractHeight + 1; // Use fast inverse while loop to fill the array
-
-        while (deltaHeight--) {
-          transforms[deltaHeight] = resizeMatrixFormat((height - deltaHeight) / height, x, y + deltaHeight);
-        }
-
-        return transforms;
-      }
-      /**
-       * Returns calculated array of transformation definitions for the animation of shadow movement.
-       * Function defines one transform for every pixel of shift of the shadow from it's original
-       * position.
-       *
-       * @param x {number}  x coordinate of original position of marker
-       * @param y {number}  y coordinate of original position of marker
-       * @param bounceHeight {number}  height of bouncing (px)
-       * @param angle {number|null}  shadow inclination angle, if null shadow don't moves from it's
-       *      initial position (radians)
-       *
-       * @return {string[]} array of transformation definitions
-       */
-
-    }, {
-      key: "calculateShadowMoveTransforms",
-      value: function calculateShadowMoveTransforms(x, y, bounceHeight) {
-        var angle = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : null;
-        // TODO: check this method to know if bounceHeight + 1 is normal
-        var transforms = [];
-        var deltaY = bounceHeight + 1;
-        var points = [];
-
-        if (angle != null) {
-          // important: 0 is not null
-          points = calculateLine(x, y, angle, bounceHeight + 1);
-        } else {
-          for (var i = 0; i <= bounceHeight; i++) {
-            points[i] = [x, y];
-          }
-        } // Use fast inverse while loop to fill the array
-
-
-        while (deltaY--) {
-          transforms[deltaY] = moveMatrixFormat(points[deltaY][0], points[deltaY][1]);
-        }
-
-        return transforms;
-      }
-    }]);
-
-    return BouncingMotion3D;
-  }(BouncingMotion);
 
   var BouncingMotionSimple = /*#__PURE__*/function (_BouncingMotion) {
     _inherits(BouncingMotionSimple, _BouncingMotion);
@@ -1612,15 +1281,7 @@
   }(BouncingMotion);
 
   function createBouncingMotion(marker, position, bouncingOptions) {
-    if (L.Browser.any3d) {
-      return bouncingOptions.css ? new BouncingMotionCss3(marker, position, bouncingOptions) : new BouncingMotion3D(marker, position, bouncingOptions);
-    } else {
-      return new BouncingMotionSimple(marker, position, bouncingOptions);
-    } // return Browser.any3d
-    // ? new BouncingMotion3D(marker, position, bouncingOptions)
-    // ? new BouncingMotionCss3(marker, position, bouncingOptions)
-    // : new BouncingMotionSimple(marker, position, bouncingOptions);
-
+    return L.Browser.any3d ? new BouncingMotionCss3(marker, position, bouncingOptions) : new BouncingMotionSimple(marker, position, bouncingOptions);
   }
 
   L__default['default'].Marker.include(MarkerPrototypeExt);

@@ -42,8 +42,6 @@ export default class BouncingOptions {
      */
     exclusive = false;
 
-    css = false;
-
     constructor(options) {
         options && Object.assign(this, options);
     }

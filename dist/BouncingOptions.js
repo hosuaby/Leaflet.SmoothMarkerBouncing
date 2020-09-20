@@ -65,8 +65,6 @@ var BouncingOptions = /*#__PURE__*/function () {
 
     _defineProperty(this, "exclusive", false);
 
-    _defineProperty(this, "css", false);
-
     options && Object.assign(this, options);
   }
 
