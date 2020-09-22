@@ -107,18 +107,23 @@ export default class BouncingMotionCss3 {
             this.marker._icon.addEventListener('animationend', this.#listener);
         }
 
-        const {bounceHeight, shadowAngle} = this.bouncingOptions;
+        const {bounceHeight, contractHeight, shadowAngle} = this.bouncingOptions;
 
         if (this.marker._shadow && shadowAngle) {
             const {x, y} = this.position;
             const points = calculateLine(x, y, shadowAngle, bounceHeight + 1);
             const [posXJump, posYJump] = points[bounceHeight];
 
+            const shadowHeight = this.marker.getIcon()?.options?.shadowSize[1];
+            const shadowScaleContract = BouncingMotionCss3.contractScale(
+                    shadowHeight, contractHeight);
+
             this.shadowStyles = this.shadowStyles
                     .withStyles(iconAnimationParams)
                     .withStyles({
                         '--pos-x-jump': `${posXJump}px`,
                         '--pos-y-jump': `${posYJump}px`,
+                        '--scale-contract': shadowScaleContract,
                     });
             this.marker._shadow.style.cssText = this.shadowStyles.toString();
 

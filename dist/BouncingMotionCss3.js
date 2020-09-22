@@ -201,9 +201,12 @@ var BouncingMotionCss3 = /*#__PURE__*/function () {
 
       var _this$bouncingOptions = this.bouncingOptions,
           bounceHeight = _this$bouncingOptions.bounceHeight,
+          contractHeight = _this$bouncingOptions.contractHeight,
           shadowAngle = _this$bouncingOptions.shadowAngle;
 
       if (this.marker._shadow && shadowAngle) {
+        var _this$marker$getIcon2, _this$marker$getIcon3;
+
         var _this$position = this.position,
             x = _this$position.x,
             y = _this$position.y;
@@ -213,9 +216,12 @@ var BouncingMotionCss3 = /*#__PURE__*/function () {
             posXJump = _points$bounceHeight[0],
             posYJump = _points$bounceHeight[1];
 
+        var shadowHeight = (_this$marker$getIcon2 = this.marker.getIcon()) === null || _this$marker$getIcon2 === void 0 ? void 0 : (_this$marker$getIcon3 = _this$marker$getIcon2.options) === null || _this$marker$getIcon3 === void 0 ? void 0 : _this$marker$getIcon3.shadowSize[1];
+        var shadowScaleContract = BouncingMotionCss3.contractScale(shadowHeight, contractHeight);
         this.shadowStyles = this.shadowStyles.withStyles(iconAnimationParams).withStyles({
           '--pos-x-jump': "".concat(posXJump, "px"),
-          '--pos-y-jump': "".concat(posYJump, "px")
+          '--pos-y-jump': "".concat(posYJump, "px"),
+          '--scale-contract': shadowScaleContract
         });
         this.marker._shadow.style.cssText = this.shadowStyles.toString();
 
