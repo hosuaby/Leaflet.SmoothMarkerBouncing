@@ -73,11 +73,15 @@ export default class BouncingMotionCss3 {
             if (!this.#eventCounter) {
                 if (this.isBouncing && (this.#times === null || --this.#times)) {
                     resetClasses(this.marker._icon, this.#classes);
-                    resetClasses(this.marker._shadow, this.#classes);
+                    if (this.marker._shadow) {
+                        resetClasses(this.marker._shadow, this.#classes);
+                    }
                 } else {
                     this.#classes.forEach((className) => {
                         DomUtil.removeClass(this.marker._icon, className);
-                        DomUtil.removeClass(this.marker._shadow, className)
+                        if (this.marker._shadow) {
+                            DomUtil.removeClass(this.marker._shadow, className);
+                        }
                     });
                     this.bouncingAnimationPlaying = false;
                 }
@@ -146,7 +150,9 @@ export default class BouncingMotionCss3 {
         this.bouncingAnimationPlaying = true;
 
         resetClasses(this.marker._icon, this.#classes);
-        resetClasses(this.marker._shadow, this.#classes);
+        if (this.marker._shadow) {
+            resetClasses(this.marker._shadow, this.#classes);
+        }
 
         this.marker._icon.addEventListener('animationend', this.#listener);
     }

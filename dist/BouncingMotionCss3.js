@@ -163,12 +163,17 @@ var BouncingMotionCss3 = /*#__PURE__*/function () {
         if (!_classPrivateFieldGet(this, _eventCounter)) {
           if (this.isBouncing && (_classPrivateFieldGet(this, _times) === null || _classPrivateFieldSet(this, _times, +_classPrivateFieldGet(this, _times) - 1))) {
             resetClasses(this.marker._icon, _classPrivateFieldGet(this, _classes));
-            resetClasses(this.marker._shadow, _classPrivateFieldGet(this, _classes));
+
+            if (this.marker._shadow) {
+              resetClasses(this.marker._shadow, _classPrivateFieldGet(this, _classes));
+            }
           } else {
             _classPrivateFieldGet(this, _classes).forEach(function (className) {
               _leaflet.DomUtil.removeClass(_this2.marker._icon, className);
 
-              _leaflet.DomUtil.removeClass(_this2.marker._shadow, className);
+              if (_this2.marker._shadow) {
+                _leaflet.DomUtil.removeClass(_this2.marker._shadow, className);
+              }
             });
 
             this.bouncingAnimationPlaying = false;
@@ -247,7 +252,10 @@ var BouncingMotionCss3 = /*#__PURE__*/function () {
 
       this.bouncingAnimationPlaying = true;
       resetClasses(this.marker._icon, _classPrivateFieldGet(this, _classes));
-      resetClasses(this.marker._shadow, _classPrivateFieldGet(this, _classes));
+
+      if (this.marker._shadow) {
+        resetClasses(this.marker._shadow, _classPrivateFieldGet(this, _classes));
+      }
 
       this.marker._icon.addEventListener('animationend', _classPrivateFieldGet(this, _listener));
     }
