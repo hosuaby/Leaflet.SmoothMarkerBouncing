@@ -572,6 +572,8 @@
 
   var _times = new WeakMap();
 
+  var _listener = new WeakMap();
+
   var BouncingMotionCss3 = /*#__PURE__*/function () {
     /**
      * Constructor.
@@ -581,6 +583,8 @@
      * @param bouncingOptions {BouncingOptions}  options of bouncing animation
      */
     function BouncingMotionCss3(marker, position, bouncingOptions) {
+      var _this = this;
+
       _classCallCheck(this, BouncingMotionCss3);
 
       _defineProperty(this, "marker", void 0);
@@ -617,6 +621,13 @@
         value: void 0
       });
 
+      _listener.set(this, {
+        writable: true,
+        value: function value(event) {
+          return _this.onAnimationEnd(event);
+        }
+      });
+
       this.marker = marker;
       this.position = position;
       this.updateBouncingOptions(bouncingOptions);
@@ -636,7 +647,7 @@
     }, {
       key: "onAnimationEnd",
       value: function onAnimationEnd(event) {
-        var _this = this;
+        var _this2 = this;
 
         if (event.animationName === _classPrivateFieldGet(this, _lastAnimationName)) {
           var _this$eventCounter;
@@ -651,8 +662,8 @@
               resetClasses(this.marker._shadow, _classPrivateFieldGet(this, _classes));
             } else {
               _classPrivateFieldGet(this, _classes).forEach(function (className) {
-                L.DomUtil.removeClass(_this.marker._icon, className);
-                L.DomUtil.removeClass(_this.marker._shadow, className);
+                L.DomUtil.removeClass(_this2.marker._icon, className);
+                L.DomUtil.removeClass(_this2.marker._shadow, className);
               });
 
               this.bouncingAnimationPlaying = false;
@@ -665,6 +676,7 @@
       value: function resetStyles(marker) {
         var _this$marker$getIcon, _this$marker$getIcon$, _this$marker, _this$marker$_iconObj, _this$marker$_iconObj2;
 
+        this.marker = marker;
         this.iconStyles = Styles.ofMarker(marker);
 
         if (marker._shadow) {
@@ -675,14 +687,21 @@
         var iconAnimationParams = BouncingMotionCss3.animationParams(this.position, this.bouncingOptions, iconHeight);
         this.iconStyles = this.iconStyles.withStyles(iconAnimationParams);
         this.marker._icon.style.cssText = this.iconStyles.toString();
-        var _this$position = this.position,
-            x = _this$position.x,
-            y = _this$position.y;
+
+        if (this.bouncingAnimationPlaying) {
+          resetClasses(this.marker._icon, _classPrivateFieldGet(this, _classes));
+
+          this.marker._icon.addEventListener('animationend', _classPrivateFieldGet(this, _listener));
+        }
+
         var _this$bouncingOptions = this.bouncingOptions,
             bounceHeight = _this$bouncingOptions.bounceHeight,
             shadowAngle = _this$bouncingOptions.shadowAngle;
 
         if (this.marker._shadow && shadowAngle) {
+          var _this$position = this.position,
+              x = _this$position.x,
+              y = _this$position.y;
           var points = calculateLine(x, y, shadowAngle, bounceHeight + 1);
 
           var _points$bounceHeight = _slicedToArray(points[bounceHeight], 2),
@@ -694,13 +713,15 @@
             '--pos-y-jump': "".concat(posYJump, "px")
           });
           this.marker._shadow.style.cssText = this.shadowStyles.toString();
+
+          if (this.bouncingAnimationPlaying) {
+            resetClasses(this.marker._shadow, _classPrivateFieldGet(this, _classes));
+          }
         }
       }
     }, {
       key: "bounce",
       value: function bounce() {
-        var _this2 = this;
-
         var times = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
 
         _classPrivateFieldSet(this, _times, times);
@@ -717,9 +738,7 @@
         resetClasses(this.marker._icon, _classPrivateFieldGet(this, _classes));
         resetClasses(this.marker._shadow, _classPrivateFieldGet(this, _classes));
 
-        this.marker._icon.addEventListener('animationend', function (event) {
-          return _this2.onAnimationEnd(event);
-        });
+        this.marker._icon.addEventListener('animationend', _classPrivateFieldGet(this, _listener));
       }
     }, {
       key: "stopBouncing",

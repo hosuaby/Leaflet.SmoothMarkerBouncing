@@ -39,6 +39,7 @@ export default class BouncingMotionCss3 {
     #classes = ['bouncing'];
     #eventCounter;
     #times;
+    #listener = (event) => this.onAnimationEnd(event);
 
     /**
      * Constructor.
@@ -85,6 +86,7 @@ export default class BouncingMotionCss3 {
     }
 
     resetStyles(marker) {
+        this.marker = marker;
         this.iconStyles = Styles.ofMarker(marker);
 
         if (marker._shadow) {
@@ -100,10 +102,15 @@ export default class BouncingMotionCss3 {
         this.iconStyles = this.iconStyles.withStyles(iconAnimationParams);
         this.marker._icon.style.cssText = this.iconStyles.toString();
 
-        const {x, y} = this.position;
+        if (this.bouncingAnimationPlaying) {
+            resetClasses(this.marker._icon, this.#classes);
+            this.marker._icon.addEventListener('animationend', this.#listener);
+        }
+
         const {bounceHeight, shadowAngle} = this.bouncingOptions;
 
         if (this.marker._shadow && shadowAngle) {
+            const {x, y} = this.position;
             const points = calculateLine(x, y, shadowAngle, bounceHeight + 1);
             const [posXJump, posYJump] = points[bounceHeight];
 
@@ -114,6 +121,10 @@ export default class BouncingMotionCss3 {
                         '--pos-y-jump': `${posYJump}px`,
                     });
             this.marker._shadow.style.cssText = this.shadowStyles.toString();
+
+            if (this.bouncingAnimationPlaying) {
+                resetClasses(this.marker._shadow, this.#classes);
+            }
         }
     }
 
@@ -132,7 +143,7 @@ export default class BouncingMotionCss3 {
         resetClasses(this.marker._icon, this.#classes);
         resetClasses(this.marker._shadow, this.#classes);
 
-        this.marker._icon.addEventListener('animationend', (event) => this.onAnimationEnd(event));
+        this.marker._icon.addEventListener('animationend', this.#listener);
     }
 
     stopBouncing() {

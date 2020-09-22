@@ -7,15 +7,15 @@ exports["default"] = void 0;
 
 var _leaflet = require("leaflet");
 
-var _BouncingMotion2 = _interopRequireDefault(require("./BouncingMotion"));
-
 var _line = require("./line");
 
 require("./bouncing.css");
 
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
+var _BouncingOptions = _interopRequireDefault(require("./BouncingOptions"));
 
-function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
+var _Styles = _interopRequireDefault(require("./Styles"));
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
 
 function _slicedToArray(arr, i) { return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _unsupportedIterableToArray(arr, i) || _nonIterableRest(); }
 
@@ -35,23 +35,7 @@ function _defineProperties(target, props) { for (var i = 0; i < props.length; i+
 
 function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
 
-function _get(target, property, receiver) { if (typeof Reflect !== "undefined" && Reflect.get) { _get = Reflect.get; } else { _get = function _get(target, property, receiver) { var base = _superPropBase(target, property); if (!base) return; var desc = Object.getOwnPropertyDescriptor(base, property); if (desc.get) { return desc.get.call(receiver); } return desc.value; }; } return _get(target, property, receiver || target); }
-
-function _superPropBase(object, property) { while (!Object.prototype.hasOwnProperty.call(object, property)) { object = _getPrototypeOf(object); if (object === null) break; } return object; }
-
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); if (superClass) _setPrototypeOf(subClass, superClass); }
-
-function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
-
-function _createSuper(Derived) { var hasNativeReflectConstruct = _isNativeReflectConstruct(); return function _createSuperInternal() { var Super = _getPrototypeOf(Derived), result; if (hasNativeReflectConstruct) { var NewTarget = _getPrototypeOf(this).constructor; result = Reflect.construct(Super, arguments, NewTarget); } else { result = Super.apply(this, arguments); } return _possibleConstructorReturn(this, result); }; }
-
-function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === "object" || typeof call === "function")) { return call; } return _assertThisInitialized(self); }
-
-function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
-
-function _isNativeReflectConstruct() { if (typeof Reflect === "undefined" || !Reflect.construct) return false; if (Reflect.construct.sham) return false; if (typeof Proxy === "function") return true; try { Date.prototype.toString.call(Reflect.construct(Date, [], function () {})); return true; } catch (e) { return false; } }
-
-function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
 function _classPrivateFieldGet(receiver, privateMap) { var descriptor = privateMap.get(receiver); if (!descriptor) { throw new TypeError("attempted to get private field on non-instance"); } if (descriptor.get) { return descriptor.get.call(receiver); } return descriptor.value; }
 
@@ -92,49 +76,71 @@ var _eventCounter = new WeakMap();
 
 var _times = new WeakMap();
 
-var BouncingMotionCss3 = /*#__PURE__*/function (_BouncingMotion) {
-  _inherits(BouncingMotionCss3, _BouncingMotion);
+var _listener = new WeakMap();
 
-  var _super = _createSuper(BouncingMotionCss3);
-
-  function BouncingMotionCss3() {
-    var _this;
+var BouncingMotionCss3 = /*#__PURE__*/function () {
+  /**
+   * Constructor.
+   *
+   * @param marker {Marker}  marker
+   * @param position {Point}  marker current position on the map canvas
+   * @param bouncingOptions {BouncingOptions}  options of bouncing animation
+   */
+  function BouncingMotionCss3(marker, position, bouncingOptions) {
+    var _this = this;
 
     _classCallCheck(this, BouncingMotionCss3);
 
-    for (var _len = arguments.length, args = new Array(_len), _key = 0; _key < _len; _key++) {
-      args[_key] = arguments[_key];
-    }
+    _defineProperty(this, "marker", void 0);
 
-    _this = _super.call.apply(_super, [this].concat(args));
+    _defineProperty(this, "position", void 0);
 
-    _lastAnimationName.set(_assertThisInitialized(_this), {
+    _defineProperty(this, "bouncingOptions", void 0);
+
+    _defineProperty(this, "isBouncing", false);
+
+    _defineProperty(this, "iconStyles", void 0);
+
+    _defineProperty(this, "shadowStyles", void 0);
+
+    _defineProperty(this, "bouncingAnimationPlaying", false);
+
+    _lastAnimationName.set(this, {
       writable: true,
       value: contractAnimationName
     });
 
-    _classes.set(_assertThisInitialized(_this), {
+    _classes.set(this, {
       writable: true,
       value: ['bouncing']
     });
 
-    _eventCounter.set(_assertThisInitialized(_this), {
+    _eventCounter.set(this, {
       writable: true,
       value: void 0
     });
 
-    _times.set(_assertThisInitialized(_this), {
+    _times.set(this, {
       writable: true,
       value: void 0
     });
 
-    return _this;
+    _listener.set(this, {
+      writable: true,
+      value: function value(event) {
+        return _this.onAnimationEnd(event);
+      }
+    });
+
+    this.marker = marker;
+    this.position = position;
+    this.updateBouncingOptions(bouncingOptions);
   }
 
   _createClass(BouncingMotionCss3, [{
     key: "updateBouncingOptions",
     value: function updateBouncingOptions(options) {
-      _get(_getPrototypeOf(BouncingMotionCss3.prototype), "updateBouncingOptions", this).call(this, options);
+      this.bouncingOptions = options instanceof _BouncingOptions["default"] ? options : this.bouncingOptions.override(options);
 
       if (!this.bouncingOptions.elastic) {
         _classPrivateFieldSet(this, _lastAnimationName, moveAnimationName);
@@ -175,20 +181,32 @@ var BouncingMotionCss3 = /*#__PURE__*/function (_BouncingMotion) {
     value: function resetStyles(marker) {
       var _this$marker$getIcon, _this$marker$getIcon$, _this$marker, _this$marker$_iconObj, _this$marker$_iconObj2;
 
-      _get(_getPrototypeOf(BouncingMotionCss3.prototype), "resetStyles", this).call(this, marker);
+      this.marker = marker;
+      this.iconStyles = _Styles["default"].ofMarker(marker);
+
+      if (marker._shadow) {
+        this.shadowStyles = _Styles["default"].parse(marker._shadow.style.cssText);
+      }
 
       var iconHeight = ((_this$marker$getIcon = this.marker.getIcon()) === null || _this$marker$getIcon === void 0 ? void 0 : (_this$marker$getIcon$ = _this$marker$getIcon.options) === null || _this$marker$getIcon$ === void 0 ? void 0 : _this$marker$getIcon$.iconSize[1]) || ((_this$marker = this.marker) === null || _this$marker === void 0 ? void 0 : (_this$marker$_iconObj = _this$marker._iconObj) === null || _this$marker$_iconObj === void 0 ? void 0 : (_this$marker$_iconObj2 = _this$marker$_iconObj.options) === null || _this$marker$_iconObj2 === void 0 ? void 0 : _this$marker$_iconObj2.iconSize[1]);
       var iconAnimationParams = BouncingMotionCss3.animationParams(this.position, this.bouncingOptions, iconHeight);
       this.iconStyles = this.iconStyles.withStyles(iconAnimationParams);
       this.marker._icon.style.cssText = this.iconStyles.toString();
-      var _this$position = this.position,
-          x = _this$position.x,
-          y = _this$position.y;
+
+      if (this.bouncingAnimationPlaying) {
+        resetClasses(this.marker._icon, _classPrivateFieldGet(this, _classes));
+
+        this.marker._icon.addEventListener('animationend', _classPrivateFieldGet(this, _listener));
+      }
+
       var _this$bouncingOptions = this.bouncingOptions,
           bounceHeight = _this$bouncingOptions.bounceHeight,
           shadowAngle = _this$bouncingOptions.shadowAngle;
 
       if (this.marker._shadow && shadowAngle) {
+        var _this$position = this.position,
+            x = _this$position.x,
+            y = _this$position.y;
         var points = (0, _line.calculateLine)(x, y, shadowAngle, bounceHeight + 1);
 
         var _points$bounceHeight = _slicedToArray(points[bounceHeight], 2),
@@ -200,13 +218,15 @@ var BouncingMotionCss3 = /*#__PURE__*/function (_BouncingMotion) {
           '--pos-y-jump': "".concat(posYJump, "px")
         });
         this.marker._shadow.style.cssText = this.shadowStyles.toString();
+
+        if (this.bouncingAnimationPlaying) {
+          resetClasses(this.marker._shadow, _classPrivateFieldGet(this, _classes));
+        }
       }
     }
   }, {
     key: "bounce",
     value: function bounce() {
-      var _this3 = this;
-
       var times = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
 
       _classPrivateFieldSet(this, _times, times);
@@ -223,9 +243,12 @@ var BouncingMotionCss3 = /*#__PURE__*/function (_BouncingMotion) {
       resetClasses(this.marker._icon, _classPrivateFieldGet(this, _classes));
       resetClasses(this.marker._shadow, _classPrivateFieldGet(this, _classes));
 
-      this.marker._icon.addEventListener('animationend', function (event) {
-        return _this3.onAnimationEnd(event);
-      });
+      this.marker._icon.addEventListener('animationend', _classPrivateFieldGet(this, _listener));
+    }
+  }, {
+    key: "stopBouncing",
+    value: function stopBouncing() {
+      this.isBouncing = false;
     }
     /**
      * Calculates parameters of CSS3 animation of bouncing.
@@ -297,6 +320,6 @@ var BouncingMotionCss3 = /*#__PURE__*/function (_BouncingMotion) {
   }]);
 
   return BouncingMotionCss3;
-}(_BouncingMotion2["default"]);
+}();
 
 exports["default"] = BouncingMotionCss3;

@@ -60,7 +60,7 @@
             contractSpeed: 30,
             shadowAngle: null
         }).on('click', function() {
-            this.bounce(7);
+            this.bounce(3);
         }).addTo(clusterGroup);
     });
 

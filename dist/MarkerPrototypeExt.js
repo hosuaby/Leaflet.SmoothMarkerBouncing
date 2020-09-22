@@ -96,7 +96,7 @@ var _default = {
     oldSetPos.call(this, position);
 
     if (this.isRealMarker()) {
-      this._bouncingMotion.recalculateMotion(position);
+      this._bouncingMotion.position = position;
 
       this._bouncingMotion.resetStyles(this);
     }
