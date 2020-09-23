@@ -1,31 +1,79 @@
+.leaflet-marker-pane {
+    -webkit-backface-visibility: hidden;
+    -moz-backface-visibility: hidden;
+    -webkit-transform: translateZ(0);
+}
+
+@-webkit-keyframes l-smooth-marker-bouncing-move {
+    0% { -webkit-transform: translate3d(var(--pos-x), var(--pos-y), 0px) }
+    100% { -webkit-transform: translate3d(var(--pos-x-jump, var(--pos-x)), var(--pos-y-jump), 0px) }
+}
+
+@-moz-keyframes l-smooth-marker-bouncing-move {
+    0% { -moz-transform: translate3d(var(--pos-x), var(--pos-y), 0px) }
+    100% { -moz-transform: translate3d(var(--pos-x-jump, var(--pos-x)), var(--pos-y-jump), 0px) }
+}
+
+@-ms-keyframes l-smooth-marker-bouncing-move {
+    0% { -ms-transform: translate3d(var(--pos-x), var(--pos-y), 0px) }
+    100% { -ms-transform: translate3d(var(--pos-x-jump, var(--pos-x)), var(--pos-y-jump), 0px) }
+}
+
+@-o-keyframes l-smooth-marker-bouncing-move {
+    0% { -o-transform: translate3d(var(--pos-x), var(--pos-y), 0px) }
+    100% { -o-transform: translate3d(var(--pos-x-jump, var(--pos-x)), var(--pos-y-jump), 0px) }
+}
+
 @keyframes l-smooth-marker-bouncing-move {
-    from {
-        transform: translate(var(--pos-x), var(--pos-y))
-    }
-    to {
-        transform: translate(var(--pos-x-jump, var(--pos-x)), var(--pos-y-jump))
-    }
+    0% { transform: translate3d(var(--pos-x), var(--pos-y), 0px) }
+    100% { transform: translate3d(var(--pos-x-jump, var(--pos-x)), var(--pos-y-jump), 0px) }
+}
+
+@-webkit-keyframes l-smooth-marker-bouncing-contract {
+    0% { -webkit-transform: translate3d(var(--pos-x), var(--pos-y), 0px) }
+    100% { -webkit-transform: translate(var(--pos-x), var(--pos-y-contract)) scale3d(1, var(--scale-contract), 1) }
+}
+
+@-moz-keyframes l-smooth-marker-bouncing-contract {
+    0% { -moz-transform: translate3d(var(--pos-x), var(--pos-y), 0px) }
+    100% { -moz-transform: translate(var(--pos-x), var(--pos-y-contract)) scale3d(1, var(--scale-contract), 1) }
+}
+
+@-o-keyframes l-smooth-marker-bouncing-contract {
+    0% { -o-transform: translate3d(var(--pos-x), var(--pos-y), 0px) }
+    100% { -o-transform: translate(var(--pos-x), var(--pos-y-contract)) scale3d(1, var(--scale-contract), 1) }
 }
 
 @keyframes l-smooth-marker-bouncing-contract {
-    from {
-        transform: translate(var(--pos-x), var(--pos-y))
-    }
-    to {
-        transform: translate(var(--pos-x), var(--pos-y-contract)) scaleY(var(--scale-contract))
-    }
+    0% { transform: translate3d(var(--pos-x), var(--pos-y), 0px) }
+    100% { transform: translate(var(--pos-x), var(--pos-y-contract)) scale3d(1, var(--scale-contract), 1) }
 }
 
 .bouncing {
+    -webkit-animation-name: l-smooth-marker-bouncing-move, l-smooth-marker-bouncing-move, l-smooth-marker-bouncing-contract, l-smooth-marker-bouncing-contract;
+    -webkit-animation-direction: normal, reverse, normal, reverse;
+    -webkit-animation-duration: var(--duration-jump), var(--duration-jump), var(--duration-contract), var(--duration-contract);
+    -webkit-animation-delay: var(--delays);
+
+    -moz-animation-name: l-smooth-marker-bouncing-move, l-smooth-marker-bouncing-move, l-smooth-marker-bouncing-contract, l-smooth-marker-bouncing-contract;
+    -moz-animation-direction: normal, reverse, normal, reverse;
+    -moz-animation-duration: var(--duration-jump), var(--duration-jump), var(--duration-contract), var(--duration-contract);
+    -moz-animation-delay: var(--delays);
+
+    -o-animation-name: l-smooth-marker-bouncing-move, l-smooth-marker-bouncing-move, l-smooth-marker-bouncing-contract, l-smooth-marker-bouncing-contract;
+    -o-animation-direction: normal, reverse, normal, reverse;
+    -o-animation-duration: var(--duration-jump), var(--duration-jump), var(--duration-contract), var(--duration-contract);
+    -o-animation-delay: var(--delays);
+
     animation-name: l-smooth-marker-bouncing-move, l-smooth-marker-bouncing-move, l-smooth-marker-bouncing-contract, l-smooth-marker-bouncing-contract;
     animation-direction: normal, reverse, normal, reverse;
     animation-duration: var(--duration-jump), var(--duration-jump), var(--duration-contract), var(--duration-contract);
-    animation-delay: var(--delays)
+    animation-delay: var(--delays);
 }
 
 .bouncing.simple {
     animation-name: l-smooth-marker-bouncing-move, l-smooth-marker-bouncing-move;
     animation-direction: normal, reverse;
     animation-duration: var(--duration-jump), var(--duration-jump);
-    animation-delay: var(--delays)
+    animation-delay: var(--delays);
 }
