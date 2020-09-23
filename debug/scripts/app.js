@@ -43,22 +43,22 @@
     });
 
     /* 7 ball markers */
-    _.times(7, () => {
-        const lat = _.random(parisArea[0][0], parisArea[1][0]);
-        const lng = _.random(parisArea[0][1], parisArea[1][1]);
-
-        L.marker([lat, lng], {
-            icon: new BallIcon()
-        }).setBouncingOptions({
-            bounceHeight: 40,
-            contractHeight: 20,
-            bounceSpeed: 60,
-            contractSpeed: 30,
-            shadowAngle: null
-        }).on('click', function() {
-            this.bounce(3);
-        }).addTo(map);
-    });
+    // _.times(7, () => {
+    //     const lat = _.random(parisArea[0][0], parisArea[1][0]);
+    //     const lng = _.random(parisArea[0][1], parisArea[1][1]);
+    //
+    //     L.marker([lat, lng], {
+    //         icon: new BallIcon()
+    //     }).setBouncingOptions({
+    //         bounceHeight: 40,
+    //         contractHeight: 20,
+    //         bounceSpeed: 60,
+    //         contractSpeed: 30,
+    //         shadowAngle: null
+    //     }).on('click', function() {
+    //         this.bounce(3);
+    //     }).addTo(map);
+    // });
 
     /* Stop all bouncing markers on click on the map */
     map.on('click', () => {

@@ -8,6 +8,44 @@ const animationNamePrefix = 'l-smooth-marker-bouncing-';
 const moveAnimationName = animationNamePrefix + 'move';
 const contractAnimationName = animationNamePrefix + 'contract';
 
+function capitalize(str) {
+    return str.charAt(0).toUpperCase() + str.slice(1);
+}
+
+function whichAnimationType(type) {
+    let animatableEvent;
+
+    const el = document.createElement('fakeelement');
+    const capitalType = capitalize(type);
+
+    const animations = {
+        [type]: `${type}end`,
+        [`O${capitalType}`]: `o${capitalType}End`,
+        [`Moz${capitalType}`]: `${type}end`,
+        [`Webkit${capitalType}`]: `webkit${capitalType}End`,
+        [`MS${capitalType}`]: `MS${capitalType}End`
+    };
+
+    const hasEventEnd = Object.keys(animations).some((item) => {
+        if (el.style[item] !== undefined) {
+            animatableEvent = animations[item];
+            return true;
+        }
+
+        return false;
+    });
+
+    if (!hasEventEnd) {
+        throw new Error(`${type}end is not supported in your web browser.`);
+    }
+
+    return animatableEvent;
+};
+
+const animationEnd = whichAnimationType('animation');
+// DomUtil
+//         .testProp(['webkitAnimationEnd', 'animationend', 'OAnimationEnd', 'MSAnimationEnd']);
+
 /*
  * CSS3 animation runs faster than transform-based animation. We need to reduce speed in order
  * to be compatible with old API.
@@ -108,7 +146,7 @@ export default class BouncingMotionCss3 {
 
         if (this.bouncingAnimationPlaying) {
             resetClasses(this.marker._icon, this.#classes);
-            this.marker._icon.addEventListener('animationend', this.#listener);
+            this.marker._icon.addEventListener(animationEnd, this.#listener);
         }
 
         const {bounceHeight, contractHeight, shadowAngle} = this.bouncingOptions;
@@ -154,7 +192,7 @@ export default class BouncingMotionCss3 {
             resetClasses(this.marker._shadow, this.#classes);
         }
 
-        this.marker._icon.addEventListener('animationend', this.#listener);
+        this.marker._icon.addEventListener(animationEnd, this.#listener);
     }
 
     stopBouncing() {

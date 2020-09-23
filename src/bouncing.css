@@ -1,9 +1,3 @@
-.leaflet-marker-pane {
-    -webkit-backface-visibility: hidden;
-    -moz-backface-visibility: hidden;
-    -webkit-transform: translateZ(0);
-}
-
 @-webkit-keyframes l-smooth-marker-bouncing-move {
     0% { -webkit-transform: translate3d(var(--pos-x), var(--pos-y), 0px) }
     100% { -webkit-transform: translate3d(var(--pos-x-jump, var(--pos-x)), var(--pos-y-jump), 0px) }
@@ -31,22 +25,22 @@
 
 @-webkit-keyframes l-smooth-marker-bouncing-contract {
     0% { -webkit-transform: translate3d(var(--pos-x), var(--pos-y), 0px) }
-    100% { -webkit-transform: translate(var(--pos-x), var(--pos-y-contract)) scale3d(1, var(--scale-contract), 1) }
+    100% { -webkit-transform: translate3d(var(--pos-x), var(--pos-y-contract), 0px) scale3d(1, var(--scale-contract), 1) }
 }
 
 @-moz-keyframes l-smooth-marker-bouncing-contract {
     0% { -moz-transform: translate3d(var(--pos-x), var(--pos-y), 0px) }
-    100% { -moz-transform: translate(var(--pos-x), var(--pos-y-contract)) scale3d(1, var(--scale-contract), 1) }
+    100% { -moz-transform: translate3d(var(--pos-x), var(--pos-y-contract), 0px) scale3d(1, var(--scale-contract), 1) }
 }
 
 @-o-keyframes l-smooth-marker-bouncing-contract {
     0% { -o-transform: translate3d(var(--pos-x), var(--pos-y), 0px) }
-    100% { -o-transform: translate(var(--pos-x), var(--pos-y-contract)) scale3d(1, var(--scale-contract), 1) }
+    100% { -o-transform: translate3d(var(--pos-x), var(--pos-y-contract), 0px) scale3d(1, var(--scale-contract), 1) }
 }
 
 @keyframes l-smooth-marker-bouncing-contract {
     0% { transform: translate3d(var(--pos-x), var(--pos-y), 0px) }
-    100% { transform: translate(var(--pos-x), var(--pos-y-contract)) scale3d(1, var(--scale-contract), 1) }
+    100% { transform: translate3d(var(--pos-x), var(--pos-y-contract), 0px) scale3d(1, var(--scale-contract), 1) }
 }
 
 .bouncing {

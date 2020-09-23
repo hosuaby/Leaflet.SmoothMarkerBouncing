@@ -459,7 +459,7 @@
     }
   }
 
-  var css_248z = ".leaflet-marker-pane {\n    -webkit-backface-visibility: hidden;\n    -moz-backface-visibility: hidden;\n    -webkit-transform: translateZ(0);\n}\n\n@-webkit-keyframes l-smooth-marker-bouncing-move {\n    0% { -webkit-transform: translate3d(var(--pos-x), var(--pos-y), 0px) }\n    100% { -webkit-transform: translate3d(var(--pos-x-jump, var(--pos-x)), var(--pos-y-jump), 0px) }\n}\n\n@-moz-keyframes l-smooth-marker-bouncing-move {\n    0% { -moz-transform: translate3d(var(--pos-x), var(--pos-y), 0px) }\n    100% { -moz-transform: translate3d(var(--pos-x-jump, var(--pos-x)), var(--pos-y-jump), 0px) }\n}\n\n@-ms-keyframes l-smooth-marker-bouncing-move {\n    0% { -ms-transform: translate3d(var(--pos-x), var(--pos-y), 0px) }\n    100% { -ms-transform: translate3d(var(--pos-x-jump, var(--pos-x)), var(--pos-y-jump), 0px) }\n}\n\n@-o-keyframes l-smooth-marker-bouncing-move {\n    0% { -o-transform: translate3d(var(--pos-x), var(--pos-y), 0px) }\n    100% { -o-transform: translate3d(var(--pos-x-jump, var(--pos-x)), var(--pos-y-jump), 0px) }\n}\n\n@keyframes l-smooth-marker-bouncing-move {\n    0% { transform: translate3d(var(--pos-x), var(--pos-y), 0px) }\n    100% { transform: translate3d(var(--pos-x-jump, var(--pos-x)), var(--pos-y-jump), 0px) }\n}\n\n@-webkit-keyframes l-smooth-marker-bouncing-contract {\n    0% { -webkit-transform: translate3d(var(--pos-x), var(--pos-y), 0px) }\n    100% { -webkit-transform: translate(var(--pos-x), var(--pos-y-contract)) scale3d(1, var(--scale-contract), 1) }\n}\n\n@-moz-keyframes l-smooth-marker-bouncing-contract {\n    0% { -moz-transform: translate3d(var(--pos-x), var(--pos-y), 0px) }\n    100% { -moz-transform: translate(var(--pos-x), var(--pos-y-contract)) scale3d(1, var(--scale-contract), 1) }\n}\n\n@-o-keyframes l-smooth-marker-bouncing-contract {\n    0% { -o-transform: translate3d(var(--pos-x), var(--pos-y), 0px) }\n    100% { -o-transform: translate(var(--pos-x), var(--pos-y-contract)) scale3d(1, var(--scale-contract), 1) }\n}\n\n@keyframes l-smooth-marker-bouncing-contract {\n    0% { transform: translate3d(var(--pos-x), var(--pos-y), 0px) }\n    100% { transform: translate(var(--pos-x), var(--pos-y-contract)) scale3d(1, var(--scale-contract), 1) }\n}\n\n.bouncing {\n    -webkit-animation-name: l-smooth-marker-bouncing-move, l-smooth-marker-bouncing-move, l-smooth-marker-bouncing-contract, l-smooth-marker-bouncing-contract;\n    -webkit-animation-direction: normal, reverse, normal, reverse;\n    -webkit-animation-duration: var(--duration-jump), var(--duration-jump), var(--duration-contract), var(--duration-contract);\n    -webkit-animation-delay: var(--delays);\n\n    -moz-animation-name: l-smooth-marker-bouncing-move, l-smooth-marker-bouncing-move, l-smooth-marker-bouncing-contract, l-smooth-marker-bouncing-contract;\n    -moz-animation-direction: normal, reverse, normal, reverse;\n    -moz-animation-duration: var(--duration-jump), var(--duration-jump), var(--duration-contract), var(--duration-contract);\n    -moz-animation-delay: var(--delays);\n\n    -o-animation-name: l-smooth-marker-bouncing-move, l-smooth-marker-bouncing-move, l-smooth-marker-bouncing-contract, l-smooth-marker-bouncing-contract;\n    -o-animation-direction: normal, reverse, normal, reverse;\n    -o-animation-duration: var(--duration-jump), var(--duration-jump), var(--duration-contract), var(--duration-contract);\n    -o-animation-delay: var(--delays);\n\n    animation-name: l-smooth-marker-bouncing-move, l-smooth-marker-bouncing-move, l-smooth-marker-bouncing-contract, l-smooth-marker-bouncing-contract;\n    animation-direction: normal, reverse, normal, reverse;\n    animation-duration: var(--duration-jump), var(--duration-jump), var(--duration-contract), var(--duration-contract);\n    animation-delay: var(--delays);\n}\n\n.bouncing.simple {\n    animation-name: l-smooth-marker-bouncing-move, l-smooth-marker-bouncing-move;\n    animation-direction: normal, reverse;\n    animation-duration: var(--duration-jump), var(--duration-jump);\n    animation-delay: var(--delays);\n}\n";
+  var css_248z = "@-webkit-keyframes l-smooth-marker-bouncing-move {\n    0% { -webkit-transform: translate3d(var(--pos-x), var(--pos-y), 0px) }\n    100% { -webkit-transform: translate3d(var(--pos-x-jump, var(--pos-x)), var(--pos-y-jump), 0px) }\n}\n\n@-moz-keyframes l-smooth-marker-bouncing-move {\n    0% { -moz-transform: translate3d(var(--pos-x), var(--pos-y), 0px) }\n    100% { -moz-transform: translate3d(var(--pos-x-jump, var(--pos-x)), var(--pos-y-jump), 0px) }\n}\n\n@-ms-keyframes l-smooth-marker-bouncing-move {\n    0% { -ms-transform: translate3d(var(--pos-x), var(--pos-y), 0px) }\n    100% { -ms-transform: translate3d(var(--pos-x-jump, var(--pos-x)), var(--pos-y-jump), 0px) }\n}\n\n@-o-keyframes l-smooth-marker-bouncing-move {\n    0% { -o-transform: translate3d(var(--pos-x), var(--pos-y), 0px) }\n    100% { -o-transform: translate3d(var(--pos-x-jump, var(--pos-x)), var(--pos-y-jump), 0px) }\n}\n\n@keyframes l-smooth-marker-bouncing-move {\n    0% { transform: translate3d(var(--pos-x), var(--pos-y), 0px) }\n    100% { transform: translate3d(var(--pos-x-jump, var(--pos-x)), var(--pos-y-jump), 0px) }\n}\n\n@-webkit-keyframes l-smooth-marker-bouncing-contract {\n    0% { -webkit-transform: translate3d(var(--pos-x), var(--pos-y), 0px) }\n    100% { -webkit-transform: translate3d(var(--pos-x), var(--pos-y-contract), 0px) scale3d(1, var(--scale-contract), 1) }\n}\n\n@-moz-keyframes l-smooth-marker-bouncing-contract {\n    0% { -moz-transform: translate3d(var(--pos-x), var(--pos-y), 0px) }\n    100% { -moz-transform: translate3d(var(--pos-x), var(--pos-y-contract), 0px) scale3d(1, var(--scale-contract), 1) }\n}\n\n@-o-keyframes l-smooth-marker-bouncing-contract {\n    0% { -o-transform: translate3d(var(--pos-x), var(--pos-y), 0px) }\n    100% { -o-transform: translate3d(var(--pos-x), var(--pos-y-contract), 0px) scale3d(1, var(--scale-contract), 1) }\n}\n\n@keyframes l-smooth-marker-bouncing-contract {\n    0% { transform: translate3d(var(--pos-x), var(--pos-y), 0px) }\n    100% { transform: translate3d(var(--pos-x), var(--pos-y-contract), 0px) scale3d(1, var(--scale-contract), 1) }\n}\n\n.bouncing {\n    -webkit-animation-name: l-smooth-marker-bouncing-move, l-smooth-marker-bouncing-move, l-smooth-marker-bouncing-contract, l-smooth-marker-bouncing-contract;\n    -webkit-animation-direction: normal, reverse, normal, reverse;\n    -webkit-animation-duration: var(--duration-jump), var(--duration-jump), var(--duration-contract), var(--duration-contract);\n    -webkit-animation-delay: var(--delays);\n\n    -moz-animation-name: l-smooth-marker-bouncing-move, l-smooth-marker-bouncing-move, l-smooth-marker-bouncing-contract, l-smooth-marker-bouncing-contract;\n    -moz-animation-direction: normal, reverse, normal, reverse;\n    -moz-animation-duration: var(--duration-jump), var(--duration-jump), var(--duration-contract), var(--duration-contract);\n    -moz-animation-delay: var(--delays);\n\n    -o-animation-name: l-smooth-marker-bouncing-move, l-smooth-marker-bouncing-move, l-smooth-marker-bouncing-contract, l-smooth-marker-bouncing-contract;\n    -o-animation-direction: normal, reverse, normal, reverse;\n    -o-animation-duration: var(--duration-jump), var(--duration-jump), var(--duration-contract), var(--duration-contract);\n    -o-animation-delay: var(--delays);\n\n    animation-name: l-smooth-marker-bouncing-move, l-smooth-marker-bouncing-move, l-smooth-marker-bouncing-contract, l-smooth-marker-bouncing-contract;\n    animation-direction: normal, reverse, normal, reverse;\n    animation-duration: var(--duration-jump), var(--duration-jump), var(--duration-contract), var(--duration-contract);\n    animation-delay: var(--delays);\n}\n\n.bouncing.simple {\n    animation-name: l-smooth-marker-bouncing-move, l-smooth-marker-bouncing-move;\n    animation-direction: normal, reverse;\n    animation-duration: var(--duration-jump), var(--duration-jump);\n    animation-delay: var(--delays);\n}\n";
   styleInject(css_248z);
 
   /** Regex to parse style definitions. */
@@ -540,6 +540,36 @@
   var animationNamePrefix = 'l-smooth-marker-bouncing-';
   var moveAnimationName = animationNamePrefix + 'move';
   var contractAnimationName = animationNamePrefix + 'contract';
+
+  function capitalize(str) {
+    return str.charAt(0).toUpperCase() + str.slice(1);
+  }
+
+  function whichAnimationType(type) {
+    var _animations;
+
+    var animatableEvent;
+    var el = document.createElement('fakeelement');
+    var capitalType = capitalize(type);
+    var animations = (_animations = {}, _defineProperty(_animations, type, "".concat(type, "end")), _defineProperty(_animations, "O".concat(capitalType), "o".concat(capitalType, "End")), _defineProperty(_animations, "Moz".concat(capitalType), "".concat(type, "end")), _defineProperty(_animations, "Webkit".concat(capitalType), "webkit".concat(capitalType, "End")), _defineProperty(_animations, "MS".concat(capitalType), "MS".concat(capitalType, "End")), _animations);
+    var hasEventEnd = Object.keys(animations).some(function (item) {
+      if (el.style[item] !== undefined) {
+        animatableEvent = animations[item];
+        return true;
+      }
+
+      return false;
+    });
+
+    if (!hasEventEnd) {
+      throw new Error("".concat(type, "end is not supported in your web browser."));
+    }
+
+    return animatableEvent;
+  }
+  var animationEnd = whichAnimationType('animation'); // DomUtil
+  //         .testProp(['webkitAnimationEnd', 'animationend', 'OAnimationEnd', 'MSAnimationEnd']);
+
   /*
    * CSS3 animation runs faster than transform-based animation. We need to reduce speed in order
    * to be compatible with old API.
@@ -697,7 +727,7 @@
         if (this.bouncingAnimationPlaying) {
           resetClasses(this.marker._icon, _classPrivateFieldGet(this, _classes));
 
-          this.marker._icon.addEventListener('animationend', _classPrivateFieldGet(this, _listener));
+          this.marker._icon.addEventListener(animationEnd, _classPrivateFieldGet(this, _listener));
         }
 
         var _this$bouncingOptions = this.bouncingOptions,
@@ -753,7 +783,7 @@
           resetClasses(this.marker._shadow, _classPrivateFieldGet(this, _classes));
         }
 
-        this.marker._icon.addEventListener('animationend', _classPrivateFieldGet(this, _listener));
+        this.marker._icon.addEventListener(animationEnd, _classPrivateFieldGet(this, _listener));
       }
     }, {
       key: "stopBouncing",
