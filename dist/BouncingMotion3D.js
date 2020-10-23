@@ -144,10 +144,12 @@ var BouncingMotion3D = /*#__PURE__*/function (_BouncingMotion) {
   }, {
     key: "makeMoveStep",
     value: function makeMoveStep(step) {
-      this.marker._icon.style.cssText = this.iconStyles.withTransform(this.iconMoveTransforms[step]).toString();
+      if (!this.marker.isInCluster()) {
+        this.marker._icon.style.cssText = this.iconStyles.withTransform(this.iconMoveTransforms[step]).toString();
 
-      if (this.marker._shadow) {
-        this.marker._shadow.style.cssText = this.shadowStyles.withTransform(this.shadowMoveTransforms[step]).toString();
+        if (this.marker._shadow) {
+          this.marker._shadow.style.cssText = this.shadowStyles.withTransform(this.shadowMoveTransforms[step]).toString();
+        }
       }
     }
     /**
@@ -157,10 +159,12 @@ var BouncingMotion3D = /*#__PURE__*/function (_BouncingMotion) {
   }, {
     key: "makeResizeStep",
     value: function makeResizeStep(step) {
-      this.marker._icon.style.cssText = this.iconStyles.withTransform(this.iconResizeTransforms[step]).toString();
+      if (!this.marker.isInCluster()) {
+        this.marker._icon.style.cssText = this.iconStyles.withTransform(this.iconResizeTransforms[step]).toString();
 
-      if (this.marker._shadow && this.bouncingOptions.shadowAngle) {
-        this.marker._shadow.style.cssText = this.shadowStyles.withTransform(this.shadowResizeTransforms[step]).toString();
+        if (this.marker._shadow && this.bouncingOptions.shadowAngle) {
+          this.marker._shadow.style.cssText = this.shadowStyles.withTransform(this.shadowResizeTransforms[step]).toString();
+        }
       }
     }
     /**

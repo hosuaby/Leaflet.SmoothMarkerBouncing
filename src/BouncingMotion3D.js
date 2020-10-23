@@ -80,14 +80,16 @@ export default class BouncingMotion3D extends BouncingMotion {
     }
 
     makeMoveStep(step) {
-        this.marker._icon.style.cssText = this.iconStyles
-                .withTransform(this.iconMoveTransforms[step])
-                .toString();
-
-        if (this.marker._shadow) {
-            this.marker._shadow.style.cssText = this.shadowStyles
-                    .withTransform(this.shadowMoveTransforms[step])
+        if (!this.marker.isInCluster()) {
+            this.marker._icon.style.cssText = this.iconStyles
+                    .withTransform(this.iconMoveTransforms[step])
                     .toString();
+
+            if (this.marker._shadow) {
+                this.marker._shadow.style.cssText = this.shadowStyles
+                        .withTransform(this.shadowMoveTransforms[step])
+                        .toString();
+            }
         }
     }
 
@@ -95,14 +97,16 @@ export default class BouncingMotion3D extends BouncingMotion {
      * @param step {number}
      */
     makeResizeStep(step) {
-        this.marker._icon.style.cssText = this.iconStyles
-                .withTransform(this.iconResizeTransforms[step])
-                .toString();
-
-        if (this.marker._shadow && this.bouncingOptions.shadowAngle) {
-            this.marker._shadow.style.cssText = this.shadowStyles
-                    .withTransform(this.shadowResizeTransforms[step])
+        if (!this.marker.isInCluster()) {
+            this.marker._icon.style.cssText = this.iconStyles
+                    .withTransform(this.iconResizeTransforms[step])
                     .toString();
+
+            if (this.marker._shadow && this.bouncingOptions.shadowAngle) {
+                this.marker._shadow.style.cssText = this.shadowStyles
+                        .withTransform(this.shadowResizeTransforms[step])
+                        .toString();
+            }
         }
     }
 

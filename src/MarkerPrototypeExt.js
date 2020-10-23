@@ -98,4 +98,11 @@ export default {
             this._bouncingMotion.resetStyles(this);
         }
     },
+
+    /**
+     * @return {boolean} true if marker is inside cluster, false if not.
+     */
+    isInCluster() {
+        return !this._icon;
+    },
 }

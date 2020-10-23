@@ -131,10 +131,12 @@ export default class BouncingMotion {
      * @param step {number}
      */
     makeMoveStep(step) {
-        this.marker._icon.style.cssText = this.iconStyles.toString();
+        if (!this.marker.isInCluster()) {
+            this.marker._icon.style.cssText = this.iconStyles.toString();
 
-        if (this.marker._shadow) {
-            this.marker._shadow.style.cssText = this.shadowStyles.toString();
+            if (this.marker._shadow) {
+                this.marker._shadow.style.cssText = this.shadowStyles.toString();
+            }
         }
     }
 

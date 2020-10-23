@@ -114,6 +114,13 @@ var _default = {
     if (this.isRealMarker()) {
       this._bouncingMotion.resetStyles(this);
     }
+  },
+
+  /**
+   * @return {boolean} true if marker is inside cluster, false if not.
+   */
+  isInCluster: function isInCluster() {
+    return !this._icon;
   }
 };
 exports["default"] = _default;

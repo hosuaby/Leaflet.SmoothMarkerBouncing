@@ -31,12 +31,14 @@ export default class BouncingMotionSimple extends BouncingMotion {
     makeMoveStep(step) {
         super.makeMoveStep(step);
 
-        this.marker._icon.style.left = this.iconMovePoints[step][0] + 'px';
-        this.marker._icon.style.top  = this.iconMovePoints[step][1] + 'px';
+        if (!this.marker.isInCluster()) {
+            this.marker._icon.style.left = this.iconMovePoints[step][0] + 'px';
+            this.marker._icon.style.top = this.iconMovePoints[step][1] + 'px';
 
-        if (this.marker._shadow) {
-            this.marker._shadow.style.left = this.shadowMovePoints[step][0] + 'px';
-            this.marker._shadow.style.top  = this.shadowMovePoints[step][1] + 'px';
+            if (this.marker._shadow) {
+                this.marker._shadow.style.left = this.shadowMovePoints[step][0] + 'px';
+                this.marker._shadow.style.top  = this.shadowMovePoints[step][1] + 'px';
+            }
         }
     }
 
