@@ -4,6 +4,23 @@
 [![Build Status](https://travis-ci.org/hosuaby/Leaflet.SmoothMarkerBouncing.svg?branch=master)](https://travis-ci.org/hosuaby/Leaflet.SmoothMarkerBouncing)
 [![Coverage Status](https://coveralls.io/repos/github/hosuaby/Leaflet.SmoothMarkerBouncing/badge.svg?branch=master)](https://coveralls.io/github/hosuaby/Leaflet.SmoothMarkerBouncing?branch=master)
 
+<hr />
+
+## Stop the war
+
+This plugin made by Russian and citizen of Russian Federation. 
+
+On 24 February 2022, Russian dictator Vladimir Putin launched an assault on our good neighbor, Ukraine, starting the bloodiest and most meaningless war in decades. Currently, Ukrainians and Russians are dying for Putin crazy geopolitical illusion.
+
+Open Source is made for everyone. For people of all nationalities and all political beliefs. Sharing is what makes us stronger ! Wherever you are progressive or conservative, pro- or against- NATO, pro- or against- European Union, I hope you are for peace.
+
+Protest, resist and spread the truth! Help, to stop this war. Help to stop Putin.
+
+Assault must end, war must end, Putin must face the trial!
+
+<hr />
+
+
 Plugin for [Leaflet](http://leafletjs.com/) that will make you markers bounce!
 
 <p align="center">
