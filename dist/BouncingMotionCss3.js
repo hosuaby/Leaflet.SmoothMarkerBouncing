@@ -25,7 +25,7 @@ function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o =
 
 function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
 
-function _iterableToArrayLimit(arr, i) { if (typeof Symbol === "undefined" || !(Symbol.iterator in Object(arr))) return; var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"] != null) _i["return"](); } finally { if (_d) throw _e; } } return _arr; }
+function _iterableToArrayLimit(arr, i) { var _i = arr == null ? null : typeof Symbol !== "undefined" && arr[Symbol.iterator] || arr["@@iterator"]; if (_i == null) return; var _arr = []; var _n = true; var _d = false; var _s, _e; try { for (_i = _i.call(arr); !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"] != null) _i["return"](); } finally { if (_d) throw _e; } } return _arr; }
 
 function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
 
@@ -33,13 +33,23 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 
 function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
 
-function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); Object.defineProperty(Constructor, "prototype", { writable: false }); return Constructor; }
+
+function _classPrivateFieldInitSpec(obj, privateMap, value) { _checkPrivateRedeclaration(obj, privateMap); privateMap.set(obj, value); }
+
+function _checkPrivateRedeclaration(obj, privateCollection) { if (privateCollection.has(obj)) { throw new TypeError("Cannot initialize the same private elements twice on an object"); } }
 
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
-function _classPrivateFieldGet(receiver, privateMap) { var descriptor = privateMap.get(receiver); if (!descriptor) { throw new TypeError("attempted to get private field on non-instance"); } if (descriptor.get) { return descriptor.get.call(receiver); } return descriptor.value; }
+function _classPrivateFieldGet(receiver, privateMap) { var descriptor = _classExtractFieldDescriptor(receiver, privateMap, "get"); return _classApplyDescriptorGet(receiver, descriptor); }
 
-function _classPrivateFieldSet(receiver, privateMap, value) { var descriptor = privateMap.get(receiver); if (!descriptor) { throw new TypeError("attempted to set private field on non-instance"); } if (descriptor.set) { descriptor.set.call(receiver, value); } else { if (!descriptor.writable) { throw new TypeError("attempted to set read only private field"); } descriptor.value = value; } return value; }
+function _classApplyDescriptorGet(receiver, descriptor) { if (descriptor.get) { return descriptor.get.call(receiver); } return descriptor.value; }
+
+function _classPrivateFieldSet(receiver, privateMap, value) { var descriptor = _classExtractFieldDescriptor(receiver, privateMap, "set"); _classApplyDescriptorSet(receiver, descriptor, value); return value; }
+
+function _classExtractFieldDescriptor(receiver, privateMap, action) { if (!privateMap.has(receiver)) { throw new TypeError("attempted to " + action + " private field on non-instance"); } return privateMap.get(receiver); }
+
+function _classApplyDescriptorSet(receiver, descriptor, value) { if (descriptor.set) { descriptor.set.call(receiver, value); } else { if (!descriptor.writable) { throw new TypeError("attempted to set read only private field"); } descriptor.value = value; } }
 
 var animationNamePrefix = 'l-smooth-marker-bouncing-';
 var moveAnimationName = animationNamePrefix + 'move';
@@ -68,15 +78,15 @@ function resetClasses(element, classes) {
   });
 }
 
-var _lastAnimationName = new WeakMap();
+var _lastAnimationName = /*#__PURE__*/new WeakMap();
 
-var _classes = new WeakMap();
+var _classes = /*#__PURE__*/new WeakMap();
 
-var _eventCounter = new WeakMap();
+var _eventCounter = /*#__PURE__*/new WeakMap();
 
-var _times = new WeakMap();
+var _times = /*#__PURE__*/new WeakMap();
 
-var _listener = new WeakMap();
+var _listener = /*#__PURE__*/new WeakMap();
 
 var BouncingMotionCss3 = /*#__PURE__*/function () {
   /**
@@ -105,27 +115,27 @@ var BouncingMotionCss3 = /*#__PURE__*/function () {
 
     _defineProperty(this, "bouncingAnimationPlaying", false);
 
-    _lastAnimationName.set(this, {
+    _classPrivateFieldInitSpec(this, _lastAnimationName, {
       writable: true,
       value: contractAnimationName
     });
 
-    _classes.set(this, {
+    _classPrivateFieldInitSpec(this, _classes, {
       writable: true,
       value: ['bouncing']
     });
 
-    _eventCounter.set(this, {
+    _classPrivateFieldInitSpec(this, _eventCounter, {
       writable: true,
       value: void 0
     });
 
-    _times.set(this, {
+    _classPrivateFieldInitSpec(this, _times, {
       writable: true,
       value: void 0
     });
 
-    _listener.set(this, {
+    _classPrivateFieldInitSpec(this, _listener, {
       writable: true,
       value: function value(event) {
         return _this.onAnimationEnd(event);
@@ -154,14 +164,16 @@ var BouncingMotionCss3 = /*#__PURE__*/function () {
       var _this2 = this;
 
       if (event.animationName === _classPrivateFieldGet(this, _lastAnimationName)) {
-        var _this$eventCounter;
+        var _this$eventCounter, _this$eventCounter2;
 
-        _classPrivateFieldSet(this, _eventCounter, (_this$eventCounter = +_classPrivateFieldGet(this, _eventCounter)) + 1), _this$eventCounter;
+        _classPrivateFieldSet(this, _eventCounter, (_this$eventCounter = _classPrivateFieldGet(this, _eventCounter), _this$eventCounter2 = _this$eventCounter++, _this$eventCounter)), _this$eventCounter2;
 
         _classPrivateFieldSet(this, _eventCounter, _classPrivateFieldGet(this, _eventCounter) % 2);
 
         if (!_classPrivateFieldGet(this, _eventCounter)) {
-          if (this.isBouncing && (_classPrivateFieldGet(this, _times) === null || _classPrivateFieldSet(this, _times, +_classPrivateFieldGet(this, _times) - 1))) {
+          var _this$times;
+
+          if (this.isBouncing && (_classPrivateFieldGet(this, _times) === null || _classPrivateFieldSet(this, _times, (_this$times = _classPrivateFieldGet(this, _times), --_this$times)))) {
             resetClasses(this.marker._icon, _classPrivateFieldGet(this, _classes));
 
             if (this.marker._shadow) {

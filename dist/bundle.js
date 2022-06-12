@@ -24,6 +24,9 @@
   function _createClass(Constructor, protoProps, staticProps) {
     if (protoProps) _defineProperties(Constructor.prototype, protoProps);
     if (staticProps) _defineProperties(Constructor, staticProps);
+    Object.defineProperty(Constructor, "prototype", {
+      writable: false
+    });
     return Constructor;
   }
 
@@ -51,14 +54,17 @@
   }
 
   function _iterableToArrayLimit(arr, i) {
-    if (typeof Symbol === "undefined" || !(Symbol.iterator in Object(arr))) return;
+    var _i = arr == null ? null : typeof Symbol !== "undefined" && arr[Symbol.iterator] || arr["@@iterator"];
+
+    if (_i == null) return;
     var _arr = [];
     var _n = true;
     var _d = false;
-    var _e = undefined;
+
+    var _s, _e;
 
     try {
-      for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) {
+      for (_i = _i.call(arr); !(_n = (_s = _i.next()).done); _n = true) {
         _arr.push(_s.value);
 
         if (i && _arr.length === i) break;
@@ -99,12 +105,28 @@
   }
 
   function _classPrivateFieldGet(receiver, privateMap) {
-    var descriptor = privateMap.get(receiver);
+    var descriptor = _classExtractFieldDescriptor(receiver, privateMap, "get");
 
-    if (!descriptor) {
-      throw new TypeError("attempted to get private field on non-instance");
+    return _classApplyDescriptorGet(receiver, descriptor);
+  }
+
+  function _classPrivateFieldSet(receiver, privateMap, value) {
+    var descriptor = _classExtractFieldDescriptor(receiver, privateMap, "set");
+
+    _classApplyDescriptorSet(receiver, descriptor, value);
+
+    return value;
+  }
+
+  function _classExtractFieldDescriptor(receiver, privateMap, action) {
+    if (!privateMap.has(receiver)) {
+      throw new TypeError("attempted to " + action + " private field on non-instance");
     }
 
+    return privateMap.get(receiver);
+  }
+
+  function _classApplyDescriptorGet(receiver, descriptor) {
     if (descriptor.get) {
       return descriptor.get.call(receiver);
     }
@@ -112,13 +134,7 @@
     return descriptor.value;
   }
 
-  function _classPrivateFieldSet(receiver, privateMap, value) {
-    var descriptor = privateMap.get(receiver);
-
-    if (!descriptor) {
-      throw new TypeError("attempted to set private field on non-instance");
-    }
-
+  function _classApplyDescriptorSet(receiver, descriptor, value) {
     if (descriptor.set) {
       descriptor.set.call(receiver, value);
     } else {
@@ -128,8 +144,18 @@
 
       descriptor.value = value;
     }
+  }
 
-    return value;
+  function _checkPrivateRedeclaration(obj, privateCollection) {
+    if (privateCollection.has(obj)) {
+      throw new TypeError("Cannot initialize the same private elements twice on an object");
+    }
+  }
+
+  function _classPrivateFieldInitSpec(obj, privateMap, value) {
+    _checkPrivateRedeclaration(obj, privateMap);
+
+    privateMap.set(obj, value);
   }
 
   var BouncingOptions = /*#__PURE__*/function () {
@@ -197,13 +223,13 @@
     return BouncingOptions;
   }();
 
-  var _bouncingMarkers = new WeakMap();
+  var _bouncingMarkers = /*#__PURE__*/new WeakMap();
 
   var Orchestration = /*#__PURE__*/function () {
     function Orchestration() {
       _classCallCheck(this, Orchestration);
 
-      _bouncingMarkers.set(this, {
+      _classPrivateFieldInitSpec(this, _bouncingMarkers, {
         writable: true,
         value: []
       });
@@ -564,15 +590,15 @@
     });
   }
 
-  var _lastAnimationName = new WeakMap();
+  var _lastAnimationName = /*#__PURE__*/new WeakMap();
 
-  var _classes = new WeakMap();
+  var _classes = /*#__PURE__*/new WeakMap();
 
-  var _eventCounter = new WeakMap();
+  var _eventCounter = /*#__PURE__*/new WeakMap();
 
-  var _times = new WeakMap();
+  var _times = /*#__PURE__*/new WeakMap();
 
-  var _listener = new WeakMap();
+  var _listener = /*#__PURE__*/new WeakMap();
 
   var BouncingMotionCss3 = /*#__PURE__*/function () {
     /**
@@ -601,27 +627,27 @@
 
       _defineProperty(this, "bouncingAnimationPlaying", false);
 
-      _lastAnimationName.set(this, {
+      _classPrivateFieldInitSpec(this, _lastAnimationName, {
         writable: true,
         value: contractAnimationName
       });
 
-      _classes.set(this, {
+      _classPrivateFieldInitSpec(this, _classes, {
         writable: true,
         value: ['bouncing']
       });
 
-      _eventCounter.set(this, {
+      _classPrivateFieldInitSpec(this, _eventCounter, {
         writable: true,
         value: void 0
       });
 
-      _times.set(this, {
+      _classPrivateFieldInitSpec(this, _times, {
         writable: true,
         value: void 0
       });
 
-      _listener.set(this, {
+      _classPrivateFieldInitSpec(this, _listener, {
         writable: true,
         value: function value(event) {
           return _this.onAnimationEnd(event);
@@ -652,12 +678,14 @@
         if (event.animationName === _classPrivateFieldGet(this, _lastAnimationName)) {
           var _this$eventCounter;
 
-          _classPrivateFieldSet(this, _eventCounter, (_this$eventCounter = +_classPrivateFieldGet(this, _eventCounter)) + 1), _this$eventCounter;
+          _classPrivateFieldSet(this, _eventCounter, (_this$eventCounter = _classPrivateFieldGet(this, _eventCounter), _this$eventCounter++, _this$eventCounter));
 
           _classPrivateFieldSet(this, _eventCounter, _classPrivateFieldGet(this, _eventCounter) % 2);
 
           if (!_classPrivateFieldGet(this, _eventCounter)) {
-            if (this.isBouncing && (_classPrivateFieldGet(this, _times) === null || _classPrivateFieldSet(this, _times, +_classPrivateFieldGet(this, _times) - 1))) {
+            var _this$times;
+
+            if (this.isBouncing && (_classPrivateFieldGet(this, _times) === null || _classPrivateFieldSet(this, _times, (_this$times = _classPrivateFieldGet(this, _times), --_this$times)))) {
               resetClasses(this.marker._icon, _classPrivateFieldGet(this, _classes));
 
               if (this.marker._shadow) {
@@ -832,13 +860,13 @@
     return BouncingMotionCss3;
   }();
 
-  L__default['default'].Marker.include(MarkerPrototypeExt);
+  L__default["default"].Marker.include(MarkerPrototypeExt);
   /**
    * Registers default options of bouncing animation.
    * @param options {BouncingOptions|object}  object with options
    */
 
-  L__default['default'].Marker.setBouncingOptions = function (options) {
+  L__default["default"].Marker.setBouncingOptions = function (options) {
     L.Marker.prototype._bouncingOptions = options instanceof BouncingOptions ? options : new BouncingOptions(options);
   };
   /**
@@ -847,7 +875,7 @@
    */
 
 
-  L__default['default'].Marker.getBouncingMarkers = function () {
+  L__default["default"].Marker.getBouncingMarkers = function () {
     L.Marker.prototype._orchestration.getBouncingMarkers();
   };
   /**
@@ -855,15 +883,15 @@
    */
 
 
-  L__default['default'].Marker.stopAllBouncingMarkers = function () {
+  L__default["default"].Marker.stopAllBouncingMarkers = function () {
     L.Marker.prototype._orchestration.stopAllBouncingMarkers();
   };
 
-  L__default['default'].Marker.addInitHook(function () {
+  L__default["default"].Marker.addInitHook(function () {
     if (this.isRealMarker()) {
       var bouncingOptions = new BouncingOptions(L.Marker.prototype._bouncingOptions);
       this._bouncingMotion = new BouncingMotionCss3(this, new L.Point(0, 0), bouncingOptions);
     }
   });
 
-}(L));
+})(L);
