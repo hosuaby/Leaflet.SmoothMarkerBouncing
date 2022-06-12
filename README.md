@@ -10,9 +10,9 @@
 
 This plugin made by Russian and citizen of Russian Federation. 
 
-On 24 February 2022, Russian dictator Vladimir Putin launched an assault on our good neighbor, Ukraine, starting the bloodiest and most meaningless war in decades. Currently, Ukrainians and Russians are dying for Putin crazy geopolitical illusion.
+On 24 February 2022, Russian dictator Vladimir Putin launched an assault on our good neighbor, The Ukraine, starting the bloodiest and most meaningless war in decades. Currently, Ukrainians and Russians are dying for Putin crazy geopolitical illusion.
 
-Open Source is made for everyone. For people of all nationalities and all political beliefs. Sharing is what makes us stronger ! Wherever you are progressive or conservative, pro- or against- NATO, pro- or against- European Union, I hope you are for peace.
+Open Source is made for everyone. For people of all nationalities and all political beliefs. Sharing is what makes us stronger ! Wherever you are progressive or conservative, pro- or against- NATO, pro- or against- European Union, I hope you are standing for a peace.
 
 Protest, resist and spread the truth! Help, to stop this war. Help to stop Putin.
 
@@ -29,8 +29,11 @@ Plugin for [Leaflet](http://leafletjs.com/) that will make you markers bounce!
 
 It provides smooth, lightweight and customizable animation of marker bouncing.
 Allows the bouncing of multiple markers on the map, without loss of performance.
-Plugin shows its best performances on the 3D-able modern browsers, using hardware acceleration.  
-On the ancient browsers plugin provides simplified animation.
+
+### Older browsers
+
+Starting from version `v3.0.0`, plugin is based on CSS3 keyframes to make animation. If you need support older browsers,
+it will be better to stick to `v2.0.x`.
 
 ## Demo
 
@@ -42,7 +45,7 @@ Add Javascript file on your page:
 
 ```html
 <script type="text/javascript"
-        src="https://cdn.jsdelivr.net/gh/hosuaby/Leaflet.SmoothMarkerBouncing@v2.0.0/dist/bundle.js"
+        src="https://cdn.jsdelivr.net/gh/hosuaby/Leaflet.SmoothMarkerBouncing@v3.0.0/dist/bundle.js"
         crossorigin="anonymous"></script>
 ```
 
