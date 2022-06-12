@@ -42,14 +42,7 @@ const PanbittIcon = L.Icon.extend({
     }
 });
 
-let panbittMarker = L.marker(randLatLng(), {
-    icon: new PanbittIcon()
-}).setBouncingOptions({
-    bounceHeight: 10,
-    contractHeight: 15
-}).on('click', function() {
-    this.toggleBouncing();
-});
+let panbittMarker;
 
 const PanbittControl = L.Control.extend({
     options: {
@@ -62,7 +55,14 @@ const PanbittControl = L.Control.extend({
 
         controlDiv.addEventListener('click', (event) => {
             if (!panbittMarker) {
-                panbittMarker.addTo(map).bounce();
+                panbittMarker = L.marker(randLatLng(), {
+                    icon: new PanbittIcon()
+                }).setBouncingOptions({
+                    bounceHeight: 10,
+                    contractHeight: 15
+                }).on('click', function() {
+                    this.toggleBouncing();
+                }).addTo(map).bounce();
             }
             event.stopPropagation();
         });

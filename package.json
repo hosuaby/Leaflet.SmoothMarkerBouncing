@@ -1,6 +1,6 @@
 {
   "name": "leaflet.smooth_marker_bouncing-demo",
-  "version": "2.0.0",
+  "version": "3.0.0",
   "description": "Demo of Leaflet.SmoothMarkerBouncing plugin",
   "main": "index.html",
   "repository": {
