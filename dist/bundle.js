@@ -669,6 +669,10 @@
 
           _classPrivateFieldGet(this, _classes).push('simple');
         }
+
+        if (this.marker._icon) {
+          this.resetStyles(this.marker);
+        }
       }
     }, {
       key: "onAnimationEnd",

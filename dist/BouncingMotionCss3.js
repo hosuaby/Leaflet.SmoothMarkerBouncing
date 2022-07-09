@@ -157,6 +157,10 @@ var BouncingMotionCss3 = /*#__PURE__*/function () {
 
         _classPrivateFieldGet(this, _classes).push('simple');
       }
+
+      if (this.marker._icon) {
+        this.resetStyles(this.marker);
+      }
     }
   }, {
     key: "onAnimationEnd",

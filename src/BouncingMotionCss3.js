@@ -63,6 +63,10 @@ export default class BouncingMotionCss3 {
             this.#lastAnimationName = moveAnimationName;
             this.#classes.push('simple');
         }
+
+        if (this.marker._icon) {
+            this.resetStyles(this.marker);
+        }
     }
 
     onAnimationEnd(event) {
