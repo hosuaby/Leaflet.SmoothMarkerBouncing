@@ -59,7 +59,17 @@ export default class BouncingMotionCss3 {
                 ? options
                 : this.bouncingOptions.override(options);
 
-        if (!this.bouncingOptions.elastic) {
+        if (this.bouncingOptions.elastic) {
+            this.#lastAnimationName = contractAnimationName;
+            const index = this.#classes.indexOf('simple');
+            if (index > -1) {
+                this.#classes.splice(index, 1);
+            }
+
+            if (this.marker._icon) {
+                DomUtil.removeClass(this.marker._icon, 'simple');
+            }
+        } else {
             this.#lastAnimationName = moveAnimationName;
             this.#classes.push('simple');
         }
@@ -77,7 +87,7 @@ export default class BouncingMotionCss3 {
             if (!this.#eventCounter) {
                 if (this.isBouncing && (this.#times === null || --this.#times)) {
                     resetClasses(this.marker._icon, this.#classes);
-                    if (this.marker._shadow) {
+                    if (this.marker._shadow && this.bouncingOptions.shadowAngle) {
                         resetClasses(this.marker._shadow, this.#classes);
                     }
                 } else {
@@ -117,26 +127,32 @@ export default class BouncingMotionCss3 {
 
         const {bounceHeight, contractHeight, shadowAngle} = this.bouncingOptions;
 
-        if (this.marker._shadow && shadowAngle) {
-            const {x, y} = this.position;
-            const points = calculateLine(x, y, shadowAngle, bounceHeight + 1);
-            const [posXJump, posYJump] = points[bounceHeight];
+        if (this.marker._shadow) {
+            if (shadowAngle) {
+                const {x, y} = this.position;
+                const points = calculateLine(x, y, shadowAngle, bounceHeight + 1);
+                const [posXJump, posYJump] = points[bounceHeight];
 
-            const shadowHeight = this.marker.getIcon()?.options?.shadowSize[1];
-            const shadowScaleContract = BouncingMotionCss3.contractScale(
-                    shadowHeight, contractHeight);
+                const shadowHeight = this.marker.getIcon()?.options?.shadowSize[1];
+                const shadowScaleContract = BouncingMotionCss3.contractScale(
+                        shadowHeight, contractHeight);
 
-            this.shadowStyles = this.shadowStyles
-                    .withStyles(iconAnimationParams)
-                    .withStyles({
-                        '--pos-x-jump': `${posXJump}px`,
-                        '--pos-y-jump': `${posYJump}px`,
-                        '--scale-contract': shadowScaleContract,
-                    });
-            this.marker._shadow.style.cssText = this.shadowStyles.toString();
+                this.shadowStyles = this.shadowStyles
+                        .withStyles(iconAnimationParams)
+                        .withStyles({
+                            '--pos-x-jump': `${posXJump}px`,
+                            '--pos-y-jump': `${posYJump}px`,
+                            '--scale-contract': shadowScaleContract,
+                        });
+                this.marker._shadow.style.cssText = this.shadowStyles.toString();
 
-            if (this.bouncingAnimationPlaying) {
-                resetClasses(this.marker._shadow, this.#classes);
+                if (this.bouncingAnimationPlaying) {
+                    resetClasses(this.marker._shadow, this.#classes);
+                }
+            } else {
+                this.#classes.forEach(className => {
+                    DomUtil.removeClass(this.marker._shadow, className);
+                });
             }
         }
     }
@@ -154,7 +170,7 @@ export default class BouncingMotionCss3 {
         this.bouncingAnimationPlaying = true;
 
         resetClasses(this.marker._icon, this.#classes);
-        if (this.marker._shadow) {
+        if (this.marker._shadow && this.bouncingOptions.shadowAngle) {
             resetClasses(this.marker._shadow, this.#classes);
         }
 

@@ -405,7 +405,7 @@
     setIcon: function setIcon(icon) {
       oldSetIcon.call(this, icon);
 
-      if (this.isRealMarker()) {
+      if (this.isRealMarker() && this._icon) {
         this._bouncingMotion.resetStyles(this);
       }
     }
@@ -664,7 +664,19 @@
       value: function updateBouncingOptions(options) {
         this.bouncingOptions = options instanceof BouncingOptions ? options : this.bouncingOptions.override(options);
 
-        if (!this.bouncingOptions.elastic) {
+        if (this.bouncingOptions.elastic) {
+          _classPrivateFieldSet(this, _lastAnimationName, contractAnimationName);
+
+          var index = _classPrivateFieldGet(this, _classes).indexOf('simple');
+
+          if (index > -1) {
+            _classPrivateFieldGet(this, _classes).splice(index, 1);
+          }
+
+          if (this.marker._icon) {
+            L.DomUtil.removeClass(this.marker._icon, 'simple');
+          }
+        } else {
           _classPrivateFieldSet(this, _lastAnimationName, moveAnimationName);
 
           _classPrivateFieldGet(this, _classes).push('simple');
@@ -692,7 +704,7 @@
             if (this.isBouncing && (_classPrivateFieldGet(this, _times) === null || _classPrivateFieldSet(this, _times, (_this$times = _classPrivateFieldGet(this, _times), --_this$times)))) {
               resetClasses(this.marker._icon, _classPrivateFieldGet(this, _classes));
 
-              if (this.marker._shadow) {
+              if (this.marker._shadow && this.bouncingOptions.shadowAngle) {
                 resetClasses(this.marker._shadow, _classPrivateFieldGet(this, _classes));
               }
             } else {
@@ -712,7 +724,12 @@
     }, {
       key: "resetStyles",
       value: function resetStyles(marker) {
-        var _this$marker$getIcon, _this$marker$getIcon$, _this$marker, _this$marker$_iconObj, _this$marker$_iconObj2;
+        var _this$marker$getIcon,
+            _this$marker$getIcon$,
+            _this$marker,
+            _this$marker$_iconObj,
+            _this$marker$_iconObj2,
+            _this3 = this;
 
         this.marker = marker;
         this.iconStyles = Styles.ofMarker(marker);
@@ -737,29 +754,35 @@
             contractHeight = _this$bouncingOptions.contractHeight,
             shadowAngle = _this$bouncingOptions.shadowAngle;
 
-        if (this.marker._shadow && shadowAngle) {
-          var _this$marker$getIcon2, _this$marker$getIcon3;
+        if (this.marker._shadow) {
+          if (shadowAngle) {
+            var _this$marker$getIcon2, _this$marker$getIcon3;
 
-          var _this$position = this.position,
-              x = _this$position.x,
-              y = _this$position.y;
-          var points = calculateLine(x, y, shadowAngle, bounceHeight + 1);
+            var _this$position = this.position,
+                x = _this$position.x,
+                y = _this$position.y;
+            var points = calculateLine(x, y, shadowAngle, bounceHeight + 1);
 
-          var _points$bounceHeight = _slicedToArray(points[bounceHeight], 2),
-              posXJump = _points$bounceHeight[0],
-              posYJump = _points$bounceHeight[1];
+            var _points$bounceHeight = _slicedToArray(points[bounceHeight], 2),
+                posXJump = _points$bounceHeight[0],
+                posYJump = _points$bounceHeight[1];
 
-          var shadowHeight = (_this$marker$getIcon2 = this.marker.getIcon()) === null || _this$marker$getIcon2 === void 0 ? void 0 : (_this$marker$getIcon3 = _this$marker$getIcon2.options) === null || _this$marker$getIcon3 === void 0 ? void 0 : _this$marker$getIcon3.shadowSize[1];
-          var shadowScaleContract = BouncingMotionCss3.contractScale(shadowHeight, contractHeight);
-          this.shadowStyles = this.shadowStyles.withStyles(iconAnimationParams).withStyles({
-            '--pos-x-jump': "".concat(posXJump, "px"),
-            '--pos-y-jump': "".concat(posYJump, "px"),
-            '--scale-contract': shadowScaleContract
-          });
-          this.marker._shadow.style.cssText = this.shadowStyles.toString();
+            var shadowHeight = (_this$marker$getIcon2 = this.marker.getIcon()) === null || _this$marker$getIcon2 === void 0 ? void 0 : (_this$marker$getIcon3 = _this$marker$getIcon2.options) === null || _this$marker$getIcon3 === void 0 ? void 0 : _this$marker$getIcon3.shadowSize[1];
+            var shadowScaleContract = BouncingMotionCss3.contractScale(shadowHeight, contractHeight);
+            this.shadowStyles = this.shadowStyles.withStyles(iconAnimationParams).withStyles({
+              '--pos-x-jump': "".concat(posXJump, "px"),
+              '--pos-y-jump': "".concat(posYJump, "px"),
+              '--scale-contract': shadowScaleContract
+            });
+            this.marker._shadow.style.cssText = this.shadowStyles.toString();
 
-          if (this.bouncingAnimationPlaying) {
-            resetClasses(this.marker._shadow, _classPrivateFieldGet(this, _classes));
+            if (this.bouncingAnimationPlaying) {
+              resetClasses(this.marker._shadow, _classPrivateFieldGet(this, _classes));
+            }
+          } else {
+            _classPrivateFieldGet(this, _classes).forEach(function (className) {
+              L.DomUtil.removeClass(_this3.marker._shadow, className);
+            });
           }
         }
       }
@@ -781,7 +804,7 @@
         this.bouncingAnimationPlaying = true;
         resetClasses(this.marker._icon, _classPrivateFieldGet(this, _classes));
 
-        if (this.marker._shadow) {
+        if (this.marker._shadow && this.bouncingOptions.shadowAngle) {
           resetClasses(this.marker._shadow, _classPrivateFieldGet(this, _classes));
         }
 

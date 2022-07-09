@@ -94,7 +94,7 @@ export default {
 
     setIcon: function(icon) {
         oldSetIcon.call(this, icon);
-        if (this.isRealMarker()) {
+        if (this.isRealMarker() && this._icon) {
             this._bouncingMotion.resetStyles(this);
         }
     },

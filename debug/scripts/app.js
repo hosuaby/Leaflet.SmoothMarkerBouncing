@@ -32,9 +32,9 @@
         const lat = _.random(parisArea[0][0], parisArea[1][0]);
         const lng = _.random(parisArea[0][1], parisArea[1][1]);
 
-        L.marker([lat, lng], {
-            icon: new UniqueIcon(),
-        }).setBouncingOptions({
+        const marker = L.marker([lat, lng]);
+        marker.setIcon(new UniqueIcon());
+        marker.setBouncingOptions({
             exclusive: true,
             elastic: false,
         }).on('click', function() {
