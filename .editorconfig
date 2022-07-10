@@ -13,7 +13,7 @@ ij_visual_guides = 100
 [*.js]
 ij_javascript_use_double_quotes = false
 
-[*.json]
+[{*.json, *.yml}]
 indent_size = 2
 
 [*.md]
