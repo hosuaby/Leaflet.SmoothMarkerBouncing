@@ -282,13 +282,13 @@ var BouncingMotionCss3 = /*#__PURE__*/function () {
 
       _classPrivateFieldSet(this, _times, times);
 
-      _classPrivateFieldSet(this, _eventCounter, 0);
-
       this.isBouncing = true;
 
       if (this.bouncingAnimationPlaying) {
         return;
       }
+
+      _classPrivateFieldSet(this, _eventCounter, 0);
 
       this.bouncingAnimationPlaying = true;
       resetClasses(this.marker._icon, _classPrivateFieldGet(this, _classes));

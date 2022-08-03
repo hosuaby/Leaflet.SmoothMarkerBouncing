@@ -160,14 +160,13 @@ export default class BouncingMotionCss3 {
 
     bounce(times = null) {
         this.#times = times;
-        this.#eventCounter = 0;
-
         this.isBouncing = true;
 
         if (this.bouncingAnimationPlaying) {
             return;
         }
 
+        this.#eventCounter = 0;
         this.bouncingAnimationPlaying = true;
 
         resetClasses(this.marker._icon, this.#classes);
