@@ -98,6 +98,7 @@ export default class BouncingMotionCss3 {
                         }
                     });
                     this.bouncingAnimationPlaying = false;
+                    this.marker.fire('bounceend');
                 }
             }
         }

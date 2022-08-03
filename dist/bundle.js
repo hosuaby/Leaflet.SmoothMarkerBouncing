@@ -717,6 +717,7 @@
               });
 
               this.bouncingAnimationPlaying = false;
+              this.marker.fire('bounceend');
             }
           }
         }

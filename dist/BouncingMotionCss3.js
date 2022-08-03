@@ -205,6 +205,7 @@ var BouncingMotionCss3 = /*#__PURE__*/function () {
             });
 
             this.bouncingAnimationPlaying = false;
+            this.marker.fire('bounceend');
           }
         }
       }

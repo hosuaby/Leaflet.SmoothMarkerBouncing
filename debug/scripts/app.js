@@ -24,7 +24,11 @@
             })
             .on('click', function() {
                 this.toggleBouncing();
-            }).addTo(map);
+            })
+            .on('bounceend', function () {
+                console.log('<<< STOP BOUNCING >>>');
+            })
+            .addTo(map);
     });
 
     /* 5 unique markers */
