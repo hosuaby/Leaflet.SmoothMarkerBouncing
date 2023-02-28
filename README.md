@@ -10,7 +10,7 @@
 
 This plugin made by Russian and citizen of Russian Federation. 
 
-On 24 February 2022, Russian dictator Vladimir Putin launched an assault on our good neighbor, The Ukraine, starting the bloodiest and most meaningless war in decades. Currently, Ukrainians and Russians are dying for Putin crazy geopolitical illusion.
+On 24 February 2022, Russian dictator Vladimir Putin launched an assault on our good neighbor, Ukraine, starting the bloodiest and most meaningless war in decades. Currently, Ukrainians and Russians are dying for Putin crazy geopolitical illusion.
 
 Open Source is made for everyone. For people of all nationalities and all political beliefs. Sharing is what makes us stronger ! Wherever you are progressive or conservative, pro- or against- NATO, pro- or against- European Union, I hope you are standing for a peace.
 
