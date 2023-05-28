@@ -6,10 +6,12 @@ import BouncingOptions from '../src/BouncingOptions';
 test('Test calculate contract scale', t => {
 
     // When
-    const contractScale = BouncingMotionCss3.contractScale(41, 12);
+    const contractScale1 = BouncingMotionCss3.contractScale(41, 12);
+    const contractScale2 = BouncingMotionCss3.contractScale(41, 0);
 
     // Then
-    t.is(contractScale, 0.7073170731707317);
+    t.is(contractScale1, 0.7073170731707317);
+    t.is(contractScale2, 1);
 });
 
 test('Test calculate duration of CSS3 animation', t => {
@@ -18,11 +20,13 @@ test('Test calculate duration of CSS3 animation', t => {
     const duration1 = BouncingMotionCss3.calculateDuration(15, 52);
     const duration2 = BouncingMotionCss3.calculateDuration(12, 52);
     const duration3 = BouncingMotionCss3.calculateDuration(20, 30);
+    const duration4 = BouncingMotionCss3.calculateDuration(0, 30);
 
     // Then
     t.is(duration1, 211);
     t.is(duration2, 199);
     t.is(duration3, 132);
+    t.is(duration4, 0);
 });
 
 test('Test calculate icon animation params', t => {

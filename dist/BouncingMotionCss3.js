@@ -152,7 +152,7 @@ var BouncingMotionCss3 = /*#__PURE__*/function () {
     value: function updateBouncingOptions(options) {
       this.bouncingOptions = options instanceof _BouncingOptions["default"] ? options : this.bouncingOptions.override(options);
 
-      if (this.bouncingOptions.elastic) {
+      if (this.bouncingOptions.elastic && this.bouncingOptions.contractHeight) {
         _classPrivateFieldSet(this, _lastAnimationName, contractAnimationName);
 
         var index = _classPrivateFieldGet(this, _classes).indexOf('simple');
@@ -362,6 +362,10 @@ var BouncingMotionCss3 = /*#__PURE__*/function () {
   }, {
     key: "calculateDuration",
     value: function calculateDuration(height, speed) {
+      if (height === 0) {
+        return 0;
+      }
+
       var duration = Math.round(speed * speedCoefficient);
       var i = height;
 

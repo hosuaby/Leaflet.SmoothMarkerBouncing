@@ -59,7 +59,7 @@ export default class BouncingMotionCss3 {
                 ? options
                 : this.bouncingOptions.override(options);
 
-        if (this.bouncingOptions.elastic) {
+        if (this.bouncingOptions.elastic && this.bouncingOptions.contractHeight) {
             this.#lastAnimationName = contractAnimationName;
             const index = this.#classes.indexOf('simple');
             if (index > -1) {
@@ -236,6 +236,10 @@ export default class BouncingMotionCss3 {
      * @return {number} duration of animation (ms)
      */
     static calculateDuration(height, speed) {
+        if (height === 0) {
+            return 0;
+        }
+
         let duration = Math.round(speed * speedCoefficient);
         let i = height;
 
