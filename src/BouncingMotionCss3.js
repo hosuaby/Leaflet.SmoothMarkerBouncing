@@ -35,6 +35,7 @@ export default class BouncingMotionCss3 {
     iconStyles;
     shadowStyles;
     bouncingAnimationPlaying = false;
+    onMotionEnd;
     #lastAnimationName = contractAnimationName;
     #classes = ['bouncing'];
     #eventCounter;
@@ -98,6 +99,12 @@ export default class BouncingMotionCss3 {
                         }
                     });
                     this.bouncingAnimationPlaying = false;
+
+                    if (this.onMotionEnd) {
+                        this.onMotionEnd();
+                        this.onMotionEnd = null;
+                    }
+
                     this.marker.fire('bounceend');
                 }
             }

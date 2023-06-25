@@ -115,6 +115,8 @@ var BouncingMotionCss3 = /*#__PURE__*/function () {
 
     _defineProperty(this, "bouncingAnimationPlaying", false);
 
+    _defineProperty(this, "onMotionEnd", void 0);
+
     _classPrivateFieldInitSpec(this, _lastAnimationName, {
       writable: true,
       value: contractAnimationName
@@ -205,6 +207,12 @@ var BouncingMotionCss3 = /*#__PURE__*/function () {
             });
 
             this.bouncingAnimationPlaying = false;
+
+            if (this.onMotionEnd) {
+              this.onMotionEnd();
+              this.onMotionEnd = null;
+            }
+
             this.marker.fire('bounceend');
           }
         }

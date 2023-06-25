@@ -40,6 +40,12 @@ export default {
      * @return {Marker} this marker
      */
     bounce: function(times = null) {
+        if (times) {
+            this._bouncingMotion.onMotionEnd = () => {
+                Marker.prototype._orchestration.removeBouncingMarker(this);
+            };
+        }
+
         this._bouncingMotion.bounce(times);
         const exclusive = this._bouncingMotion.bouncingOptions.exclusive;
         Marker.prototype._orchestration.addBouncingMarker(this, exclusive);

@@ -343,7 +343,15 @@
      * @return {Marker} this marker
      */
     bounce: function bounce() {
+      var _this = this;
+
       var times = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
+
+      if (times) {
+        this._bouncingMotion.onMotionEnd = function () {
+          L.Marker.prototype._orchestration.removeBouncingMarker(_this);
+        };
+      }
 
       this._bouncingMotion.bounce(times);
 
@@ -627,6 +635,8 @@
 
       _defineProperty(this, "bouncingAnimationPlaying", false);
 
+      _defineProperty(this, "onMotionEnd", void 0);
+
       _classPrivateFieldInitSpec(this, _lastAnimationName, {
         writable: true,
         value: contractAnimationName
@@ -717,6 +727,12 @@
               });
 
               this.bouncingAnimationPlaying = false;
+
+              if (this.onMotionEnd) {
+                this.onMotionEnd();
+                this.onMotionEnd = null;
+              }
+
               this.marker.fire('bounceend');
             }
           }

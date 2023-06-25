@@ -49,7 +49,15 @@ var _default = {
    * @return {Marker} this marker
    */
   bounce: function bounce() {
+    var _this = this;
+
     var times = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
+
+    if (times) {
+      this._bouncingMotion.onMotionEnd = function () {
+        _leaflet.Marker.prototype._orchestration.removeBouncingMarker(_this);
+      };
+    }
 
     this._bouncingMotion.bounce(times);
 
