@@ -28,7 +28,7 @@ Add Javascript file on your page:
 
 ```html
 <script type="text/javascript"
-        src="https://cdn.jsdelivr.net/gh/hosuaby/Leaflet.SmoothMarkerBouncing@v3.0.2/dist/bundle.js"
+        src="https://cdn.jsdelivr.net/gh/hosuaby/Leaflet.SmoothMarkerBouncing@v3.0.3/dist/bundle.js"
         crossorigin="anonymous"></script>
 ```
 
