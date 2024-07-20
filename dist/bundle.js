@@ -193,6 +193,12 @@
      * Many markers can bounce in the same time
      * @type {boolean}
      */
+
+    /**
+     * If true, when marker stops, it does not execute animation until its end, but instead stops
+     * abruptly.
+     * @type {boolean}
+     */
     function BouncingOptions(options) {
       _classCallCheck(this, BouncingOptions);
 
@@ -209,6 +215,8 @@
       _defineProperty(this, "elastic", true);
 
       _defineProperty(this, "exclusive", false);
+
+      _defineProperty(this, "immediateStop", false);
 
       options && Object.assign(this, options);
     }
@@ -291,15 +299,19 @@
       }
       /**
        * Stops the bouncing of all currently bouncing markers. Purge the array of bouncing markers.
+       *
+       * @param immediate {boolean} if true, markers stop to bounce immediately, without waiting
+       *      animation to end
        */
 
     }, {
       key: "stopAllBouncingMarkers",
       value: function stopAllBouncingMarkers() {
+        var immediate = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : false;
         var marker;
 
         while (marker = _classPrivateFieldGet(this, _bouncingMarkers).shift()) {
-          marker.stopBouncing();
+          marker.stopBouncing(immediate);
         }
       }
     }]);
@@ -364,14 +376,18 @@
 
     /**
      * Stops bouncing of this marker.
-     * Note: the bouncing not stops immediately after the call of this method.
-     * Instead, the animation is executed until marker returns to it's original position and takes
-     * it's full size.
+     * Note: unless 'immediate' flag is set to true, by the call to this method or in marker options,
+     * the bouncing will not stop immediately after the call of this method. Instead, the animation
+     * is executed until marker returns to its original position and takes its full size.
      *
+     * @param immediate {boolean} if true, marker stop to bounce immediately, without waiting
+     *      animation to end
      * @return {Marker} this marker
      */
     stopBouncing: function stopBouncing() {
-      this._bouncingMotion.stopBouncing();
+      var immediate = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : false;
+
+      this._bouncingMotion.stopBouncing(immediate);
 
       L.Marker.prototype._orchestration.removeBouncingMarker(this);
 
@@ -699,8 +715,6 @@
     }, {
       key: "onAnimationEnd",
       value: function onAnimationEnd(event) {
-        var _this2 = this;
-
         if (event.animationName === _classPrivateFieldGet(this, _lastAnimationName)) {
           var _this$eventCounter;
 
@@ -718,22 +732,7 @@
                 resetClasses(this.marker._shadow, _classPrivateFieldGet(this, _classes));
               }
             } else {
-              _classPrivateFieldGet(this, _classes).forEach(function (className) {
-                L.DomUtil.removeClass(_this2.marker._icon, className);
-
-                if (_this2.marker._shadow) {
-                  L.DomUtil.removeClass(_this2.marker._shadow, className);
-                }
-              });
-
-              this.bouncingAnimationPlaying = false;
-
-              if (this.onMotionEnd) {
-                this.onMotionEnd();
-                this.onMotionEnd = null;
-              }
-
-              this.marker.fire('bounceend');
+              this._stopBouncingAnimation();
             }
           }
         }
@@ -746,7 +745,7 @@
             _this$marker,
             _this$marker$_iconObj,
             _this$marker$_iconObj2,
-            _this3 = this;
+            _this2 = this;
 
         this.marker = marker;
         this.iconStyles = Styles.ofMarker(marker);
@@ -798,7 +797,7 @@
             }
           } else {
             _classPrivateFieldGet(this, _classes).forEach(function (className) {
-              L.DomUtil.removeClass(_this3.marker._shadow, className);
+              L.DomUtil.removeClass(_this2.marker._shadow, className);
             });
           }
         }
@@ -830,7 +829,35 @@
     }, {
       key: "stopBouncing",
       value: function stopBouncing() {
+        var immediate = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : false;
         this.isBouncing = false;
+        immediate || (immediate = this.bouncingOptions.immediateStop);
+
+        if (immediate) {
+          this._stopBouncingAnimation();
+        }
+      }
+    }, {
+      key: "_stopBouncingAnimation",
+      value: function _stopBouncingAnimation() {
+        var _this3 = this;
+
+        _classPrivateFieldGet(this, _classes).forEach(function (className) {
+          L.DomUtil.removeClass(_this3.marker._icon, className);
+
+          if (_this3.marker._shadow) {
+            L.DomUtil.removeClass(_this3.marker._shadow, className);
+          }
+        });
+
+        this.bouncingAnimationPlaying = false;
+
+        if (this.onMotionEnd) {
+          this.onMotionEnd();
+          this.onMotionEnd = null;
+        }
+
+        this.marker.fire('bounceend');
       }
       /**
        * Calculates parameters of CSS3 animation of bouncing.
@@ -928,11 +955,16 @@
   };
   /**
    * Stops the bouncing of all currently bouncing markers. Purge the array of bouncing markers.
+   *
+   * @param immediate {boolean} if true, markers stop to bounce immediately, without waiting
+   *      animation to end
    */
 
 
   L__default["default"].Marker.stopAllBouncingMarkers = function () {
-    L.Marker.prototype._orchestration.stopAllBouncingMarkers();
+    var immediate = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : false;
+
+    L.Marker.prototype._orchestration.stopAllBouncingMarkers(immediate);
   };
 
   L__default["default"].Marker.addInitHook(function () {

@@ -25,9 +25,12 @@ L.Marker.getBouncingMarkers = function() {
 
 /**
  * Stops the bouncing of all currently bouncing markers. Purge the array of bouncing markers.
+ *
+ * @param immediate {boolean} if true, markers stop to bounce immediately, without waiting
+ *      animation to end
  */
-L.Marker.stopAllBouncingMarkers = function() {
-    Marker.prototype._orchestration.stopAllBouncingMarkers();
+L.Marker.stopAllBouncingMarkers = function(immediate = false) {
+    Marker.prototype._orchestration.stopAllBouncingMarkers(immediate);
 };
 
 L.Marker.addInitHook(function() {

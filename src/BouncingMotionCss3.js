@@ -92,20 +92,7 @@ export default class BouncingMotionCss3 {
                         resetClasses(this.marker._shadow, this.#classes);
                     }
                 } else {
-                    this.#classes.forEach((className) => {
-                        DomUtil.removeClass(this.marker._icon, className);
-                        if (this.marker._shadow) {
-                            DomUtil.removeClass(this.marker._shadow, className);
-                        }
-                    });
-                    this.bouncingAnimationPlaying = false;
-
-                    if (this.onMotionEnd) {
-                        this.onMotionEnd();
-                        this.onMotionEnd = null;
-                    }
-
-                    this.marker.fire('bounceend');
+                    this._stopBouncingAnimation();
                 }
             }
         }
@@ -184,8 +171,30 @@ export default class BouncingMotionCss3 {
         this.marker._icon.addEventListener('animationend', this.#listener);
     }
 
-    stopBouncing() {
+    stopBouncing(immediate = false) {
         this.isBouncing = false;
+
+        immediate ||= this.bouncingOptions.immediateStop;
+        if (immediate) {
+            this._stopBouncingAnimation();
+        }
+    }
+
+    _stopBouncingAnimation() {
+        this.#classes.forEach((className) => {
+            DomUtil.removeClass(this.marker._icon, className);
+            if (this.marker._shadow) {
+                DomUtil.removeClass(this.marker._shadow, className);
+            }
+        });
+        this.bouncingAnimationPlaying = false;
+
+        if (this.onMotionEnd) {
+            this.onMotionEnd();
+            this.onMotionEnd = null;
+        }
+
+        this.marker.fire('bounceend');
     }
 
     /**

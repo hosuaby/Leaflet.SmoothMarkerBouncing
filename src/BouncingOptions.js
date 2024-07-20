@@ -42,6 +42,13 @@ export default class BouncingOptions {
      */
     exclusive = false;
 
+    /**
+     * If true, when marker stops, it does not execute animation until its end, but instead stops
+     * abruptly.
+     * @type {boolean}
+     */
+    immediateStop = false;
+
     constructor(options) {
         options && Object.assign(this, options);
     }

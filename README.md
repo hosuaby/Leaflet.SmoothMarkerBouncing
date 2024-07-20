@@ -42,9 +42,10 @@ Plugin provides additional methods to `Marker`:
 
 ```javascript
 /* Methods of L.Marker class */
-L.Marker.setBouncingOptions({..}); // sets options of bouncing of all markers
-L.Marker.getBouncingMarkers();     // gets all bouncing markers
-L.Marker.stopAllBouncingMarkers(); // asks all markers to stop bouncing
+L.Marker.setBouncingOptions({..});     // sets options of bouncing of all markers
+L.Marker.getBouncingMarkers();         // gets all bouncing markers
+L.Marker.stopAllBouncingMarkers();     // asks all markers to stop bouncing
+L.Marker.stopAllBouncingMarkers(true); // stops bouncing of all markers abruptly 
 
 /* Methods of marker instances */
 const marker = L.marker([lat, lng]);
@@ -53,6 +54,7 @@ marker.isBouncing();               // checks if marker is bouncing
 marker.bounce();                   // starts the bouncing
 marker.bounce(n);                  // makes marker bounce "n" times
 marker.stopBouncing();             // stops bouncing of the marker
+marker.stopBouncing(true);         // stops bouncing of the marker abruptly
 marker.toggleBouncing();           // starts/stops bouncing of the marker
 ```
 
@@ -124,6 +126,8 @@ more it becomes high, more animation becomes slow, *default: 52*
 - **elastic** - activate contract animation when marker touches the ground, *default: true*
 - **exclusive** - when it's true, stops the bouncing of other markers when this one starts to bounce.
 If another marker start to bounce after, this marker stops. *default: false*
+- **immediateStop** - when it's true, when marker stops, it does not execute animation until its end, but instead stops
+abruptly. *default: false*
 
 ## Events
 |Event|Description|

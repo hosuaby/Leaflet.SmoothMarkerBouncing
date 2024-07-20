@@ -37,11 +37,16 @@ _leaflet["default"].Marker.getBouncingMarkers = function () {
 };
 /**
  * Stops the bouncing of all currently bouncing markers. Purge the array of bouncing markers.
+ *
+ * @param immediate {boolean} if true, markers stop to bounce immediately, without waiting
+ *      animation to end
  */
 
 
 _leaflet["default"].Marker.stopAllBouncingMarkers = function () {
-  _leaflet.Marker.prototype._orchestration.stopAllBouncingMarkers();
+  var immediate = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : false;
+
+  _leaflet.Marker.prototype._orchestration.stopAllBouncingMarkers(immediate);
 };
 
 _leaflet["default"].Marker.addInitHook(function () {

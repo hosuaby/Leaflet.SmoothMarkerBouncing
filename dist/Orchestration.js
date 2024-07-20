@@ -91,15 +91,19 @@ var Orchestration = /*#__PURE__*/function () {
     }
     /**
      * Stops the bouncing of all currently bouncing markers. Purge the array of bouncing markers.
+     *
+     * @param immediate {boolean} if true, markers stop to bounce immediately, without waiting
+     *      animation to end
      */
 
   }, {
     key: "stopAllBouncingMarkers",
     value: function stopAllBouncingMarkers() {
+      var immediate = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : false;
       var marker;
 
       while (marker = _classPrivateFieldGet(this, _bouncingMarkers).shift()) {
-        marker.stopBouncing();
+        marker.stopBouncing(immediate);
       }
     }
   }]);

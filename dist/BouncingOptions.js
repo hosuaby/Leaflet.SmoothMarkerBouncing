@@ -48,6 +48,12 @@ var BouncingOptions = /*#__PURE__*/function () {
    * Many markers can bounce in the same time
    * @type {boolean}
    */
+
+  /**
+   * If true, when marker stops, it does not execute animation until its end, but instead stops
+   * abruptly.
+   * @type {boolean}
+   */
   function BouncingOptions(options) {
     _classCallCheck(this, BouncingOptions);
 
@@ -64,6 +70,8 @@ var BouncingOptions = /*#__PURE__*/function () {
     _defineProperty(this, "elastic", true);
 
     _defineProperty(this, "exclusive", false);
+
+    _defineProperty(this, "immediateStop", false);
 
     options && Object.assign(this, options);
   }

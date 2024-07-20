@@ -70,14 +70,18 @@ var _default = {
 
   /**
    * Stops bouncing of this marker.
-   * Note: the bouncing not stops immediately after the call of this method.
-   * Instead, the animation is executed until marker returns to it's original position and takes
-   * it's full size.
+   * Note: unless 'immediate' flag is set to true, by the call to this method or in marker options,
+   * the bouncing will not stop immediately after the call of this method. Instead, the animation
+   * is executed until marker returns to its original position and takes its full size.
    *
+   * @param immediate {boolean} if true, marker stop to bounce immediately, without waiting
+   *      animation to end
    * @return {Marker} this marker
    */
   stopBouncing: function stopBouncing() {
-    this._bouncingMotion.stopBouncing();
+    var immediate = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : false;
+
+    this._bouncingMotion.stopBouncing(immediate);
 
     _leaflet.Marker.prototype._orchestration.removeBouncingMarker(this);
 

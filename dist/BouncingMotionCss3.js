@@ -179,8 +179,6 @@ var BouncingMotionCss3 = /*#__PURE__*/function () {
   }, {
     key: "onAnimationEnd",
     value: function onAnimationEnd(event) {
-      var _this2 = this;
-
       if (event.animationName === _classPrivateFieldGet(this, _lastAnimationName)) {
         var _this$eventCounter, _this$eventCounter2;
 
@@ -198,22 +196,7 @@ var BouncingMotionCss3 = /*#__PURE__*/function () {
               resetClasses(this.marker._shadow, _classPrivateFieldGet(this, _classes));
             }
           } else {
-            _classPrivateFieldGet(this, _classes).forEach(function (className) {
-              _leaflet.DomUtil.removeClass(_this2.marker._icon, className);
-
-              if (_this2.marker._shadow) {
-                _leaflet.DomUtil.removeClass(_this2.marker._shadow, className);
-              }
-            });
-
-            this.bouncingAnimationPlaying = false;
-
-            if (this.onMotionEnd) {
-              this.onMotionEnd();
-              this.onMotionEnd = null;
-            }
-
-            this.marker.fire('bounceend');
+            this._stopBouncingAnimation();
           }
         }
       }
@@ -226,7 +209,7 @@ var BouncingMotionCss3 = /*#__PURE__*/function () {
           _this$marker,
           _this$marker$_iconObj,
           _this$marker$_iconObj2,
-          _this3 = this;
+          _this2 = this;
 
       this.marker = marker;
       this.iconStyles = _Styles["default"].ofMarker(marker);
@@ -278,7 +261,7 @@ var BouncingMotionCss3 = /*#__PURE__*/function () {
           }
         } else {
           _classPrivateFieldGet(this, _classes).forEach(function (className) {
-            _leaflet.DomUtil.removeClass(_this3.marker._shadow, className);
+            _leaflet.DomUtil.removeClass(_this2.marker._shadow, className);
           });
         }
       }
@@ -310,7 +293,35 @@ var BouncingMotionCss3 = /*#__PURE__*/function () {
   }, {
     key: "stopBouncing",
     value: function stopBouncing() {
+      var immediate = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : false;
       this.isBouncing = false;
+      immediate || (immediate = this.bouncingOptions.immediateStop);
+
+      if (immediate) {
+        this._stopBouncingAnimation();
+      }
+    }
+  }, {
+    key: "_stopBouncingAnimation",
+    value: function _stopBouncingAnimation() {
+      var _this3 = this;
+
+      _classPrivateFieldGet(this, _classes).forEach(function (className) {
+        _leaflet.DomUtil.removeClass(_this3.marker._icon, className);
+
+        if (_this3.marker._shadow) {
+          _leaflet.DomUtil.removeClass(_this3.marker._shadow, className);
+        }
+      });
+
+      this.bouncingAnimationPlaying = false;
+
+      if (this.onMotionEnd) {
+        this.onMotionEnd();
+        this.onMotionEnd = null;
+      }
+
+      this.marker.fire('bounceend');
     }
     /**
      * Calculates parameters of CSS3 animation of bouncing.

@@ -49,11 +49,14 @@ export default class Orchestration {
 
     /**
      * Stops the bouncing of all currently bouncing markers. Purge the array of bouncing markers.
+     *
+     * @param immediate {boolean} if true, markers stop to bounce immediately, without waiting
+     *      animation to end
      */
-    stopAllBouncingMarkers() {
+    stopAllBouncingMarkers(immediate = false) {
         let marker;
         while (marker = this.#bouncingMarkers.shift()) {
-            marker.stopBouncing();
+            marker.stopBouncing(immediate);
         }
     };
 }
