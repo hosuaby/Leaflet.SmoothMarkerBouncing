@@ -1,6 +1,7 @@
 {
   "name": "leaflet.smooth_marker_bouncing",
   "version": "3.0.3",
+  "type": "module",
   "description": "Smooth animation of marker bouncing for Leaflet.",
   "author": "Alexei KLENIN <alexei.klenin@gmail.com> (https://github.com/hosuaby)",
   "main": "dist/bundle.js",
@@ -21,32 +22,28 @@
   },
   "homepage": "https://github.com/hosuaby/Leaflet.SmoothMarkerBouncing#readme",
   "devDependencies": {
-    "@ava/babel": "2.0.0",
-    "@babel/cli": "7.18.6",
+    "@babel/cli": "7.24.8",
     "@babel/plugin-proposal-class-properties": "7.18.6",
-    "@babel/preset-env": "7.18.6",
-    "@babel/register": "7.18.6",
-    "ava": "4.3.0",
+    "@babel/preset-env": "7.24.8",
+    "@babel/register": "7.24.6",
+    "ava": "6.1.3",
     "browser-env": "^3.3.0",
-    "concurrently": "7.2.2",
+    "concurrently": "8.2.2",
     "coveralls": "3.1.1",
     "font-awesome": "^4.7.0",
     "http-server": "14.1.1",
-    "jquery": "3.6.0",
-    "leaflet": "1.8.0",
+    "jquery": "3.7.1",
+    "leaflet": "1.9.4",
     "leaflet.awesome-markers": "^2.0.5",
     "leaflet.markercluster": "1.5.3",
     "lodash": "4.17.21",
-    "npm-check": "^5.9.2",
-    "nyc": "^15.1.0",
+    "npm-check": "6.0.1",
+    "nyc": "17.0.0",
     "onchange": "7.1.0",
-    "rollup": "2.76.0",
+    "rollup": "4.19.0",
     "rollup-plugin-babel": "^4.4.0",
-    "rollup-plugin-commonjs": "^10.1.0",
-    "rollup-plugin-node-resolve": "^5.2.0",
     "rollup-plugin-postcss": "4.0.2",
     "rollup-plugin-uglify": "^6.0.4",
-    "serialize-javascript": "6.0.0",
     "sidebar-v2": "^0.4.0"
   },
   "scripts": {
@@ -68,9 +65,12 @@
       "!tests/helpers/*"
     ],
     "require": [
-      "@babel/register",
-      "./tests/helpers/ignore-css.js",
       "./tests/helpers/setup-browser-env.js"
+    ],
+    "nodeArguments": [
+      "--es-module-specifier-resolution=node",
+      "--experimental-loader=./tests/helpers/cssLoader.js",
+      "--no-warnings"
     ],
     "verbose": true
   }

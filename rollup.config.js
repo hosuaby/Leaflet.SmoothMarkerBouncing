@@ -1,7 +1,6 @@
 import babel from 'rollup-plugin-babel';
-import commonjs from 'rollup-plugin-commonjs';
 import postcss from 'rollup-plugin-postcss';
-import {uglify} from "rollup-plugin-uglify";
+import {uglify} from 'rollup-plugin-uglify';
 
 export default [{
     input: 'src/SmoothMarkerBouncing.js',
@@ -16,8 +15,7 @@ export default [{
         }),
         postcss({
             extensions: [ '.css' ]
-        }),
-        commonjs()
+        })
     ]
 }, {
     input: 'src/SmoothMarkerBouncing.js',
@@ -33,7 +31,6 @@ export default [{
         postcss({
             extensions: [ '.css' ]
         }),
-        commonjs(),
         uglify()
     ]
 }];
