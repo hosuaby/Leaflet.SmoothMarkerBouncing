@@ -1,3 +1,5 @@
+import {load as esmLoad} from '@istanbuljs/esm-loader-hook';
+
 export function load(url, context, defaultLoad) {
     if (url.endsWith('.css')) {
         return {
@@ -6,5 +8,5 @@ export function load(url, context, defaultLoad) {
         };
     }
 
-    return defaultLoad(url, context, defaultLoad);
+    return esmLoad(url, context, defaultLoad);
 }
