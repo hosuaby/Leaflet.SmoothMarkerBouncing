@@ -749,7 +749,7 @@
    * @return {Marker[]} array of bouncing markers
    */
   L.Marker.getBouncingMarkers = function () {
-    L.Marker.prototype._orchestration.getBouncingMarkers();
+    return L.Marker.prototype._orchestration.getBouncingMarkers();
   };
 
   /**

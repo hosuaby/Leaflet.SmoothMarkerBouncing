@@ -20,7 +20,7 @@ L.Marker.setBouncingOptions = function(options) {
  * @return {Marker[]} array of bouncing markers
  */
 L.Marker.getBouncingMarkers = function() {
-    Marker.prototype._orchestration.getBouncingMarkers();
+    return Marker.prototype._orchestration.getBouncingMarkers();
 };
 
 /**

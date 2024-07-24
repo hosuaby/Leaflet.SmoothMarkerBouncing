@@ -23,7 +23,7 @@ _leaflet["default"].Marker.setBouncingOptions = function (options) {
  * @return {Marker[]} array of bouncing markers
  */
 _leaflet["default"].Marker.getBouncingMarkers = function () {
-  _leaflet.Marker.prototype._orchestration.getBouncingMarkers();
+  return _leaflet.Marker.prototype._orchestration.getBouncingMarkers();
 };
 
 /**

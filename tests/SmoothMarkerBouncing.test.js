@@ -32,3 +32,35 @@ test('Test both setBouncingOptions', t => {
         exclusive: true
     });
 });
+
+test('Test getBouncingMarkers', t => {
+
+    // Given
+    const div = document.createElement('div');
+    const map = L.map(div).setView([48.847547, 2.351074], 14);
+    const marker = L
+            .marker([48.847547, 2.351074])
+            .setBouncingOptions({
+                bounceHeight: 100,
+                exclusive: true
+            })
+            .addTo(map);
+
+    // When
+    // nothing
+
+    // Then
+    t.deepEqual(L.Marker.getBouncingMarkers(), []);
+
+    // When
+    marker.bounce();
+
+    // Then
+    t.deepEqual(L.Marker.getBouncingMarkers(), [ marker ]);
+
+    // When
+    marker.stopBouncing();
+
+    // Then
+    t.deepEqual(L.Marker.getBouncingMarkers(), []);
+});
