@@ -1,5 +1,3 @@
-import {Marker} from 'leaflet';
-
 export default class Orchestration {
     #bouncingMarkers = [];
 

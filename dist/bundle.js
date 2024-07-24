@@ -229,101 +229,104 @@
     }]);
   }();
 
-  var oldSetPos = L.Marker.prototype._setPos;
-  var oldOnAdd = L.Marker.prototype.onAdd;
-  var oldSetIcon = L.Marker.prototype.setIcon;
-  var MarkerPrototypeExt = {
-    /** Bouncing options shared by all markers. */
-    _bouncingOptions: new BouncingOptions(),
-    _orchestration: new Orchestration(),
-    /**
-     * Registers options of bouncing animation for this marker. After registration of options for
-     * this marker, it will ignore changes of default options. Function automatically recalculates
-     * animation steps and delays.
-     *
-     * @param options {BouncingOptions|object}  options object
-     * @return {Marker} this marker
-     */
-    setBouncingOptions: function setBouncingOptions(options) {
-      this._bouncingMotion.updateBouncingOptions(options);
-      return this;
-    },
-    /**
-     * Returns true if this marker is bouncing. If this marker is not bouncing returns false.
-     * @return {boolean} true if marker is bouncing, false if not
-     */
-    isBouncing: function isBouncing() {
-      return this._bouncingMotion.isBouncing;
-    },
-    /**
-     * Starts bouncing of this marker.
-     * @param times {number|null} number of times the marker must to bounce
-     * @return {Marker} this marker
-     */
-    bounce: function bounce() {
-      var _this = this;
-      var times = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
-      if (times) {
-        this._bouncingMotion.onMotionEnd = function () {
-          L.Marker.prototype._orchestration.removeBouncingMarker(_this);
-        };
+  function MarkerPrototypeExt(Leaflet) {
+    var oldSetPos = Leaflet.Marker.prototype._setPos;
+    var oldOnAdd = Leaflet.Marker.prototype.onAdd;
+    var oldSetIcon = Leaflet.Marker.prototype.setIcon;
+    return {
+      /** Bouncing options shared by all markers. */
+      _bouncingOptions: new BouncingOptions(),
+      _orchestration: new Orchestration(),
+      _realMarker: true,
+      /**
+       * Registers options of bouncing animation for this marker. After registration of options for
+       * this marker, it will ignore changes of default options. Function automatically recalculates
+       * animation steps and delays.
+       *
+       * @param options {BouncingOptions}  options object
+       * @return {Marker} this marker
+       */
+      setBouncingOptions: function setBouncingOptions(options) {
+        this._bouncingMotion.updateBouncingOptions(options);
+        return this;
+      },
+      /**
+       * Returns true if this marker is bouncing. If this marker is not bouncing returns false.
+       * @return {boolean} true if marker is bouncing, false if not
+       */
+      isBouncing: function isBouncing() {
+        return this._bouncingMotion.isBouncing;
+      },
+      /**
+       * Starts bouncing of this marker.
+       * @param times {number|null}  number of times the marker must to bounce
+       * @return {Marker} this marker
+       */
+      bounce: function bounce() {
+        var _this = this;
+        var times = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
+        if (times) {
+          this._bouncingMotion.onMotionEnd = function () {
+            Leaflet.Marker.prototype._orchestration.removeBouncingMarker(_this);
+          };
+        }
+        this._bouncingMotion.bounce(times);
+        var exclusive = this._bouncingMotion.bouncingOptions.exclusive;
+        Leaflet.Marker.prototype._orchestration.addBouncingMarker(this, exclusive);
+        return this;
+      },
+      /**
+       * Stops bouncing of this marker.
+       * Note: unless 'immediate' flag is set to true, by the call to this method or in marker options,
+       * the bouncing will not stop immediately after the call of this method. Instead, the animation
+       * is executed until marker returns to its original position and takes its full size.
+       *
+       * @param immediate {boolean}  if true, marker stop to bounce immediately, without waiting
+       *      animation to end
+       * @return {Marker} this marker
+       */
+      stopBouncing: function stopBouncing() {
+        var immediate = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : false;
+        this._bouncingMotion.stopBouncing(immediate);
+        Leaflet.Marker.prototype._orchestration.removeBouncingMarker(this);
+        return this;
+      },
+      /**
+       * Starts/stops bouncing of this marker.
+       * @return {Marker} marker
+       */
+      toggleBouncing: function toggleBouncing() {
+        if (this._bouncingMotion.isBouncing) {
+          this.stopBouncing();
+        } else {
+          this.bounce();
+        }
+        return this;
+      },
+      isRealMarker: function isRealMarker() {
+        return Object.hasOwn(this.__proto__, '_realMarker');
+      },
+      _setPos: function _setPos(position) {
+        oldSetPos.call(this, position);
+        if (this.isRealMarker()) {
+          this._bouncingMotion.position = position;
+          this._bouncingMotion.resetStyles(this);
+        }
+      },
+      onAdd: function onAdd(map) {
+        oldOnAdd.call(this, map);
+        if (this.isRealMarker()) {
+          this._bouncingMotion.resetStyles(this);
+        }
+      },
+      setIcon: function setIcon(icon) {
+        oldSetIcon.call(this, icon);
+        if (this.isRealMarker() && this._icon) {
+          this._bouncingMotion.resetStyles(this);
+        }
       }
-      this._bouncingMotion.bounce(times);
-      var exclusive = this._bouncingMotion.bouncingOptions.exclusive;
-      L.Marker.prototype._orchestration.addBouncingMarker(this, exclusive);
-      return this;
-    },
-    /**
-     * Stops bouncing of this marker.
-     * Note: unless 'immediate' flag is set to true, by the call to this method or in marker options,
-     * the bouncing will not stop immediately after the call of this method. Instead, the animation
-     * is executed until marker returns to its original position and takes its full size.
-     *
-     * @param immediate {boolean} if true, marker stop to bounce immediately, without waiting
-     *      animation to end
-     * @return {Marker} this marker
-     */
-    stopBouncing: function stopBouncing() {
-      var immediate = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : false;
-      this._bouncingMotion.stopBouncing(immediate);
-      L.Marker.prototype._orchestration.removeBouncingMarker(this);
-      return this;
-    },
-    /**
-     * Starts/stops bouncing of this marker.
-     * @return {Marker} marker
-     */
-    toggleBouncing: function toggleBouncing() {
-      if (this._bouncingMotion.isBouncing) {
-        this.stopBouncing();
-      } else {
-        this.bounce();
-      }
-      return this;
-    },
-    isRealMarker: function isRealMarker() {
-      return this.__proto__ === L.Marker.prototype;
-    },
-    _setPos: function _setPos(position) {
-      oldSetPos.call(this, position);
-      if (this.isRealMarker()) {
-        this._bouncingMotion.position = position;
-        this._bouncingMotion.resetStyles(this);
-      }
-    },
-    onAdd: function onAdd(map) {
-      oldOnAdd.call(this, map);
-      if (this.isRealMarker()) {
-        this._bouncingMotion.resetStyles(this);
-      }
-    },
-    setIcon: function setIcon(icon) {
-      oldSetIcon.call(this, icon);
-      if (this.isRealMarker() && this._icon) {
-        this._bouncingMotion.resetStyles(this);
-      }
-    }
-  };
+    };
+  }
 
   /**
    * Calculates the points to draw the continous line on the screen. Returns the array of ordered
@@ -734,39 +737,44 @@
     }]);
   }();
 
-  L.Marker.include(MarkerPrototypeExt);
+  function SmoothMarkerBouncing(Leaflet) {
+    Leaflet.Marker.include(MarkerPrototypeExt(Leaflet));
 
-  /**
-   * Registers default options of bouncing animation.
-   * @param options {BouncingOptions|object}  object with options
-   */
-  L.Marker.setBouncingOptions = function (options) {
-    L.Marker.prototype._bouncingOptions = options instanceof BouncingOptions ? options : new BouncingOptions(options);
-  };
+    /**
+     * Registers default options of bouncing animation.
+     * @param options {BouncingOptions|object}  object with options
+     */
+    Leaflet.Marker.setBouncingOptions = function (options) {
+      Leaflet.Marker.prototype._bouncingOptions = options instanceof BouncingOptions ? options : new BouncingOptions(options);
+    };
 
-  /**
-   * Returns array of currently bouncing markers.
-   * @return {Marker[]} array of bouncing markers
-   */
-  L.Marker.getBouncingMarkers = function () {
-    return L.Marker.prototype._orchestration.getBouncingMarkers();
-  };
+    /**
+     * Returns array of currently bouncing markers.
+     * @return {Marker[]} array of bouncing markers
+     */
+    Leaflet.Marker.getBouncingMarkers = function () {
+      return Leaflet.Marker.prototype._orchestration.getBouncingMarkers();
+    };
 
-  /**
-   * Stops the bouncing of all currently bouncing markers. Purge the array of bouncing markers.
-   *
-   * @param immediate {boolean} if true, markers stop to bounce immediately, without waiting
-   *      animation to end
-   */
-  L.Marker.stopAllBouncingMarkers = function () {
-    var immediate = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : false;
-    L.Marker.prototype._orchestration.stopAllBouncingMarkers(immediate);
-  };
-  L.Marker.addInitHook(function () {
-    if (this.isRealMarker()) {
-      var bouncingOptions = new BouncingOptions(L.Marker.prototype._bouncingOptions);
-      this._bouncingMotion = new BouncingMotionCss3(this, new L.Point(0, 0), bouncingOptions);
-    }
-  });
+    /**
+     * Stops the bouncing of all currently bouncing markers. Purge the array of bouncing markers.
+     *
+     * @param immediate {boolean}  if true, markers stop to bounce immediately, without waiting
+     *      animation to end
+     */
+    Leaflet.Marker.stopAllBouncingMarkers = function () {
+      var immediate = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : false;
+      Leaflet.Marker.prototype._orchestration.stopAllBouncingMarkers(immediate);
+    };
+    Leaflet.Marker.addInitHook(function () {
+      if (this.isRealMarker()) {
+        var bouncingOptions = new BouncingOptions(Leaflet.Marker.prototype._bouncingOptions);
+        this._bouncingMotion = new BouncingMotionCss3(this, new Leaflet.Point(0, 0), bouncingOptions);
+      }
+    });
+    return Leaflet;
+  }
+
+  SmoothMarkerBouncing(L);
 
 })(L);

@@ -1,12 +1,11 @@
 import test from 'ava';
 import L from 'leaflet';
 import randLatLng from './helpers/random-pos';
-import MarkerPrototypeExt from '../src/MarkerPrototypeExt';
-import '../src/SmoothMarkerBouncing';
+import SmoothMarkerBouncing from '../src/SmoothMarkerBouncing';
+
+SmoothMarkerBouncing(L);
 
 const MarkerCluster= L.Marker.extend({});
-
-L.Marker.include(MarkerPrototypeExt);
 
 test('Test isRealMarker', t => {
 

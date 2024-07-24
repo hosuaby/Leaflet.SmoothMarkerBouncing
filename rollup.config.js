@@ -3,7 +3,7 @@ import postcss from 'rollup-plugin-postcss';
 import {uglify} from 'rollup-plugin-uglify';
 
 export default [{
-    input: 'src/SmoothMarkerBouncing.js',
+    input: 'src/standalone.js',
     external: ['leaflet'],
     output: {
         file: 'dist/bundle.js',
@@ -22,7 +22,7 @@ export default [{
         })
     ]
 }, {
-    input: 'src/SmoothMarkerBouncing.js',
+    input: 'src/standalone.js',
     external: ['leaflet'],
     output: {
         file: 'dist/bundle.min.js',
@@ -40,5 +40,20 @@ export default [{
             extensions: [ '.css' ]
         }),
         uglify()
+    ]
+}, {
+    input: 'src/SmoothMarkerBouncing.js',
+    external: ['leaflet'],
+    output: {
+        file: 'dist/index.esm.js',
+        format: 'esm'
+    },
+    plugins: [
+        babel({
+            exclude: 'node_modules/**'
+        }),
+        postcss({
+            extensions: [ '.css' ]
+        })
     ]
 }];

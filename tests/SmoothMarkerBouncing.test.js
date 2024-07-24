@@ -1,11 +1,13 @@
 import test from 'ava';
-import L, {Marker} from 'leaflet';
-import '../src/SmoothMarkerBouncing';
+import L from 'leaflet';
+import SmoothMarkerBouncing from '../src/SmoothMarkerBouncing';
+
+SmoothMarkerBouncing(L);
 
 test('Test both setBouncingOptions', t => {
 
     // Given
-    Marker.setBouncingOptions({
+    L.Marker.setBouncingOptions({
         contractSpeed: 32
     });
 

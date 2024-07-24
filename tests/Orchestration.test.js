@@ -1,8 +1,9 @@
 import test from 'ava';
 import L from 'leaflet';
 import randLatLng from './helpers/random-pos';
-import Marker from '../src/MarkerPrototypeExt';
-import '../src/SmoothMarkerBouncing';
+import SmoothMarkerBouncing from '../src/SmoothMarkerBouncing';
+
+SmoothMarkerBouncing(L);
 
 test('Test start/stop bouncing of individual markers', t => {
 
@@ -15,21 +16,21 @@ test('Test start/stop bouncing of individual markers', t => {
     const marker3 = L.marker(randLatLng()).addTo(map);
 
     // When
-    let bouncingMarkers = Marker._orchestration.getBouncingMarkers();
+    let bouncingMarkers = L.Marker.prototype._orchestration.getBouncingMarkers();
 
     // Then
     t.deepEqual(bouncingMarkers, []);
 
     // When
     marker2.bounce();
-    bouncingMarkers = Marker._orchestration.getBouncingMarkers();
+    bouncingMarkers = L.Marker.prototype._orchestration.getBouncingMarkers();
 
     // Then
     t.deepEqual(bouncingMarkers, [ marker2 ]);
 
     // When
     marker2.stopBouncing();
-    bouncingMarkers = Marker._orchestration.getBouncingMarkers();
+    bouncingMarkers = L.Marker.prototype._orchestration.getBouncingMarkers();
 
     // Then
     t.deepEqual(bouncingMarkers, []);
@@ -46,7 +47,7 @@ test('Test start/stop bouncing of exclusive marker', t => {
     const marker3 = L.marker(randLatLng()).setBouncingOptions({ exclusive: true }).addTo(map);
 
     // When
-    let bouncingMarkers = Marker._orchestration.getBouncingMarkers();
+    let bouncingMarkers = L.Marker.prototype._orchestration.getBouncingMarkers();
 
     // Then
     t.deepEqual(bouncingMarkers, []);
@@ -54,21 +55,21 @@ test('Test start/stop bouncing of exclusive marker', t => {
     // When
     marker1.bounce();
     marker2.bounce();
-    bouncingMarkers = Marker._orchestration.getBouncingMarkers();
+    bouncingMarkers = L.Marker.prototype._orchestration.getBouncingMarkers();
 
     // Then
     t.deepEqual(bouncingMarkers, [ marker1, marker2 ]);
 
     // When
     marker3.bounce();
-    bouncingMarkers = Marker._orchestration.getBouncingMarkers();
+    bouncingMarkers = L.Marker.prototype._orchestration.getBouncingMarkers();
 
     // Then
     t.deepEqual(bouncingMarkers, [ marker3 ]);
 
     // When
     marker2.bounce();
-    bouncingMarkers = Marker._orchestration.getBouncingMarkers();
+    bouncingMarkers = L.Marker.prototype._orchestration.getBouncingMarkers();
 
     // Then
     t.deepEqual(bouncingMarkers, [ marker2 ]);
