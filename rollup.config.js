@@ -4,10 +4,14 @@ import {uglify} from 'rollup-plugin-uglify';
 
 export default [{
     input: 'src/SmoothMarkerBouncing.js',
+    external: ['leaflet'],
     output: {
         file: 'dist/bundle.js',
         format: 'iife',
-        name: 'bundle'
+        name: 'bundle',
+        globals: {
+            leaflet: 'L'
+        }
     },
     plugins: [
         babel({
@@ -19,10 +23,14 @@ export default [{
     ]
 }, {
     input: 'src/SmoothMarkerBouncing.js',
+    external: ['leaflet'],
     output: {
         file: 'dist/bundle.min.js',
         format: 'iife',
-        name: 'bundle'
+        name: 'bundle',
+        globals: {
+            leaflet: 'L'
+        }
     },
     plugins: [
         babel({
