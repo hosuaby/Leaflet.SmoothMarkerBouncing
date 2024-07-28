@@ -22,7 +22,7 @@ it will be better to stick to `v2.0.x`.
 
 Check out the [demo](http://hosuaby.github.io/Leaflet.SmoothMarkerBouncing/).
 
-## Usage
+## Install
 
 Add Javascript file on your page:
 
@@ -37,6 +37,19 @@ Or install it as `npm` module:
 ```shell script
 npm install leaflet.smooth_marker_bouncing
 ```
+
+### ES module
+
+Since `v3.1.0` plugin provides ES module, that can be imported in your code as following:
+
+```javascript
+import L from 'leaflet';
+import SmoothMarkerBouncing from 'leaflet.smooth_marker_bouncing';
+
+SmoothMarkerBouncing(L); // <-- adds plugins code to global L variable
+```
+
+## Usage
 
 Plugin provides additional methods to `Marker`:
 
