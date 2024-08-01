@@ -46,8 +46,10 @@ Since `v3.1.0` plugin provides ES module, that can be imported in your code as f
 import L from 'leaflet';
 import SmoothMarkerBouncing from 'leaflet.smooth_marker_bouncing';
 
-SmoothMarkerBouncing(L); // <-- adds plugins code to global L variable
+SmoothMarkerBouncing(L); // <-- adds plugins code to the global L variable
 ```
+
+Check the example of how it is used with `Angular` and `Typescript`: [AngularLeafletExample](https://github.com/hosuaby/angular-leaflet-example).
 
 ## Usage
 
