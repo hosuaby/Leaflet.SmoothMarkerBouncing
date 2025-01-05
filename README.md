@@ -51,6 +51,20 @@ SmoothMarkerBouncing(L); // <-- adds plugins code to the global L variable
 
 Check the example of how it is used with `Angular` and `Typescript`: [AngularLeafletExample](https://github.com/hosuaby/angular-leaflet-example).
 
+### Content Security Policy (CSP)
+
+If **Content Security Policy** (CSP) is enabled on the page, you must include the hash of 
+dynamically injected styles in the `style-src` directive. This ensures that the inline styles comply 
+with the CSP without compromising security.
+
+The right hash code could be found in the file [dist/bouncing.css.sha256](./dist/bouncing.css.sha256).
+
+Example CSP Meta Tag::
+
+```html
+<meta http-equiv="Content-Security-Policy" content="script-src 'self'; style-src 'self' 'sha256-fepvpp//vQvk3B6VNSvwdc7exafX0cguysFL3FH4NXw=';">
+```
+
 ## Usage
 
 Plugin provides additional methods to `Marker`:
