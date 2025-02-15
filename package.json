@@ -1,6 +1,6 @@
 {
   "name": "leaflet.smooth_marker_bouncing",
-  "version": "3.1.0",
+  "version": "3.1.1",
   "type": "module",
   "description": "Smooth animation of marker bouncing for Leaflet.",
   "author": "Alexei KLENIN <alexei.klenin@gmail.com> (https://github.com/hosuaby)",
