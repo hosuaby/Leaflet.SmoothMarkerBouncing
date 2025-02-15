@@ -44,8 +44,8 @@
         icon: normalIcon
     })
     .setBouncingOptions(normalMarkerOptions)
-    .addTo(map)
-    .bounce();
+    .bounce()
+    .addTo(map);
 
     let i = 0;
 

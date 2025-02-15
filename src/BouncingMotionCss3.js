@@ -163,12 +163,14 @@ export default class BouncingMotionCss3 {
         this.#eventCounter = 0;
         this.bouncingAnimationPlaying = true;
 
-        resetClasses(this.marker._icon, this.#classes);
+        if (this.marker._icon) {
+            resetClasses(this.marker._icon, this.#classes);
+            this.marker._icon.addEventListener('animationend', this.#listener);
+        }
+
         if (this.marker._shadow && this.bouncingOptions.shadowAngle) {
             resetClasses(this.marker._shadow, this.#classes);
         }
-
-        this.marker._icon.addEventListener('animationend', this.#listener);
     }
 
     stopBouncing(immediate = false) {

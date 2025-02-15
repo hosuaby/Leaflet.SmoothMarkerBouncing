@@ -622,11 +622,13 @@
         }
         _classPrivateFieldSet2(_eventCounter, this, 0);
         this.bouncingAnimationPlaying = true;
-        resetClasses(this.marker._icon, _classPrivateFieldGet2(_classes, this));
+        if (this.marker._icon) {
+          resetClasses(this.marker._icon, _classPrivateFieldGet2(_classes, this));
+          this.marker._icon.addEventListener('animationend', _classPrivateFieldGet2(_listener, this));
+        }
         if (this.marker._shadow && this.bouncingOptions.shadowAngle) {
           resetClasses(this.marker._shadow, _classPrivateFieldGet2(_classes, this));
         }
-        this.marker._icon.addEventListener('animationend', _classPrivateFieldGet2(_listener, this));
       }
     }, {
       key: "stopBouncing",
